@@ -1,0 +1,136 @@
+/* Estilos Base - PF Moda Boutique */
+:root {
+    --color-negro: #111111;
+    --color-dorado: #C9A227;
+    --color-blanco: #FFFFFF;
+    --color-gris-claro: #F5F5F5;
+    --color-gris-oscuro: #444444;
+    --fuente-principal: 'Poppins', 'Montserrat', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--color-blanco);
+    color: var(--color-negro);
+    line-height: 1.6;
+}
+
+/* Header / Navegación */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: var(--color-blanco);
+    border-bottom: 1px solid var(--color-gris-claro);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--color-negro);
+    text-transform: uppercase;
+}
+
+.logo span {
+    color: var(--color-dorado);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--color-negro);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--color-dorado);
+}
+
+/* Contenedor Principal */
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Grid de Productos */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.producto-card {
+    background: var(--color-blanco);
+    border: 1px solid var(--color-gris-claro);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.producto-imagen {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    background-color: var(--color-gris-claro);
+}
+
+.producto-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.producto-categoria {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--color-gris-oscuro);
+    letter-spacing: 1px;
+}
+
+.producto-nombre {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-negro);
+}
+
+.producto-precio {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-dorado);
+}
