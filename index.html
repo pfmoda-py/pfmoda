@@ -4,7 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PF Moda | Boutique Premium</title>
+
+    <title>PF Moda — Tienda de Moda</title>
+
+    <meta name="description" content="PF Moda — Tienda online de moda. Descubre nuestras prendas, novedades y ofertas.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pfmoda-py.github.io/pfmoda/">
+
+    <!-- =========================================
+         OPEN GRAPH
+    ========================================= -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PF Moda — Tienda de Moda">
+    <meta property="og:description" content="Descubre productos de PF Moda, novedades y ofertas.">
+    <meta property="og:url" content="https://pfmoda-py.github.io/pfmoda/">
+    <meta property="og:site_name" content="PF Moda">
+    <meta property="og:locale" content="es_PY">
+    <meta property="og:image" content="https://pfmoda-py.github.io/pfmoda/images/og-image.jpg">
+    <meta property="og:image:alt" content="PF Moda — Tienda de Moda">
+
+    <!-- =========================================
+         TWITTER / X CARD
+    ========================================= -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PF Moda — Tienda de Moda">
+    <meta name="twitter:description" content="Descubre productos de PF Moda, novedades y ofertas.">
+    <meta name="twitter:image" content="https://pfmoda-py.github.io/pfmoda/images/og-image.jpg">
+
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PF Moda",
+        "url": "https://pfmoda-py.github.io/pfmoda/",
+        "logo": "https://pfmoda-py.github.io/pfmoda/images/logo.png"
+    }
+    </script>
+
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Estilos CSS -->
@@ -17,22 +54,509 @@
         <div class="logo">PF <span>Moda</span></div>
         <nav>
             <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#catalogo">Catálogo</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li><a href="#" class="nav-link">Inicio</a></li>
+                <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+                <li><a href="#" class="nav-link">Contacto</a></li>
             </ul>
         </nav>
+
+        <div class="header-actions">
+            <!-- Botón del Carrito -->
+            <div class="carrito-icono-container" id="btn-abrir-carrito" title="Ver Carrito">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span id="carrito-contador">0</span>
+            </div>
+
+            <!-- Botón Hamburguesa Móvil -->
+            <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menú">
+                <span class="linea"></span>
+                <span class="linea"></span>
+                <span class="linea"></span>
+            </button>
+        </div>
     </header>
 
     <!-- Contenido Principal -->
     <main>
         <h1 class="section-title">Novedades Exclusivas</h1>
         
+        <!-- Barra de Búsqueda y Filtros -->
+        <div class="filtros-container">
+            <input type="text" id="input-buscar" placeholder="Buscar remeras, prendas..." autocomplete="off">
+            
+            <!-- Categorías Principales -->
+            <div id="categorias-botones" class="categorias-grid">
+                <button class="btn-categoria activo" data-categoria="todos">Todos</button>
+                <!-- Las categorías se cargarán dinámicamente -->
+            </div>
+
+            <!-- Subcategorías (se mostrarán según la categoría activa) -->
+            <div id="subcategorias-botones" class="categorias-grid subcategorias-grid"></div>
+
+            <!-- =========================================
+                 ORDENAR PRODUCTOS (ETAPA 5.4)
+            ========================================= -->
+            <div class="orden-productos">
+                <label for="orden-productos">Ordenar por</label>
+                <select id="orden-productos">
+                    <option value="recientes">Más recientes</option>
+                    <option value="precio-menor">Precio: menor a mayor</option>
+                    <option value="precio-mayor">Precio: mayor a menor</option>
+                    <option value="nombre-az">Nombre: A → Z</option>
+                    <option value="nombre-za">Nombre: Z → A</option>
+                </select>
+            </div>
+        </div>
+        
         <!-- Grid donde se pintarán los productos con JavaScript -->
         <div id="productos-contenedor" class="productos-grid">
             <p style="text-align: center; grid-column: 1 / -1; color: #666;">Cargando catálogo...</p>
         </div>
     </main>
+
+    <!-- =========================================
+     PANEL LATERAL DEL CARRITO
+    ========================================= -->
+
+    <div
+        class="carrito-overlay"
+        id="carrito-overlay">
+    </div>
+
+
+    <div
+        class="carrito-drawer"
+        id="carrito-drawer">
+
+
+        <!-- =====================================
+             CABECERA DEL CARRITO
+        ====================================== -->
+
+        <div class="carrito-header">
+
+            <h2>
+                Tu Carrito
+            </h2>
+
+            <button
+                type="button"
+                id="btn-cerrar-carrito"
+                class="carrito-cerrar">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================
+             CONTENIDO DEL CARRITO CON SCROLL
+        ====================================== -->
+
+        <div class="carrito-contenido-scroll">
+
+
+            <!-- =================================
+                 PRODUCTOS DEL CARRITO
+            ================================== -->
+
+            <div
+                class="carrito-items"
+                id="carrito-items">
+
+                <p class="carrito-vacio">
+                    Tu carrito está vacío.
+                </p>
+
+            </div>
+
+
+            <!-- =================================
+                 DATOS DEL CLIENTE
+            ================================== -->
+
+            <div
+                class="datos-cliente"
+                id="datos-cliente">
+
+
+                <h3>
+                    Datos para el pedido
+                </h3>
+
+
+                <!-- =============================
+                     NOMBRE
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-nombre">
+                        Nombre Completo *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cliente-nombre"
+                        placeholder="Ej: Tu Nombre o Empresa"
+                        autocomplete="name">
+
+                </div>
+
+
+                <!-- =============================
+                     WHATSAPP
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-whatsapp">
+                        WhatsApp *
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="cliente-whatsapp"
+                        placeholder="Ej: 0983 XXXXXX"
+                        autocomplete="tel">
+
+                </div>
+
+
+                <!-- =============================
+                     CIUDAD
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-ciudad">
+                        Ciudad *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cliente-ciudad"
+                        placeholder="Ej: Asunción">
+
+                </div>
+
+
+                <!-- =============================
+                     BARRIO
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-barrio">
+                        Barrio *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cliente-barrio"
+                        placeholder="Ej: Mercado 4">
+
+                </div>
+
+
+                <!-- =============================
+                     TIPO DE ENTREGA
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-entrega">
+                        Tipo de entrega *
+                    </label>
+
+                    <select id="cliente-entrega">
+
+                        <option value="">
+                            Seleccionar forma de entrega
+                        </option>
+
+                        <option value="Envío a domicilio">
+                            Envío a domicilio
+                        </option>
+
+                        <option value="Retiro en tienda">
+                            Retiro en tienda
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================
+                     DIRECCIÓN
+                ============================== -->
+
+                <div
+                    class="campo-cliente"
+                    id="campo-direccion">
+
+                    <label for="cliente-direccion">
+                        Dirección
+                    </label>
+
+                    <textarea
+                        id="cliente-direccion"
+                        rows="2"
+                        placeholder="Ej: Avenida N.º 1111"></textarea>
+
+                </div>
+
+
+                <!-- ==========================================
+                     FACTURA
+                ========================================== -->
+                            
+                <div class="campo-cliente">
+                
+                    <label for="cliente-factura">
+                        ¿Necesita factura?
+                    </label>
+                
+                    <select id="cliente-factura">
+                    
+                        <option value="No">
+                            No
+                        </option>
+                    
+                        <option value="Sí">
+                            Sí
+                        </option>
+                    
+                    </select>
+                
+                </div>
+                
+                
+                <!-- ==========================================
+                     DATOS DE FACTURACIÓN
+                ========================================== -->
+                
+                <div
+                    class="datos-factura"
+                    id="datos-factura"
+                    style="display: none;">
+                
+                    <h4>Datos para facturación</h4>
+                
+                    <div class="campo-cliente">
+                    
+                        <label for="cliente-razon-social">
+                            Razón Social *
+                        </label>
+                    
+                        <input
+                            type="text"
+                            id="cliente-razon-social"
+                            placeholder="Ej: Juan Pérez o Empresa S.A.">
+                    
+                    </div>
+                
+                
+                    <div class="campo-cliente">
+                    
+                        <label for="cliente-ruc">
+                            RUC *
+                        </label>
+                    
+                        <input
+                            type="text"
+                            id="cliente-ruc"
+                            placeholder="Ej: 80012345-6">
+                    
+                    </div>
+                
+                </div>
+
+
+                <!-- =============================
+                     OBSERVACIONES
+                ============================== -->
+
+                <div class="campo-cliente">
+
+                    <label for="cliente-observaciones">
+                        Observaciones
+                    </label>
+
+                    <textarea
+                        id="cliente-observaciones"
+                        rows="2"
+                        placeholder="Ej: Portón gris, tocar timbre"></textarea>
+
+                </div>
+
+
+            </div>
+            <!-- FIN DATOS DEL CLIENTE -->
+
+
+        </div>
+        <!-- FIN CONTENIDO CON SCROLL -->
+
+
+        <!-- =====================================
+             FOOTER FIJO DEL CARRITO
+        ====================================== -->
+
+        <div class="carrito-footer">
+
+
+            <div class="carrito-total">
+
+                <span>
+                    Subtotal:
+                </span>
+
+                <span id="carrito-subtotal">
+                    ₲ 0
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-checkout"
+                id="btn-procesar-pedido">
+
+                Realizar Pedido por WhatsApp
+
+            </button>
+
+
+        </div>
+        <!-- FIN FOOTER -->
+
+
+    </div>
+
+    
+    <!-- ===========================
+    MODAL PRODUCTO
+    =========================== -->
+
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <div id="modal-producto" class="modal-producto">
+
+        <button id="btn-cerrar-modal" class="modal-cerrar">×</button>
+
+        <div class="modal-contenido">
+
+            <!-- CONTENEDOR EN GRID (SOLO PARA FOTO + DETALLES) -->
+            <div class="modal-body-grid">
+
+                <div class="modal-imagen">
+                    <div class="modal-galeria">
+                        <!-- IMAGEN PRINCIPAL CON FLECHAS -->
+                        <div class="modal-imagen-principal">
+                            <button type="button" id="galeria-anterior" class="galeria-flecha galeria-anterior">‹</button>
+                            <img id="modal-img" src="" alt="Producto" draggable="false">
+                            <button type="button" id="galeria-siguiente" class="galeria-flecha galeria-siguiente">›</button>
+
+                            <!-- INDICADOR DE ZOOM -->
+                            <div class="indicador-zoom" id="indicador-zoom">
+                                🔍 Ver imagen
+                            </div>
+                        </div>
+
+                        <!-- MINIATURAS -->
+                        <div id="modal-miniaturas" class="modal-miniaturas"></div>
+                    </div>
+                </div>
+
+                <div class="modal-info">
+                    <span id="modal-categoria" class="modal-categoria"></span>
+                    <h2 id="modal-nombre"></h2>
+                    <div id="modal-precio"></div>
+                    <p id="modal-descripcion"></p>
+
+                    <div id="modal-detalles-tecnicos" class="modal-detalles-tecnicos"></div>
+
+                    <!-- COLOR -->
+                    <div class="selector">
+                        <label>Color:</label>
+                        <select id="modal-color"></select>
+                    </div>
+
+                    <!-- TALLE -->
+                    <div class="selector">
+                        <label>Talle:</label>
+                        <select id="modal-talle"></select>
+                    </div>
+
+                    <button id="btn-agregar-modal" class="btn-agregar">
+                        Agregar al carrito
+                    </button>
+
+                    <!-- COMPARTIR PRODUCTO (ETAPA 6.3) -->
+                    <div class="compartir-producto">
+                        <span class="compartir-titulo">Compartir producto</span>
+                        <div class="compartir-botones">
+                            <button type="button" id="btn-compartir-whatsapp" class="btn-compartir btn-compartir-whatsapp">
+                                WhatsApp
+                            </button>
+                            <button type="button" id="btn-compartir-facebook" class="btn-compartir btn-compartir-facebook">
+                                Facebook
+                            </button>
+                            <button id="btn-compartir-instagram" class="btn-compartir btn-compartir-instagram">Instagram</button>
+                            <button id="btn-compartir-tiktok" class="btn-compartir btn-compartir-tiktok">TikTok</button>
+                            <button type="button" id="btn-copiar-enlace" class="btn-compartir btn-copiar-enlace">
+                                Copiar enlace
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- CIERRE DE LA GRID DE 2 COLUMNAS -->
+
+            <!-- PRODUCTOS RELACIONADOS (AHORA SÍ QUEDA ABAJO A TODO ANCHO) -->
+            <div id="productos-relacionados" class="productos-relacionados"></div>
+
+        </div>
+    </div>
+
+    <!-- =========================================
+         VISOR DE IMAGEN AMPLIADA (ETAPA 4.5)
+    ========================================= -->
+    <div id="visor-imagen" class="visor-imagen">
+
+        <button
+            type="button"
+            id="visor-cerrar"
+            class="visor-cerrar">
+            ×
+        </button>
+
+        <button
+            type="button"
+            id="visor-anterior"
+            class="visor-flecha visor-anterior">
+            ‹
+        </button>
+
+        <img
+            id="visor-img"
+            src=""
+            alt="Imagen ampliada"
+            draggable="false">
+
+        <button
+            type="button"
+            id="visor-siguiente"
+            class="visor-flecha visor-siguiente">
+            ›
+        </button>
+
+    </div>
 
     <!-- Scripts JavaScript -->
     <script src="js/api.js"></script>

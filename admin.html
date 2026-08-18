@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+    
+        <meta charset="UTF-8">
+    
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+    
+        <title>PF Moda - Panel Administrativo</title>
+    
+        <link
+            rel="stylesheet"
+            href="css/admin.css">
+    
+    </head>
+    
+    <body>
+    
+        <!-- =========================================
+             HEADER DEL PANEL
+        ========================================== -->
+    
+        <header class="admin-header">
+
+        <div class="admin-logo">
+            PF <span>Moda</span>
+        </div>
+
+        <div class="admin-titulo">
+            Panel Administrativo
+        </div>
+
+        <a
+            href="index.html"
+            class="btn-volver-tienda">
+
+            ← Volver a la tienda
+
+        </a>
+
+        </header>
+    
+    
+        <!-- =========================================
+             CONTENIDO PRINCIPAL
+        ========================================== -->
+    
+        <main class="admin-main">
+        
+        
+            <!-- =====================================
+                 DASHBOARD
+            ====================================== -->
+        
+            <section class="admin-dashboard">
+
+            <div class="admin-card">
+
+                <span class="admin-card-titulo">
+                    Pedidos
+                </span>
+
+                <strong
+                    id="total-pedidos">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+            <div class="admin-card">
+
+                <span class="admin-card-titulo">
+                    Productos
+                </span>
+
+                <strong
+                    id="total-productos">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+            <div class="admin-card">
+
+                <span class="admin-card-titulo">
+                    Categorías
+                </span>
+
+                <strong
+                    id="total-categorias">
+
+                    0
+
+                </strong>
+
+            </div>
+
+            </section>
+        
+        
+            <!-- =====================================
+                 SECCIÓN PEDIDOS
+            ====================================== -->
+        
+            <section class="admin-seccion">
+
+            <div class="admin-seccion-header">
+
+                <div>
+
+                    <h1>
+                        Pedidos
+                    </h1>
+
+                    <p>
+                        Consulta y administra los pedidos
+                        realizados por los clientes.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="btn-recargar-pedidos"
+                    class="btn-admin">
+
+                    ↻ Actualizar
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================
+                 TABLA DE PEDIDOS
+            ================================== -->
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-admin">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                N.º Pedido
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th>
+                                WhatsApp
+                            </th>
+
+                            <th>
+                                Ciudad
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th>
+                                Acción
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabla-pedidos">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="tabla-cargando">
+
+                                Cargando pedidos...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            </section>
+        
+        
+            <!-- =====================================
+                 DETALLE DEL PEDIDO
+            ====================================== -->
+        
+            <section
+            id="detalle-pedido"
+            class="admin-seccion detalle-pedido"
+            style="display:none;">
+
+            <div class="admin-seccion-header">
+
+                <div>
+
+                    <h2>
+                        Detalle del pedido
+                    </h2>
+
+                    <p id="detalle-numero-pedido"></p>
+
+                </div>
+
+
+                <button
+                    id="btn-cerrar-detalle"
+                    class="btn-admin btn-secundario">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+
+            <!-- DATOS DEL CLIENTE -->
+
+            <div class="detalle-bloque">
+
+                <h3>
+                    Datos del cliente
+                </h3>
+
+                <div
+                    id="datos-pedido-cliente"
+                    class="detalle-grid">
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCTOS DEL PEDIDO -->
+
+            <div class="detalle-bloque">
+
+                <h3>
+                    Productos
+                </h3>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-admin">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Código
+                                </th>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Color
+                                </th>
+
+                                <th>
+                                    Talle
+                                </th>
+
+                                <th>
+                                    Cantidad
+                                </th>
+
+                                <th>
+                                    Precio
+                                </th>
+
+                                <th>
+                                    Total
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="tabla-detalle-productos">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            </section>
+        
+            <!-- =====================================================
+                 GESTIÓN DE PRODUCTOS
+            ===================================================== -->
+                
+            <section class="admin-seccion productos-admin">
+        
+            <div class="seccion-header">
+            
+                <div>
+                
+                    <h2>Productos</h2>
+                
+                    <p>
+                        Administra los productos de tu catálogo.
+                    </p>
+                
+                </div>
+            
+                <button
+                    id="btn-nuevo-producto"
+                    class="btn-admin-principal">
+            
+                    + Nuevo Producto
+            
+                </button>
+            
+            </div>
+        
+        
+            <!-- TABLA -->
+        
+            <div class="tabla-responsive">
+            
+                <table class="tabla-admin">
+                
+                    <thead>
+                    
+                        <tr>
+                        
+                            <th>Imagen</th>
+                        
+                            <th>Código</th>
+                        
+                            <th>Producto</th>
+                        
+                            <th>Categoría</th>
+                        
+                            <th>Precio</th>
+                        
+                            <th>Oferta</th>
+                        
+                            <th>Stock</th>
+                        
+                            <th>Estado</th>
+                        
+                            <th>Acciones</th>
+                        
+                        </tr>
+                    
+                    </thead>
+                
+                    <tbody
+                        id="productos-admin-body">
+                
+                        <tr>
+                        
+                            <td
+                                colspan="9"
+                                class="tabla-vacia">
+                        
+                                Cargando productos...
+                        
+                            </td>
+                        
+                        </tr>
+                    
+                    </tbody>
+                
+                </table>
+            
+            </div>
+        
+            </section>
+            
+            <!-- =====================================================
+                 GESTIÓN DE CATEGORÍAS
+            ===================================================== -->
+            <section class="admin-seccion categorias-admin">
+            <div class="seccion-header">
+                <div>
+                    <h2>Categorías</h2>
+                    <p>Administra las categorías del catálogo.</p>
+                </div>
+                <button type="button" class="btn-admin-principal" id="btn-nueva-categoria">
+                    + Nueva Categoría
+                </button>
+            </div>
+
+            <div class="tabla-responsive">
+                <table class="tabla-admin">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Orden</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categorias-admin-body">
+                        <tr>
+                            <td colspan="5" class="tabla-vacia">Cargando categorías...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </section>
+        
+            <!-- =====================================================
+                 GESTIÓN DE SUBCATEGORÍAS
+            ===================================================== -->
+            <section class="admin-seccion subcategorias-admin">
+            <div class="seccion-header">
+                <div>
+                    <h2>Subcategorías</h2>
+                    <p>Administra las subcategorías vinculadas a cada categoría.</p>
+                </div>
+                <button type="button" class="btn-admin-principal" id="btn-nueva-subcategoria">
+                    + Nueva Subcategoría
+                </button>
+            </div>
+
+            <div class="tabla-responsive">
+                <table class="tabla-admin">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Subcategoría</th>
+                            <th>Categoría</th>
+                            <th>Orden</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subcategorias-admin-body">
+                        <tr>
+                            <td colspan="6" class="tabla-vacia">Cargando subcategorías...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </section>
+            
+            <!-- =====================================================
+                 MODAL PRODUCTO
+            ===================================================== -->
+            
+            <div
+            id="modal-producto-admin"
+            class="modal-admin-overlay">
+        
+            <div class="modal-admin">
+            
+                <div class="modal-admin-header">
+                
+                    <h2 id="titulo-modal-producto">
+                        Nuevo Producto
+                    </h2>
+                
+                    <button
+                        id="btn-cerrar-producto-admin"
+                        class="modal-admin-cerrar">
+                
+                        ×
+                
+                    </button>
+                
+                </div>
+                
+                <form id="form-producto-admin">
+                
+                    <!-- 📌 AGREGAR AQUÍ: Inicio del contenedor con Scroll -->
+                    <div class="modal-admin-body">
+
+                        <!-- CÓDIGO -->
+                        <div class="campo-admin">
+                            <label for="admin-codigo">
+                                Código *
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-codigo"
+                                required>
+                        </div>
+                    
+                        <!-- NOMBRE -->
+                        <div class="campo-admin">
+                            <label for="admin-nombre">
+                                Nombre *
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-nombre"
+                                required>
+                        </div>
+                    
+                        <!-- CATEGORÍA -->
+                        <div class="campo-admin">
+                            <label for="admin-categoria">Categoría</label>
+                            <select id="admin-categoria">
+                                <option value="">Selecciona una categoría...</option>
+                            </select>
+                        </div>
+
+                        <!-- SUBCATEGORÍA -->
+                        <div class="campo-admin">
+                            <label for="admin-subcategoria">Subcategoría</label>
+                            <select id="admin-subcategoria" disabled>
+                                <option value="">Selecciona primero una categoría...</option>
+                            </select>
+                        </div>
+                    
+                        <!-- PRECIOS -->
+                        <div class="fila-admin">
+                            <div class="campo-admin">
+                                <label for="admin-precio">
+                                    Precio
+                                </label>
+                                <input
+                                    type="number"
+                                    id="admin-precio"
+                                    min="0">
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-precio-oferta">
+                                    Precio Oferta
+                                </label>
+                                <input
+                                    type="number"
+                                    id="admin-precio-oferta"
+                                    min="0">
+                            </div>
+                        </div>
+                    
+                        <!-- COLOR -->
+                        <div class="campo-admin">
+                            <label for="admin-color">
+                                Color
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-color"
+                                placeholder="Ej: Negro, Blanco">
+                        </div>
+                    
+                        <!-- TALLES -->
+                        <div class="campo-admin">
+                            <label for="admin-talles">
+                                Talles
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-talles"
+                                placeholder="Ej: S,M,L,XL">
+                        </div>
+                    
+                        <!-- STOCK -->
+                        <div class="campo-admin">
+                            <label for="admin-stock">
+                                Stock
+                            </label>
+                            <input
+                                type="number"
+                                id="admin-stock"
+                                min="0">
+                        </div>
+                    
+                        <!-- DESCRIPCIÓN -->
+                        <div class="campo-admin">
+                            <label for="admin-descripcion">
+                                Descripción
+                            </label>
+                            <textarea
+                                id="admin-descripcion"
+                                rows="3"></textarea>
+                        </div>
+                    
+                        <!-- MATERIAL -->
+                        <div class="campo-admin">
+                            <label for="admin-material">
+                                Material
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-material">
+                        </div>
+                    
+                        <!-- ESTADO -->
+                        <div class="campo-admin">
+                            <label for="admin-estado">
+                                Estado
+                            </label>
+                            <select id="admin-estado">
+                                <option value="Activo">
+                                    Activo
+                                </option>
+                                <option value="Inactivo">
+                                    Inactivo
+                                </option>
+                            </select>
+                        </div>
+                    
+                        <!-- ETIQUETA -->
+                        <div class="campo-admin">
+                            <label for="admin-etiqueta">
+                                Etiqueta
+                            </label>
+                            <input
+                                type="text"
+                                id="admin-etiqueta"
+                                placeholder="Ej: Nuevo">
+                        </div>
+                    
+                        <!-- IMÁGENES -->
+                        <div class="campo-admin">
+                            <label for="admin-imagen-principal">
+                                Imagen Principal *
+                            </label>
+                            <input
+                                type="url"
+                                id="admin-imagen-principal"
+                                placeholder="URL de la imagen o Google Drive">
+                            <div class="imagen-preview-container" id="preview-admin-imagen-principal">
+                                <span>Sin imagen</span>
+                            </div>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-imagen-2">
+                                Imagen 2
+                            </label>
+                            <input
+                                type="url"
+                                id="admin-imagen-2"
+                                placeholder="URL de imagen secundaria">
+                            <div class="imagen-preview-container" id="preview-admin-imagen-2">
+                                <span>Sin imagen</span>
+                            </div>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-imagen-3">
+                                Imagen 3
+                            </label>
+                            <input
+                                type="url"
+                                id="admin-imagen-3"
+                                placeholder="URL de imagen secundaria">
+                            <div class="imagen-preview-container" id="preview-admin-imagen-3">
+                                <span>Sin imagen</span>
+                            </div>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-imagen-4">
+                                Imagen 4
+                            </label>
+                            <input
+                                type="url"
+                                id="admin-imagen-4"
+                                placeholder="URL de imagen secundaria">
+                            <div class="imagen-preview-container" id="preview-admin-imagen-4">
+                                <span>Sin imagen</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- 📌 AGREGAR AQUÍ: Fin del contenedor modal-admin-body -->
+                
+                    <!-- BOTONES (Quedan fijos en la parte inferior) -->
+                    <div class="modal-admin-footer">
+                        <button
+                            type="button"
+                            id="btn-cancelar-producto"
+                            class="btn-admin-secundario">
+                            Cancelar
+                        </button>
+                    
+                        <button
+                            type="submit"
+                            class="btn-admin-principal">
+                            Guardar Producto
+                        </button>
+                    </div>
+                
+                </form>
+                
+            
+            </div>
+        
+            </div>
+        
+            <!-- =====================================================
+                 MODAL CATEGORÍA
+            ===================================================== -->
+            <div id="modal-categoria-admin" class="modal-admin-overlay">
+            <div class="modal-admin">
+                <div class="modal-admin-header">
+                    <h2 id="titulo-modal-categoria">Nueva Categoría</h2>
+                    <button id="btn-cerrar-categoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
+                </div>
+            
+                <form id="form-categoria-admin">
+                    <!-- 📌 Contenedor con Scroll para los campos -->
+                    <div class="modal-admin-body">
+                        <div class="campo-admin">
+                            <label for="admin-cat-id">ID *</label>
+                            <input type="text" id="admin-cat-id" placeholder="Ej: CAT01" required>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-cat-nombre">Nombre *</label>
+                            <input type="text" id="admin-cat-nombre" placeholder="Ej: Camperas" required>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-cat-orden">Orden</label>
+                            <input type="number" id="admin-cat-orden" value="1" min="1">
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-cat-estado">Estado</label>
+                            <select id="admin-cat-estado">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                
+                    <!-- 📌 Footer con botones FIJOS abajo -->
+                    <div class="modal-admin-footer">
+                        <button type="button" id="btn-cancelar-categoria" class="btn-admin-secundario">Cancelar</button>
+                        <button type="submit" class="btn-admin-principal">Guardar Categoría</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        
+            <!-- =====================================================
+                 MODAL SUBCATEGORÍA
+            ===================================================== -->
+            <div id="modal-subcategoria-admin" class="modal-admin-overlay">
+            <div class="modal-admin">
+                <div class="modal-admin-header">
+                    <h2 id="titulo-modal-subcategoria">Nueva Subcategoría</h2>
+                    <button id="btn-cerrar-subcategoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
+                </div>
+            
+                <form id="form-subcategoria-admin">
+                    <!-- 📌 Contenedor con Scroll para los campos -->
+                    <div class="modal-admin-body">
+                        <div class="campo-admin">
+                            <label for="admin-subcat-id">ID *</label>
+                            <input type="text" id="admin-subcat-id" placeholder="Ej: SUB01" required>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-subcat-nombre">Nombre Subcategoría *</label>
+                            <input type="text" id="admin-subcat-nombre" placeholder="Ej: Invierno" required>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-subcat-categoria">Categoría Padre *</label>
+                            <select id="admin-subcat-categoria" required>
+                                <option value="">Selecciona una categoría...</option>
+                            </select>
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-subcat-orden">Orden</label>
+                            <input type="number" id="admin-subcat-orden" value="1" min="1">
+                        </div>
+                    
+                        <div class="campo-admin">
+                            <label for="admin-subcat-estado">Estado</label>
+                            <select id="admin-subcat-estado">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                
+                    <!-- 📌 Footer con botones FIJOS abajo -->
+                    <div class="modal-admin-footer">
+                        <button type="button" id="btn-cancelar-subcategoria" class="btn-admin-secundario">Cancelar</button>
+                        <button type="submit" class="btn-admin-principal">Guardar Subcategoría</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        
+        </main>
+    
+        <!-- ==========================================
+         MODAL DETALLE DEL PEDIDO
+        ========================================== -->
+        
+        <div id="modal-pedido-overlay" class="admin-modal-overlay">
+    
+        <div class="admin-modal">
+        
+            <div class="admin-modal-header">
+            
+                <h2>Detalle del Pedido</h2>
+            
+                <button
+                    type="button"
+                    id="btn-cerrar-modal-pedido"
+                    class="admin-modal-cerrar">
+                    ×
+                </button>
+            
+            </div>
+        
+            <div
+                id="detalle-pedido-contenido"
+                class="admin-modal-contenido">
+        
+                <p>Cargando pedido...</p>
+        
+            </div>
+        
+        </div>
+    
+        </div>
+    
+    
+        <!-- =========================================
+             JAVASCRIPT
+        ========================================== -->
+    
+        <script src="js/api.js"></script>
+    
+        <script src="js/admin.js"></script>
+    
+    </body>
+
+</html>
