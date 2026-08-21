@@ -9,14 +9,14 @@ let subcategoriaActual = "todos";
 let textoBusqueda = "";
 let carrito = JSON.parse(localStorage.getItem('pf_moda_carrito')) || [];
 let productoModalActual = null;
-
 let imagenesModal = [];
 let indiceImagenModal = 0;
 let visorImagenActivo = false;
 let todasLasSubcategorias = [];
 let ordenActual = "recientes";
-
 let precioMaximoFiltro = Infinity;
+
+const WHATSAPP_NUMERO = "595983208288"; // Reemplaza con tu número real si difiere
 
 // Objeto de estado encapsulado para variantes en lugar de variables sueltas
 const varianteSeleccionada = {
@@ -49,6 +49,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     await inicializarTienda();
     configurarEventos();
     actualizarCarritoUI();
+    configurarWhatsAppFlotante();
+    configurarFooterUI();
+    configurarEnlacesFooter();
     
 });
 
@@ -74,6 +77,40 @@ function generarTextoProducto(producto) {
     return texto;
 }
 
+function consultarProductoWhatsApp(producto) {
+    if (!producto) return;
+
+    const nombre = String(producto.nombre || "Producto").trim();
+    const codigo = String(producto.codigo || producto.id || "").trim();
+    const precio = Number(
+        producto.precioOferta || producto.precioNormal || producto.precio || 0
+    );
+
+    const precioFormateado =
+        precio > 0 ? `₲ ${precio.toLocaleString("es-PY")}` : "";
+
+    let mensaje = `Hola PF Moda 👋\n\nQuiero consultar por este producto:\n\n*${nombre}*\n`;
+    if (codigo) mensaje += `Código: ${codigo}\n`;
+    if (precioFormateado) mensaje += `Precio: ${precioFormateado}\n`;
+    mensaje += `\n¿Podrían brindarme más información?`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, "_blank");
+}
+
+function configurarWhatsAppFlotante() {
+    const boton = document.getElementById("whatsapp-flotante");
+    if (!boton) return;
+
+    const mensaje = encodeURIComponent(
+        "Hola PF Moda 👋 Quisiera realizar una consulta sobre sus productos."
+    );
+
+    boton.href = `https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`;
+    boton.target = "_blank";
+    boton.rel = "noopener noreferrer";
+}
+
 function compartirProductoWhatsApp(producto) {
     const url = obtenerURLProducto(producto);
     const nombre = producto.nombre || "Producto PF Moda";
@@ -96,10 +133,6 @@ function compartirProductoFacebook(producto) {
     const enlace = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
     window.open(enlace, "_blank", "width=600,height=500");
 }
-
-/* =========================================
-   COMPARTIR INSTAGRAM Y TIKTOK
-========================================= */
 
 async function compartirProductoInstagram(producto) {
     const url = obtenerURLProducto(producto);
@@ -205,36 +238,71 @@ async function inicializarTienda() {
 
 async function cargarCategorias() {
     const contenedor = document.getElementById("categorias-botones");
-    if (!contenedor) return;
+    const contenedorFooter = document.getElementById("footer-categorias-list");
 
     try {
         const respuesta = await api.getCategorias();
-        if (!respuesta || respuesta.error || !Array.isArray(respuesta.items)) return;
-
+        if (!respuesta || respuesta.error || !Array.isArray(respuesta.items)) {
+            return;
+        }
         const categorias = respuesta.items;
+        // =====================================================
+        // A. BARRA DE FILTROS DEL CATÁLOGO
+        // =====================================================
+        if (contenedor) {
+            contenedor.innerHTML =
+                '<button class="btn-categoria activo" data-categoria="todos">Todos</button>';
+            categorias.forEach(cat => {
+                const boton = document.createElement("button");
+                boton.className = "btn-categoria";
+                const valorCategoria =
+                    cat.nombre ||
+                    cat.categoria ||
+                    cat.id;
+                boton.dataset.categoria = valorCategoria;
+                boton.dataset.id = cat.id || valorCategoria;
+                boton.textContent =
+                    cat.nombre ||
+                    cat.categoria;
+                contenedor.appendChild(boton);
+            });
+        }
+        // =====================================================
+        // B. FOOTER - 5 PRIMERAS CATEGORÍAS
+        // =====================================================
 
-        // Mantener el botón "Todos"
-        contenedor.innerHTML = '<button class="btn-categoria activo" data-categoria="todos">Todos</button>';
+        if (contenedorFooter) {
+            contenedorFooter.innerHTML = "";
+            const top5Categorias = categorias.slice(0, 5);
+            top5Categorias.forEach(cat => {
+                const valorCategoria =
+                    cat.nombre ||
+                    cat.categoria ||
+                    cat.id;
+                const nombreMostrar =
+                    cat.nombre ||
+                    cat.categoria;
+                const li = document.createElement("li");
 
-        categorias.forEach(cat => {
-            const boton = document.createElement("button");
-            boton.className = "btn-categoria";
-            
-            const valorCategoria = cat.nombre || cat.categoria || cat.id;
-            boton.dataset.categoria = valorCategoria;
-            boton.dataset.id = cat.id || valorCategoria;
-            boton.textContent = cat.nombre || cat.categoria;
+                li.innerHTML = `
+                    <a href="#"
+                       class="link-categoria"
+                       data-categoria="${escapeHTML(valorCategoria)}">
+                        ${escapeHTML(nombreMostrar)}
+                    </a>
+                `;
+                contenedorFooter.appendChild(li);
+            });
+        }
 
-            contenedor.appendChild(boton);
-        });
     } catch (error) {
-        console.error("Error al cargar categorías:", error);
+
+        console.error(
+            "Error al cargar categorías:",
+            error
+        );
     }
 }
-
-/* =========================================
-   CARGA Y GESTIÓN DE SUBCATEGORÍAS (ETAPA 5.2)
-========================================= */
 
 function cargarSubcategorias(categoriaIdentificador) {
     const contenedor = document.getElementById("subcategorias-botones");
@@ -310,6 +378,18 @@ function configurarEventos() {
             filtrarYRenderizar();
 
         });
+
+    const btnBuscarMovil = document.getElementById("btn-buscar-movil");
+    const headerBuscador = document.getElementById("header-buscador");
+
+    if (btnBuscarMovil && headerBuscador) {
+        btnBuscarMovil.addEventListener("click", () => {
+            headerBuscador.classList.toggle("activo");
+            if (headerBuscador.classList.contains("activo")) {
+                document.getElementById("input-buscar").focus();
+            }
+        });
+    }
 
     document
         .getElementById("categorias-botones")
@@ -518,6 +598,163 @@ function configurarEventos() {
         });
     }
 
+    const btnConsultarWhatsApp = document.getElementById("btn-consultar-whatsapp");
+    if (btnConsultarWhatsApp) {
+        btnConsultarWhatsApp.addEventListener("click", () => {
+            if (!productoModalActual) return;
+            consultarProductoWhatsApp(productoModalActual);
+        });
+    }
+
+}
+
+/* =========================================
+   CONFIGURACIÓN DE ELEMENTOS ESTÁTICOS
+========================================= */
+
+function configurarFooterUI() {
+    // Acordeón responsivo para el footer
+    const columnasFooter = document.querySelectorAll('.footer-col');
+    columnasFooter.forEach(col => {
+        const titulo = col.querySelector('.col-title');
+        if (titulo) {
+            titulo.addEventListener('click', () => {
+                if (window.innerWidth <= 600) {
+                    const estaActivo = col.classList.contains('activo');
+                    columnasFooter.forEach(c => c.classList.remove('activo'));
+                    if (!estaActivo) col.classList.add('activo');
+                }
+            });
+        }
+    });
+
+    // Formulario de suscripción
+    const suscripcionForm = document.getElementById('form-suscribir');
+    if (suscripcionForm) {
+        suscripcionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('¡Gracias por suscribirte a PF Moda!');
+            suscripcionForm.reset();
+        });
+    }
+}
+
+/* =========================================
+   VINCULACIÓN DE ENLACES DEL FOOTER
+========================================= */
+
+function configurarEnlacesFooter() {
+    // 1. Enlaces de Categorías
+    // Filtrar, sincronizar botón superior y hacer scroll al catálogo    
+    const linksCategorias = document.querySelectorAll(".link-categoria");
+    linksCategorias.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const categoria = link.dataset.categoria;
+            // =========================================
+            // ACTUALIZAR ESTADO GLOBAL
+            // =========================================
+            categoriaActual = categoria;
+            subcategoriaActual = "todos";
+            // =========================================
+            // SINCRONIZAR BOTÓN ACTIVO DEL CATÁLOGO
+            // =========================================
+            const botonesCat = document.querySelectorAll(
+                "#categorias-botones .btn-categoria"
+            );
+            botonesCat.forEach(btn => {
+                btn.classList.toggle(
+                    "activo",
+                    btn.dataset.categoria === categoria
+                );
+            });
+            // =========================================
+            // CARGAR SUBCATEGORÍAS Y FILTRAR
+            // =========================================
+            cargarSubcategorias(categoriaActual);
+            filtrarYRenderizar();
+            // =========================================
+            // SCROLL SUAVE AL CATÁLOGO
+            // =========================================
+            const catalogo =
+                document.getElementById("catalogo") ||
+                document.querySelector("main");
+            if (catalogo) {
+                catalogo.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
+
+    // 2. Enlaces de Información (Scroll directo + Desplegar FAQ)
+    const linksInfo = document.querySelectorAll(".link-info");
+    linksInfo.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute("href").replace("#", "");
+            const elementoDestino = document.getElementById(targetId);
+
+            if (elementoDestino) {
+                elementoDestino.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Si es un acordeón/FAQ, abrilo automáticamente
+                if (elementoDestino.tagName === "DETAILS") {
+                    elementoDestino.open = true;
+                }
+            }
+        });
+    });
+
+    // 3. Abrir Modal para la Guía de Talles
+    const modalOverlay = document.getElementById("modal-informacion");
+    const modalTitulo = document.getElementById("modal-info-titulo");
+    const modalBody = document.getElementById("modal-info-body");
+    const btnCerrar = document.getElementById("btn-cerrar-info-modal");
+
+    const linksModal = document.querySelectorAll(".link-info-modal");
+    linksModal.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (link.dataset.modal === "talles") {
+                modalTitulo.textContent = "Guía de Talles y Medidas";
+                modalBody.innerHTML = `
+                    <p>Trabajamos con colecciones importadas (Brasil, Perú y China), por lo que <strong>unificamos las etiquetas a las medidas estándar de Paraguay</strong> para facilitarte la compra.</p>
+
+                    <p style="margin-top: 1rem; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 4px; color: #111;">Talles Estándar</p>
+                    <ul style="padding-left: 1.2rem; line-height: 1.8; margin-top: 0.5rem;">
+                        <li><strong>Talle S (P):</strong> Busto 85-90 cm | Cintura 65-70 cm</li>
+                        <li><strong>Talle M (M):</strong> Busto 90-95 cm | Cintura 70-75 cm</li>
+                        <li><strong>Talle L (G):</strong> Busto 95-100 cm | Cintura 75-80 cm</li>
+                        <li><strong>Talle XL:</strong> Busto 100-105 cm | Cintura 80-85 cm</li>
+                        <li><strong>Talle XXL:</strong> Busto 105-110 cm | Cintura 85-90 cm</li>
+                    </ul>
+
+                    <p style="margin-top: 1.2rem; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 4px; color: #111;">Línea Talles Plus</p>
+                    <ul style="padding-left: 1.2rem; line-height: 1.8; margin-top: 0.5rem;">
+                        <li><strong>Talle G1 / G2:</strong> Busto 110-118 cm | Cadera 115-122 cm</li>
+                        <li><strong>Talle G3 / G4:</strong> Busto 118-126 cm | Cadera 122-130 cm</li>
+                        <li><strong>Talle G5 / G6:</strong> Busto 126-135 cm | Cadera 130-140 cm</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem; background: #f9f9f9; padding: 10px; border-left: 3px solid #111; font-size: 0.9rem;">
+                        💡 <strong>¿Dudas con la horma de una prenda?</strong> Al ser prendas importadas, el calce puede variar según la tela. Escribinos por WhatsApp y te enviamos la medida exacta de la prenda en centímetros.
+                    </p>
+                `;
+                modalOverlay.classList.add("active");
+            }
+        });
+    });
+
+    if (btnCerrar) {
+        btnCerrar.addEventListener("click", () => modalOverlay.classList.remove("active"));
+    }
+
+    if (modalOverlay) {
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target === modalOverlay) modalOverlay.classList.remove("active");
+        });
+    }
 }
 
 /* =========================================
@@ -785,9 +1022,7 @@ function filtrarYRenderizar() {
                     decoding="async"
                     draggable="false"
                     onerror="this.onerror=null; this.src='https://via.placeholder.com/600?text=PF+Moda';">
-            </div>
-
-            
+            </div>            
 
             <div class="producto-info">
                 <span class="producto-categoria">${escapeHTML(prod.categoria || "")}</span>
@@ -2191,7 +2426,6 @@ function renderizarProductosRelacionados(productoActual) {
         </div>
     `;
 }
-
 
 /* =========================================
    SEO DINÁMICO DE PRODUCTOS (ETAPA 6.4)
