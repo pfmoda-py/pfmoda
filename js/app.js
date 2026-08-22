@@ -222,6 +222,7 @@ async function inicializarTienda() {
         }
 
         await cargarCategorias();
+        await cargarBannerPortada();
         filtrarYRenderizar();
         abrirProductoDesdeURL();
         iniciarActualizacionInventario();
@@ -354,6 +355,32 @@ function cargarSubcategorias(categoriaIdentificador) {
         });
     });
 }
+// ==========================================
+// CARGAR BANNER ACTIVO DE LA PORTADA
+// ==========================================
+async function cargarBannerPortada() {
+    try {
+        const respuesta = await api.getBanners();
+        const banners = (respuesta.items || [])
+            .filter(b => b.estado === "Activo")
+            .sort((a, b) => Number(a.orden) - Number(b.orden));
+
+        if (banners.length === 0) return; // se queda con el texto/imagen fija del HTML
+
+        const banner = banners[0];
+
+        const imgHero = document.getElementById("hero-imagen-portada");
+        const tituloHero = document.getElementById("hero-titulo-texto");
+        const btnHero = document.getElementById("hero-btn-coleccion");
+
+        if (imgHero && banner.imagenURL) imgHero.src = banner.imagenURL;
+        if (tituloHero && banner.titulo) tituloHero.textContent = banner.titulo;
+        if (btnHero && banner.enlace) btnHero.dataset.enlace = banner.enlace;
+
+    } catch (error) {
+        console.warn("No se pudo cargar el banner de portada:", error);
+    }
+}
 
 function actualizarActivoSubcategoria() {
     const botones = document.querySelectorAll("#subcategorias-botones .btn-categoria");
@@ -365,7 +392,7 @@ function actualizarActivoSubcategoria() {
     });
 }
 
-function configurarEventos() {
+function configurarEventos() {    
 
     document
         .getElementById("input-buscar")
@@ -436,45 +463,60 @@ function configurarEventos() {
     document
         .getElementById("btn-procesar-pedido")
         .addEventListener("click", enviarPedidoWhatsApp);
+    
         // ==========================================
-        // MOSTRAR / OCULTAR DATOS DE FACTURA
-        // ==========================================
-        const selectFactura =
-            document.getElementById("cliente-factura");
-        const datosFactura =
-            document.getElementById("datos-factura");
-        if (selectFactura && datosFactura) {
-            
-                selectFactura.addEventListener("change", function () {
+    // Sincronizar botón "Ver Colección" del hero con el catálogo
+    // ==========================================
+    const btnHeroColeccion = document.getElementById("hero-btn-coleccion");
+    if (btnHeroColeccion) {
+        btnHeroColeccion.addEventListener("click", e => {
+            e.preventDefault();
+
+            const enlace = btnHeroColeccion.dataset.enlace || "";
+            const nombreCategoria = enlace.startsWith("categoria=")
+                ? enlace.split("=")[1]
+                : null;
+
+            const btnCategoria = nombreCategoria
+                ? [...document.querySelectorAll("#categorias-botones .btn-categoria")]
+                    .find(b => b.textContent.trim().toLowerCase() === nombreCategoria.toLowerCase())
+                : document.querySelector('#categorias-botones .btn-categoria[data-categoria="todos"]');
+
+            if (btnCategoria) btnCategoria.click();
+            document.getElementById("productos-contenedor").scrollIntoView({ behavior: "smooth" });
+        });
+    }
+
+    // ==========================================
+    // MOSTRAR / OCULTAR DATOS DE FACTURA
+    // ==========================================
+    const selectFactura =
+        document.getElementById("cliente-factura");        
+    const datosFactura =
+        document.getElementById("datos-factura");
+    if (selectFactura && datosFactura) {
+        
+        selectFactura.addEventListener("change", function () {        
+            if (this.value === "Sí") {            
+                datosFactura.style.display = "block";            
+            } else {            
+                datosFactura.style.display = "none";            
                 
-                    if (this.value === "Sí") {
-                    
-                        datosFactura.style.display = "block";
-                    
-                    } else {
-                    
-                        datosFactura.style.display = "none";
-                    
-                        // Limpiar los datos si vuelve a seleccionar NO
-                        const nombreFactura =
-                            document.getElementById("cliente-factura-nombre");
-                    
-                        const rucFactura =
-                            document.getElementById("cliente-factura-ruc");
-                    
-                        if (nombreFactura) {
-                            nombreFactura.value = "";
-                        }
-                    
-                        if (rucFactura) {
-                            rucFactura.value = "";
-                        }
-                    
-                    }
-                
-                });
+                const nombreFactura =
+                    document.getElementById("cliente-factura-nombre");            
+                const rucFactura =
+                    document.getElementById("cliente-factura-ruc");
             
-        }
+                if (nombreFactura) {
+                    nombreFactura.value = "";
+                }            
+                if (rucFactura) {
+                    rucFactura.value = "";
+                }            
+            }        
+        });        
+    }
+
     document
         .getElementById("btn-cerrar-modal")
         .addEventListener("click", cerrarModal);

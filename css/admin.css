@@ -1387,3 +1387,15 @@ body {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* Fix scroll interno — Modal de Banner */
+#modal-banner-admin .modal-admin {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-banner-admin .modal-admin-body {
+    overflow-y: auto;
+    flex: 1;
+}

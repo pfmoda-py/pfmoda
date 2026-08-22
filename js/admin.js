@@ -11,12 +11,17 @@ let listaSubcategoriasAdmin = [];
 let modoEdicionCategoria = false;
 let modoEdicionSubcategoria = false;
 
+let listaBannersAdmin = [];
+let modoEdicionBanner = false;
+
 document.addEventListener("DOMContentLoaded", () => {
     inicializarPanel();
     configurarProductosAdmin();
     cargarCategoriasAdmin();
     cargarSubcategoriasAdmin();
     configurarEventosCategorias();
+    cargarBannersAdmin();
+    configurarEventosBanners();
 });
 
 /* =========================================================
@@ -1379,5 +1384,107 @@ function actualizarSelectCategoriasEnSubcategoria() {
         }).join('');
 }
 
+/* =========================================================
+   BANNERS - ADMINISTRACIÓN
+========================================================= */
 
+async function cargarBannersAdmin() {
+    const contenedor = document.getElementById("banners-admin-body");
 
+    try {
+        const respuesta = await api.getBanners();
+        listaBannersAdmin = respuesta.items || [];
+
+        if (listaBannersAdmin.length === 0) {
+            contenedor.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay banners cargados.</td></tr>`;
+            return;
+        }
+
+        contenedor.innerHTML = listaBannersAdmin.map(ban => {
+            const idBan = ban.id || ban.ID || ban.iD || "";
+            return `
+                <tr>
+                    <td>${idBan}</td>
+                    <td>${ban.titulo || "-"}</td>
+                    <td>${ban.enlace || "-"}</td>
+                    <td>${ban.orden || "-"}</td>
+                    <td>${ban.estado || "-"}</td>
+                    <td>
+                        <button type="button" class="btn-editar-banner" onclick="editarBannerAdmin('${idBan}')">Editar</button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Error cargando banners:", error);
+        contenedor.innerHTML = `<tr><td colspan="6" class="tabla-vacia">Error al cargar banners.</td></tr>`;
+    }
+}
+
+function configurarEventosBanners() {
+    document.getElementById("btn-nuevo-banner")?.addEventListener("click", () => abrirModalBanner());
+    document.getElementById("btn-cerrar-banner-admin")?.addEventListener("click", cerrarModalBanner);
+    document.getElementById("btn-cancelar-banner")?.addEventListener("click", cerrarModalBanner);
+    document.getElementById("form-banner-admin")?.addEventListener("submit", guardarBannerAdmin);
+}
+
+function abrirModalBanner(banner = null) {
+    const modal = document.getElementById("modal-banner-admin");
+    const titulo = document.getElementById("titulo-modal-banner");
+
+    if (banner) {
+        const idBan = banner.id || banner.ID || banner.iD || "";
+        modoEdicionBanner = true;
+        titulo.textContent = "Editar Banner";
+
+        document.getElementById("admin-ban-id").value = idBan;
+        document.getElementById("admin-ban-id").disabled = true;
+        document.getElementById("admin-ban-titulo").value = banner.titulo || "";
+        document.getElementById("admin-ban-imagen").value = banner.imagenURL || "";
+        document.getElementById("admin-ban-enlace").value = banner.enlace || "";
+        document.getElementById("admin-ban-orden").value = banner.orden || 1;
+        document.getElementById("admin-ban-estado").value = banner.estado || "Activo";
+    } else {
+        modoEdicionBanner = false;
+        titulo.textContent = "Nuevo Banner";
+        document.getElementById("form-banner-admin").reset();
+        document.getElementById("admin-ban-id").disabled = false;
+    }
+
+    modal.classList.add("activo");
+}
+
+function cerrarModalBanner() {
+    document.getElementById("modal-banner-admin").classList.remove("activo");
+}
+
+function editarBannerAdmin(id) {
+    const banner = listaBannersAdmin.find(b => String(b.id || b.ID || b.iD) === String(id));
+    if (banner) abrirModalBanner(banner);
+}
+
+async function guardarBannerAdmin(e) {
+    e.preventDefault();
+
+    const datosBanner = {
+        id: document.getElementById("admin-ban-id").value.trim(),
+        titulo: document.getElementById("admin-ban-titulo").value.trim(),
+        imagenURL: document.getElementById("admin-ban-imagen").value.trim(),
+        enlace: document.getElementById("admin-ban-enlace").value.trim(),
+        orden: document.getElementById("admin-ban-orden").value,
+        estado: document.getElementById("admin-ban-estado").value
+    };
+
+    const resultado = modoEdicionBanner
+        ? await api.actualizarBanner(datosBanner)
+        : await api.crearBanner(datosBanner);
+
+    if (resultado.error) {
+        alert(resultado.error);
+        return;
+    }
+
+    cerrarModalBanner();
+    await cargarBannersAdmin();
+}

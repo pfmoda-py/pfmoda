@@ -150,6 +150,88 @@ nav ul li a:hover {
     padding: 4px;
 }
 
+/* ============================
+   HERO / PORTADA PRINCIPAL
+============================ */
+
+.hero-portada {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 40px;
+    height: 360px;
+    background-color: var(--color-gris-claro);
+    padding: 0px 60px;
+    overflow: hidden;
+}
+
+.hero-texto {
+    flex: 1;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* nuevo: centra el texto dentro de los 420px */
+}
+
+.hero-eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-dorado);
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.hero-titulo {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--color-negro);
+    margin-bottom: 20px;
+}
+
+.hero-descripcion {
+    color: var(--color-gris-oscuro);
+    font-size: 1rem;
+    margin-bottom: 30px;
+    max-width: 400px;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 10px;
+    background-color: var(--color-negro);
+    color: var(--color-blanco);
+    text-decoration: none;
+    padding: 14px 26px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.hero-btn:hover { background-color: var(--color-dorado); }
+
+.hero-imagen {
+    flex: 1;
+    max-width: 560px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hero-imagen img {
+    width: 100%;
+    height: 100%;             /* antes: max-height: 560px */
+    object-fit: cover;
+    border-radius: 4px;
+}
+
 /* Contenedor Principal */
 main {
     max-width: 1200px;
@@ -2388,6 +2470,83 @@ footer.site-footer a:hover {
 
     .link-ubicacion {
         line-height: 1.5;
+    }
+
+    /* ============================
+       HERO / PORTADA PRINCIPAL version movil 
+    ============================ */
+
+    .hero-portada {
+        position: relative;
+        flex-direction: column;
+        height: 220px;              /* delgado y fijo, no lo genera el contenido */
+        padding: 0;
+        text-align: left;
+        overflow: hidden;
+    }
+
+    .hero-imagen {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        max-width: 100%;
+        z-index: 1;
+    }
+
+    .hero-imagen img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-imagen::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(0, 0, 0, 0.62) 0%,
+                rgba(0, 0, 0, 0.38) 45%,
+                rgba(0, 0, 0, 0.12) 100%
+            );        
+        z-index: 2;
+    }
+
+    .hero-texto {
+        position: relative;
+        z-index: 2;
+        max-width: 100%;
+        height: 100%;
+        justify-content: center;   /* texto pegado abajo, sobre la imagen */
+        align-items: flex-start;
+        padding: 15px 20px;
+        box-sizing: border-box;
+        gap: 5px;
+    }
+
+    .hero-eyebrow { 
+        color: var(--color-dorado);
+        margin: 0;
+    }
+
+    .hero-titulo {
+        color: var(--color-blanco);
+        font-size: 1.6rem;
+        line-height: 1.1;
+        margin: 0;
+    }
+
+    .hero-descripcion {
+        color: #E5E5E5;
+        margin-left: 0;
+        line-height: 1.3;
+        max-width: 90%;
+    }
+
+    .hero-btn { 
+        align-self: flex-start;
+        margin-top: 5px;
     }
 
 }

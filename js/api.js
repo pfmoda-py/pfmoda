@@ -9,37 +9,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxJdd8w31jtDiwp3dV3WVFw
 ========================================================= */
 async function apiRequest(action) {
     try {
-
         const url =
             `${API_URL}?action=${action}`;
-
         const response =
             await fetch(url);
-
         if (!response.ok) {
-
             throw new Error(
                 `Error HTTP: ${response.status}`
             );
-
         }
-
         const data =
             await response.json();
-
         return data;
-
     } catch (error) {
-
         console.error(
             "Error al conectar con la API:",
             error
         );
-
         return {
             error: error.message
         };
-
     }
 }
 
@@ -48,44 +37,25 @@ async function apiRequest(action) {
 ========================================================= */
 const api = {
     /* ---------- PRODUCTOS ---------- */
-
     getProductos: () =>
         apiRequest("productos"),
-
-
     /* ---------- CATEGORÍAS ---------- */
-
     getCategorias: () =>
         apiRequest("categorias"),
-
-
     /* ---------- SUBCATEGORÍAS ---------- */
-
     getSubcategorias: () =>
         apiRequest("subcategorias"),
-
-
     /* ---------- BANNERS ---------- */
-
     getBanners: () =>
         apiRequest("banners"),
-
-
     /* ---------- PROMOCIONES ---------- */
-
     getPromociones: () =>
         apiRequest("promociones"),
-
-
     /* ---------- CONFIGURACIÓN ---------- */
-
     getConfiguracion: () =>
         apiRequest("configuracion"),
-
     getPedidos: () => apiRequest("pedidos"),
-
     /* ---------- PEDIDOS ---------- */
-
     getDetallePedido: (numeroPedido) =>
     apiRequest(
         `detallePedido&numeroPedido=${encodeURIComponent(numeroPedido)}`
@@ -94,10 +64,6 @@ const api = {
     /* =====================================================
        MÓDULO PRODUCTOS ADMIN (AGREGADO)
     ===================================================== */
-
-    /**
-     * Productos para administración
-     */
     getProductosAdmin: () =>
         apiRequest("productos"),
 
@@ -227,6 +193,43 @@ const api = {
         } catch (error) {
             console.error("Error actualizando categoría:", error);
             return { error: "No se pudo actualizar la categoría." };
+        }
+    },
+
+        /* =====================================================
+       MÓDULO BANNERS ADMIN (NUEVO)
+    ===================================================== */
+    crearBanner: async function(datos) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "crearBanner",
+                    banner: datos
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error creando banner:", error);
+            return { error: "No se pudo crear el banner." };
+        }
+    },
+
+    actualizarBanner: async function(datos) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "actualizarBanner",
+                    banner: datos
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error actualizando banner:", error);
+            return { error: "No se pudo actualizar el banner." };
         }
     },
 
