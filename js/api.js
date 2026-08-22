@@ -36,25 +36,36 @@ async function apiRequest(action) {
    API
 ========================================================= */
 const api = {
+
+    /* ---------- INICIO TIENDA ---------- */
+    getInicio: () =>
+        apiRequest("inicio"),
+
     /* ---------- PRODUCTOS ---------- */
     getProductos: () =>
         apiRequest("productos"),
+
     /* ---------- CATEGORÍAS ---------- */
     getCategorias: () =>
         apiRequest("categorias"),
+
     /* ---------- SUBCATEGORÍAS ---------- */
     getSubcategorias: () =>
         apiRequest("subcategorias"),
+
     /* ---------- BANNERS ---------- */
     getBanners: () =>
         apiRequest("banners"),
+
     /* ---------- PROMOCIONES ---------- */
     getPromociones: () =>
         apiRequest("promociones"),
+
     /* ---------- CONFIGURACIÓN ---------- */
     getConfiguracion: () =>
         apiRequest("configuracion"),
     getPedidos: () => apiRequest("pedidos"),
+    
     /* ---------- PEDIDOS ---------- */
     getDetallePedido: (numeroPedido) =>
     apiRequest(

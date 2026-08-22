@@ -198,38 +198,45 @@ async function inicializarTienda() {
     const contenedor = document.getElementById("productos-contenedor");
 
     try {
-        const respuesta = await api.getProductos();
-
-        if (respuesta.error) {
+        const datos = await api.getInicio();
+        if (
+            datos.error ||
+            datos.productos?.error
+        ) {
             contenedor.innerHTML = `
                 <p style="text-align:center;color:red;grid-column:1/-1;">
-                    ${respuesta.error}
+                    ${datos.error || datos.productos.error}
                 </p>`;
             return;
         }
 
-        todosLosProductos = respuesta.items || [];
-        console.log("Productos:", todosLosProductos);
+        todosLosProductos =
+            datos.productos?.items || [];
+        console.log(
+            "Productos:",
+            todosLosProductos
+        );
 
-        // ⚡ Cargar Subcategorías a la memoria una sola vez
-        try {
-            const respSub = await api.getSubcategorias();
-            if (respSub && Array.isArray(respSub.items)) {
-                todasLasSubcategorias = respSub.items;
-            }
-        } catch (e) {
-            console.warn("No se pudieron precargar subcategorías:", e);
-        }
+        todasLasSubcategorias =
+            datos.subcategorias?.items || [];
 
-        await cargarCategorias();
-        await cargarBannerPortada();
+        renderizarCategorias(
+            datos.categorias?.items || []
+        );
+
+        renderizarBannerPortada(
+            datos.banners?.items || []
+        );
+
         filtrarYRenderizar();
         abrirProductoDesdeURL();
         iniciarActualizacionInventario();
 
     } catch (error) {
-        console.error(error);
-
+        console.error(
+            "Error al inicializar la tienda:",
+            error
+        );
         contenedor.innerHTML = `
             <p style="text-align:center;color:red;grid-column:1/-1;">
                 Error al cargar productos.
@@ -237,67 +244,79 @@ async function inicializarTienda() {
     }
 }
 
-async function cargarCategorias() {
+function renderizarCategorias(categorias) {
     const contenedor = document.getElementById("categorias-botones");
     const contenedorFooter = document.getElementById("footer-categorias-list");
 
+    if (!Array.isArray(categorias)) {
+        return;
+    }
+    // =====================================================
+    // A. BARRA DE FILTROS DEL CATÁLOGO
+    // =====================================================
+    if (contenedor) {
+        contenedor.innerHTML =
+            '<button class="btn-categoria activo" data-categoria="todos">Todos</button>';
+        categorias.forEach(cat => {
+            const boton = document.createElement("button");
+            boton.className = "btn-categoria";
+            const valorCategoria =
+                cat.nombre ||
+                cat.categoria ||
+                cat.id;
+            boton.dataset.categoria = valorCategoria;
+            boton.dataset.id = cat.id || valorCategoria;
+            boton.textContent =
+                cat.nombre ||
+                cat.categoria;
+            contenedor.appendChild(boton);
+        });
+    }
+    // =====================================================
+    // B. FOOTER - 5 PRIMERAS CATEGORÍAS
+    // =====================================================
+    if (contenedorFooter) {
+        contenedorFooter.innerHTML = "";
+        const top5Categorias = categorias.slice(0, 5);
+        top5Categorias.forEach(cat => {
+            const valorCategoria =
+                cat.nombre ||
+                cat.categoria ||
+                cat.id;
+            const nombreMostrar =
+                cat.nombre ||
+                cat.categoria;
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <a href="#"
+                   class="link-categoria"
+                   data-categoria="${escapeHTML(valorCategoria)}">
+                    ${escapeHTML(nombreMostrar)}
+                </a>
+            `;
+            contenedorFooter.appendChild(li);
+        });
+    }
+
+    
+}
+
+async function cargarCategorias() {
+
     try {
-        const respuesta = await api.getCategorias();
-        if (!respuesta || respuesta.error || !Array.isArray(respuesta.items)) {
+        const respuesta =
+            await api.getCategorias();
+
+        if (
+            !respuesta ||
+            respuesta.error ||
+            !Array.isArray(respuesta.items)
+        ) {
             return;
         }
-        const categorias = respuesta.items;
-        // =====================================================
-        // A. BARRA DE FILTROS DEL CATÁLOGO
-        // =====================================================
-        if (contenedor) {
-            contenedor.innerHTML =
-                '<button class="btn-categoria activo" data-categoria="todos">Todos</button>';
-            categorias.forEach(cat => {
-                const boton = document.createElement("button");
-                boton.className = "btn-categoria";
-                const valorCategoria =
-                    cat.nombre ||
-                    cat.categoria ||
-                    cat.id;
-                boton.dataset.categoria = valorCategoria;
-                boton.dataset.id = cat.id || valorCategoria;
-                boton.textContent =
-                    cat.nombre ||
-                    cat.categoria;
-                contenedor.appendChild(boton);
-            });
-        }
-        // =====================================================
-        // B. FOOTER - 5 PRIMERAS CATEGORÍAS
-        // =====================================================
-
-        if (contenedorFooter) {
-            contenedorFooter.innerHTML = "";
-            const top5Categorias = categorias.slice(0, 5);
-            top5Categorias.forEach(cat => {
-                const valorCategoria =
-                    cat.nombre ||
-                    cat.categoria ||
-                    cat.id;
-                const nombreMostrar =
-                    cat.nombre ||
-                    cat.categoria;
-                const li = document.createElement("li");
-
-                li.innerHTML = `
-                    <a href="#"
-                       class="link-categoria"
-                       data-categoria="${escapeHTML(valorCategoria)}">
-                        ${escapeHTML(nombreMostrar)}
-                    </a>
-                `;
-                contenedorFooter.appendChild(li);
-            });
-        }
+        renderizarCategorias(respuesta.items);
 
     } catch (error) {
-
         console.error(
             "Error al cargar categorías:",
             error
@@ -358,27 +377,62 @@ function cargarSubcategorias(categoriaIdentificador) {
 // ==========================================
 // CARGAR BANNER ACTIVO DE LA PORTADA
 // ==========================================
+function renderizarBannerPortada(banners) {
+    banners = (banners || [])
+        .filter(b => b.estado === "Activo")
+        .sort((a, b) =>
+            Number(a.orden) - Number(b.orden)
+        );
+
+    if (banners.length === 0) {
+        return;
+    }
+
+    const banner = banners[0];
+
+    const imgHero =
+        document.getElementById("hero-imagen-portada");
+
+    const tituloHero =
+        document.getElementById("hero-titulo-texto");
+
+    const btnHero =
+        document.getElementById("hero-btn-coleccion");
+
+    if (imgHero && banner.imagenURL) {
+        imgHero.src = banner.imagenURL;
+    }
+
+    if (tituloHero && banner.titulo) {
+        tituloHero.textContent = banner.titulo;
+    }
+
+    if (btnHero && banner.enlace) {
+        btnHero.dataset.enlace = banner.enlace;
+    }
+}
+
 async function cargarBannerPortada() {
     try {
-        const respuesta = await api.getBanners();
-        const banners = (respuesta.items || [])
-            .filter(b => b.estado === "Activo")
-            .sort((a, b) => Number(a.orden) - Number(b.orden));
+        const respuesta =
+            await api.getBanners();
 
-        if (banners.length === 0) return; // se queda con el texto/imagen fija del HTML
-
-        const banner = banners[0];
-
-        const imgHero = document.getElementById("hero-imagen-portada");
-        const tituloHero = document.getElementById("hero-titulo-texto");
-        const btnHero = document.getElementById("hero-btn-coleccion");
-
-        if (imgHero && banner.imagenURL) imgHero.src = banner.imagenURL;
-        if (tituloHero && banner.titulo) tituloHero.textContent = banner.titulo;
-        if (btnHero && banner.enlace) btnHero.dataset.enlace = banner.enlace;
+        if (
+            !respuesta ||
+            respuesta.error ||
+            !Array.isArray(respuesta.items)
+        ) {
+            return;
+        }
+        renderizarBannerPortada(
+            respuesta.items
+        );
 
     } catch (error) {
-        console.warn("No se pudo cargar el banner de portada:", error);
+        console.warn(
+            "No se pudo cargar el banner de portada:",
+            error
+        );
     }
 }
 
@@ -394,21 +448,48 @@ function actualizarActivoSubcategoria() {
 
 function configurarEventos() {    
 
-    document
-        .getElementById("input-buscar")
-        .addEventListener("input", e => {
+    // ==========================================
+    // BUSCADOR
+    // ==========================================
+    const inputBuscar = document.getElementById("input-buscar");
+    const headerBuscador = document.getElementById("header-buscador");
+    const btnLimpiarBusqueda = document.getElementById("btn-limpiar-busqueda");
+    // Botón de búsqueda móvil
+    const btnBuscarMovil = document.getElementById("btn-buscar-movil");
 
+    if (inputBuscar) {
+        inputBuscar.addEventListener("input", e => {
             textoBusqueda = e.target.value
                 .toLowerCase()
                 .trim();
-
             filtrarYRenderizar();
-
+            // Mostrar / ocultar botón X
+            if (btnLimpiarBusqueda) {
+                btnLimpiarBusqueda.classList.toggle(
+                    "visible",
+                    inputBuscar.value.trim() !== ""
+                );
+            }
         });
+    }
 
-    const btnBuscarMovil = document.getElementById("btn-buscar-movil");
-    const headerBuscador = document.getElementById("header-buscador");
+    // ==========================================
+    // LIMPIAR BÚSQUEDA
+    // ==========================================
+    if (btnLimpiarBusqueda) {
+        btnLimpiarBusqueda.addEventListener("click", () => {
+            inputBuscar.value = "";
+            textoBusqueda = "";
+            
+            filtrarYRenderizar();
+            btnLimpiarBusqueda.classList.remove("visible");
+            inputBuscar.focus();
+        });
+    }
 
+    // ==========================================
+    // BUSCADOR MOVIL
+    // ==========================================
     if (btnBuscarMovil && headerBuscador) {
         btnBuscarMovil.addEventListener("click", () => {
             headerBuscador.classList.toggle("activo");
@@ -438,7 +519,7 @@ function configurarEventos() {
 
         });
 
-        // Evento del selector de Ordenamiento
+    // Evento del selector de Ordenamiento
     const selectorOrden = document.getElementById("orden-productos");
     if (selectorOrden) {
         selectorOrden.addEventListener("change", () => {
@@ -464,7 +545,7 @@ function configurarEventos() {
         .getElementById("btn-procesar-pedido")
         .addEventListener("click", enviarPedidoWhatsApp);
     
-        // ==========================================
+    // ==========================================
     // Sincronizar botón "Ver Colección" del hero con el catálogo
     // ==========================================
     const btnHeroColeccion = document.getElementById("hero-btn-coleccion");
@@ -486,6 +567,54 @@ function configurarEventos() {
             document.getElementById("productos-contenedor").scrollIntoView({ behavior: "smooth" });
         });
     }
+
+    // ==========================================
+    // Sincronizar botón "Ver Colección" del hero con el catálogo
+    // ==========================================
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach(link => {
+        link.addEventListener("click", e => {
+            e.preventDefault();
+
+            const destino = document.querySelector(link.getAttribute("href"));
+            if (!destino) return;
+
+            navLinks.forEach(l => l.classList.remove("activo"));
+            link.classList.add("activo");
+
+            destino.scrollIntoView({ behavior: "smooth" });
+            cerrarMenuMovil();
+        });
+    });
+
+    // Logo: siempre lleva al inicio de la tienda
+    const logoHome = document.getElementById("logo-home");
+    if (logoHome) {
+        logoHome.addEventListener("click", e => {
+            e.preventDefault();
+            document.getElementById("inicio").scrollIntoView({ behavior: "smooth" });
+            cerrarMenuMovil();
+        });
+    }
+
+    // Resaltar automáticamente el link activo según la sección visible
+    const seccionesNav = ["inicio", "filtros-container", "contacto"]
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+    const observador = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const link = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+                if (link) {
+                    navLinks.forEach(l => l.classList.remove("activo"));
+                    link.classList.add("activo");
+                }
+            }
+        });
+    }, { rootMargin: "-100px 0px -70% 0px" });
+
+    seccionesNav.forEach(seccion => observador.observe(seccion));
 
     // ==========================================
     // MOSTRAR / OCULTAR DATOS DE FACTURA
@@ -577,6 +706,27 @@ function configurarEventos() {
     });
 
     // ==========================================
+    // CERRAR MENU MOVIL
+    // ==========================================
+    function cerrarMenuMovil() {
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navMenu = document.querySelector('.nav-menu') || document.querySelector('nav');
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.classList.remove('activo');
+            navMenu.classList.remove('activo');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    // ==========================================
+    // BOTÓN CERRAR MENÚ MÓVIL
+    // ==========================================
+    document.getElementById('btn-cerrar-nav')?.addEventListener(
+        'click',
+        cerrarMenuMovil
+    );
+
+    // ==========================================
     // MENÚ HAMBURGUESA MÓVIL
     // ==========================================
     const hamburgerBtn = document.getElementById('hamburger-btn') || document.querySelector('.hamburger');
@@ -594,9 +744,7 @@ function configurarEventos() {
 
         document.addEventListener('click', (e) => {
             if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-                hamburgerBtn.classList.remove('activo');
-                navMenu.classList.remove('activo');
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                cerrarMenuMovil();
             }
         });
     }
@@ -1956,9 +2104,6 @@ function visorImagenSiguiente() {
     renderizarGaleriaModal();
     actualizarVisorImagen();
 }
-
-
-
 
 function abrirModal(prod) {
 
