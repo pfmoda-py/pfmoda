@@ -22,7 +22,7 @@ html {
 
 body {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     font-family: var(--fuente-principal);
     background-color: var(--color-blanco);
     color: var(--color-negro);
@@ -42,6 +42,21 @@ header {
     z-index: 100;
     background-color: var(--color-negro);
     border-bottom: 1px solid var(--color-linea);
+    transition: padding 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    will-change: transform;
+}
+
+header.header-oculto {
+    transform: translateY(-100%);
+}
+
+header.header-compacto {
+    padding: 10px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+header.header-compacto .logo {
+    font-size: 1.25rem;   /* el logo también se achica un poco */
 }
 
 .logo {
@@ -2393,6 +2408,12 @@ footer.site-footer a:hover {
         max-width: 100%;
         padding: 18px 20px;
         gap: 12px;
+        position: fixed;      /* nuevo: reemplaza el sticky solo en mobile */
+        top: 0;
+        left: 0;
+    }
+    body {
+        padding-top: 0;   /* lo ajusta JS dinámicamente, ver abajo */
     }
 
     .logo {
@@ -2403,7 +2424,7 @@ footer.site-footer a:hover {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 12px;
+        gap: 18px;
         flex-shrink: 0;
         margin-left: auto;
     }
@@ -2440,13 +2461,13 @@ footer.site-footer a:hover {
        En tablet/iPad se utiliza el menú hamburguesa.
     */
     nav {
-        position: fixed;
-        top: 64px;
+        position: absolute;
+        top: 100%;
         right: -100%;
         width: 260px;
         max-width: 85vw;
         height: auto;
-        max-height: calc(100vh - 64px - 20px);
+        max-height: calc(100vh - 90px);
         background-color: var(--color-negro);
         color: var(--color-blanco);
         box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.25);
@@ -2483,6 +2504,10 @@ footer.site-footer a:hover {
         flex-direction: column;
         gap: 20px;
         align-items: flex-start;
+    }
+
+    header.header-compacto {
+        padding: 8px 15px;
     }
 
 
