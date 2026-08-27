@@ -30,6 +30,7 @@ let visorImagenActivo = false;
 let todasLasSubcategorias = [];
 let ordenActual = "recientes";
 let precioMaximoFiltro = Infinity;
+let carritoPasoActual = 1; // Paso actual del carrito: 1 = Resumen, 2 = Datos del cliente
 
 const WHATSAPP_NUMERO = "595983208288"; // Reemplaza con tu número real si difiere
 
@@ -628,10 +629,15 @@ function configurarEventos() {
     document
         .getElementById("carrito-overlay")
         .addEventListener("click", toggleCarrito);
-    // Enviar pedido
+    // Volver del paso 2 al paso 1
+    const btnVolverCarrito = document.getElementById("btn-volver-carrito");
+    if (btnVolverCarrito) {
+        btnVolverCarrito.addEventListener("click", () => cambiarPasoCarrito(1));
+    }
+    // Botón principal: avanza de paso o envía el pedido
     document
         .getElementById("btn-procesar-pedido")
-        .addEventListener("click", enviarPedidoWhatsApp);
+        .addEventListener("click", manejarClickBotonCarrito);
     
     // ==========================================
     // Sincronizar botón "Ver Colección" del hero con el catálogo
@@ -720,9 +726,9 @@ function configurarEventos() {
                 datosFactura.style.display = "none";            
                 
                 const nombreFactura =
-                    document.getElementById("cliente-factura-nombre");            
+                    document.getElementById("cliente-razon-social");            
                 const rucFactura =
-                    document.getElementById("cliente-factura-ruc");
+                    document.getElementById("cliente-ruc");
             
                 if (nombreFactura) {
                     nombreFactura.value = "";
@@ -732,6 +738,23 @@ function configurarEventos() {
                 }            
             }        
         });        
+    }
+
+    // ==========================================
+    // MOSTRAR / OCULTAR DIRECCIÓN SEGÚN TIPO DE ENTREGA
+    // ==========================================
+    const selectEntrega =
+        document.getElementById("cliente-entrega");
+    const campoDireccion =
+        document.getElementById("campo-direccion");
+    if (selectEntrega && campoDireccion) {
+        selectEntrega.addEventListener("change", function () {
+            campoDireccion.style.display =
+                (this.value === "Envío a domicilio") ? "block" : "none";
+        });
+        // Estado inicial (por si el navegador recuerda una selección previa)
+        campoDireccion.style.display =
+            (selectEntrega.value === "Envío a domicilio") ? "block" : "none";
     }
 
     document
@@ -1487,7 +1510,7 @@ function actualizarCarritoUI() {
                 src="${escapeHTML(item.imagen || "https://via.placeholder.com/150?text=PF+Moda")}"
                 class="carrito-item-img"
                 alt="${escapeHTML(item.nombre || "Producto")}"
-                onerror="this.onerror=null; this.classList.add('imagen-error');"
+            onerror="this.onerror=null; this.classList.add('imagen-error');">
 
             <div class="carrito-item-info">
                 <h4>
@@ -1512,26 +1535,28 @@ function actualizarCarritoUI() {
                 <span>
                     ₲ ${precio.toLocaleString("es-PY")}
                 </span>
-                <div class="carrito-item-acciones">
+                <div class="carrito-item-actions-row">
+                    <div class="carrito-item-acciones">
+                        <button
+                            type="button"
+                            class="btn-restar">
+                            -
+                        </button>
+                        <span>
+                            ${cantidad}
+                        </span>
+                        <button
+                            type="button"
+                            class="btn-sumar">
+                            +
+                        </button>
+                    </div>
                     <button
                         type="button"
-                        class="btn-restar">
-                        -
-                    </button>
-                    <span>
-                        ${cantidad}
-                    </span>
-                    <button
-                        type="button"
-                        class="btn-sumar">
-                        +
+                        class="btn-eliminar-item">
+                        Eliminar
                     </button>
                 </div>
-                <button
-                    type="button"
-                    class="btn-eliminar-item">
-                    Eliminar
-                </button>
             </div>
         `;
 
@@ -1655,10 +1680,75 @@ function toggleCarrito() {
         .getElementById("carrito-drawer")
         .classList.toggle("activo");
 
-    document
-        .getElementById("carrito-overlay")
-        .classList.toggle("activo");
+    const overlayCarrito = document
+        .getElementById("carrito-overlay");
+    overlayCarrito.classList.toggle("activo");
 
+    // Si se está cerrando el drawer, volvemos siempre al paso 1
+    const estaAbierto = overlayCarrito.classList.contains("activo");
+    if (!estaAbierto) {
+        cambiarPasoCarrito(1);
+    }
+}
+
+// ==========================================
+// CAMBIAR ENTRE PASO 1 (Resumen) Y PASO 2 (Datos)
+// ==========================================
+function cambiarPasoCarrito(paso) {
+    carritoPasoActual = paso;
+
+    const steps = document.getElementById("carrito-steps");
+    const btnVolver = document.getElementById("btn-volver-carrito");
+    const titulo = document.getElementById("carrito-titulo-header");
+    const btnAccion = document.getElementById("btn-procesar-pedido");
+    const footerSubtotal = document.getElementById("carrito-footer-subtotal");
+    const footerAyuda = document.getElementById("carrito-footer-ayuda");
+    const progresoStep1 = document.getElementById("carrito-step-1");
+    const progresoStep2 = document.getElementById("carrito-step-2");
+    const progresoLinea = document.getElementById("carrito-line-1");
+
+    if (!steps || !btnVolver || !titulo || !btnAccion) {
+        return;
+    }
+
+    if (paso === 2) {
+        steps.classList.add("mostrar-paso-2");
+        btnVolver.classList.remove("hidden");
+        titulo.textContent = "Tus Datos";
+        btnAccion.textContent = "Realizar Pedido por WhatsApp";
+        if (footerSubtotal) footerSubtotal.style.display = "none";
+        if (footerAyuda) footerAyuda.innerHTML = "📋 Completa tus datos para finalizar el pedido.";
+        if (progresoStep1) progresoStep1.classList.remove("active");
+        if (progresoStep2) progresoStep2.classList.add("active");
+        if (progresoLinea) progresoLinea.classList.remove("active");
+    } else {
+        steps.classList.remove("mostrar-paso-2");
+        btnVolver.classList.add("hidden");
+        titulo.textContent = "Tu Carrito";
+        btnAccion.textContent = "Continuar Pedido";
+        if (footerSubtotal) footerSubtotal.style.display = "flex";
+        if (footerAyuda) footerAyuda.innerHTML = "💬 ¿Necesitas ayuda con tu pedido?<br>Estamos para ayudarte por WhatsApp.";
+        if (progresoStep1) progresoStep1.classList.add("active");
+        if (progresoStep2) progresoStep2.classList.remove("active");
+        if (progresoLinea) progresoLinea.classList.add("active");
+    }
+}
+
+// ==========================================
+// CLIC EN EL BOTÓN PRINCIPAL DEL FOOTER
+// Paso 1 -> avanza al paso 2 (si hay items)
+// Paso 2 -> envía el pedido por WhatsApp
+// ==========================================
+function manejarClickBotonCarrito() {
+    if (carritoPasoActual === 1) {
+        if (!carrito || carrito.length === 0) {
+            alert("Tu carrito está vacío.");
+            return;
+        }
+        cambiarPasoCarrito(2);
+    } else {
+        enviarPedidoWhatsApp();
+    }
 }
 
 async function enviarPedidoWhatsApp() {
@@ -1971,7 +2061,6 @@ async function enviarPedidoWhatsApp() {
 /* =========================================
    LÓGICA DE LA GALERÍA DEL MODAL 
 ========================================= */
-
 function renderizarGaleriaModal() {
     const imagenPrincipal = document.getElementById("modal-img");
     const miniaturas = document.getElementById("modal-miniaturas");
@@ -2122,7 +2211,6 @@ function procesarSwipeGaleria() {
 /* =========================================
    LÓGICA DEL VISOR DE IMAGEN AMPLIADA (ZOOM)
 ========================================= */
-
 function abrirVisorImagen() {
     if (!imagenesModal.length) return;
 

@@ -168,7 +168,10 @@
              CABECERA DEL CARRITO
         ====================================== -->
         <div class="carrito-header">
-            <h2>Tu Carrito</h2>
+            <div class="header-left">
+                <button type="button" id="btn-volver-carrito" class="hidden">←</button>
+                <h2 id="carrito-titulo-header">Tu Carrito</h2>
+            </div>
             <button
                 type="button"
                 id="btn-cerrar-carrito"
@@ -178,239 +181,201 @@
         </div>
 
         <!-- =====================================
+             INDICADOR DE PROGRESO
+        ====================================== -->
+        <div class="progress-indicator" id="progress-indicator">
+            <div class="step active" id="carrito-step-1">
+                <span class="number">1</span> Resumen
+            </div>
+            <div class="line active" id="carrito-line-1"></div>
+            <div class="step" id="carrito-step-2">
+                <span class="number">2</span> Datos
+            </div>
+        </div>
+
+        <!-- =====================================
              CONTENIDO DEL CARRITO CON SCROLL
         ====================================== -->
         <div class="carrito-contenido-scroll">
-            <div
-                class="carrito-items"
-                id="carrito-items">
-                <p class="carrito-vacio">
-                    Tu carrito está vacío.
-                </p>
-            </div>
-            <!-- =================================
-                 DATOS DEL CLIENTE
-            ================================== -->
-            <div
-                class="datos-cliente" id="datos-cliente">
-                <h3>
-                    Datos para el pedido
-                </h3>
-                <!-- =============================
-                     NOMBRE
-                ============================== -->
-                <div class="campo-cliente">
-
-                    <label for="cliente-nombre">
-                        Nombre Completo *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="cliente-nombre"
-                        placeholder="Ej: Tu Nombre o Empresa"
-                        autocomplete="name">
-
+            <div class="carrito-steps-container" id="carrito-steps">
+                <div class="carrito-step" id="carrito-paso-1">
+                    <div
+                        class="carrito-items"
+                        id="carrito-items">
+                        <p class="carrito-vacio">
+                            Tu carrito está vacío.
+                        </p>
+                    </div>
                 </div>
-
-
-                <!-- =============================
-                     WHATSAPP
-                ============================== -->
-
-                <div class="campo-cliente">
-
-                    <label for="cliente-whatsapp">
-                        WhatsApp *
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="cliente-whatsapp"
-                        placeholder="Ej: 0983 XXXXXX"
-                        autocomplete="tel">
-
-                </div>
-
-
-                <!-- =============================
-                     CIUDAD
-                ============================== -->
-
-                <div class="campo-cliente">
-
-                    <label for="cliente-ciudad">
-                        Ciudad *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="cliente-ciudad"
-                        placeholder="Ej: Asunción">
-
-                </div>
-
-
-                <!-- =============================
-                     BARRIO
-                ============================== -->
-
-                <div class="campo-cliente">
-
-                    <label for="cliente-barrio">
-                        Barrio *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="cliente-barrio"
-                        placeholder="Ej: Mercado 4">
-
-                </div>
-
-
-                <!-- =============================
-                     TIPO DE ENTREGA
-                ============================== -->
-
-                <div class="campo-cliente">
-
-                    <label for="cliente-entrega">
-                        Tipo de entrega *
-                    </label>
-
-                    <select id="cliente-entrega">
-
-                        <option value="">
-                            Seleccionar forma de entrega
-                        </option>
-
-                        <option value="Envío a domicilio">
-                            Envío a domicilio
-                        </option>
-
-                        <option value="Retiro en tienda">
-                            Retiro en tienda
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- =============================
-                     DIRECCIÓN
-                ============================== -->
-
-                <div
-                    class="campo-cliente"
-                    id="campo-direccion">
-
-                    <label for="cliente-direccion">
-                        Dirección
-                    </label>
-
-                    <textarea
-                        id="cliente-direccion"
-                        rows="2"
-                        placeholder="Ej: Avenida N.º 1111"></textarea>
-
-                </div>
-
-
-                <!-- ==========================================
-                     FACTURA
-                ========================================== -->
-                            
-                <div class="campo-cliente">
-                
-                    <label for="cliente-factura">
-                        ¿Necesita factura?
-                    </label>
-                
-                    <select id="cliente-factura">
+                <!-- =================================
+                     DATOS DEL CLIENTE
+                ================================== -->
+                <div class="carrito-step" id="carrito-paso-2">
+                    <div
+                        class="datos-cliente" id="datos-cliente">
+                        <h3>
+                            Datos para el pedido
+                        </h3>
+                        <!-- =============================
+                             NOMBRE
+                        ============================== -->
+                        <div class="campo-cliente">
+                        
+                            <label for="cliente-nombre">
+                                Nombre Completo *
+                            </label>
+                        
+                            <input
+                                type="text"
+                                id="cliente-nombre"
+                                placeholder="Ej: Tu Nombre o Empresa"
+                                autocomplete="name">
+                        
+                        </div>                   
                     
-                        <option value="No">
-                            No
-                        </option>
+                        <!-- =============================
+                             WHATSAPP
+                        ============================== -->                    
+                        <div class="campo-cliente">                        
+                            <label for="cliente-whatsapp">
+                                WhatsApp *
+                            </label>                        
+                            <input
+                                type="tel"
+                                id="cliente-whatsapp"
+                                placeholder="Ej: 0983 XXXXXX"
+                                autocomplete="tel">                        
+                        </div>                    
                     
-                        <option value="Sí">
-                            Sí
-                        </option>
+                        <!-- =============================
+                             CIUDAD
+                        ============================== -->                    
+                        <div class="campo-cliente">                        
+                            <label for="cliente-ciudad">
+                                Ciudad *
+                            </label>                        
+                            <input
+                                type="text"
+                                id="cliente-ciudad"
+                                placeholder="Ej: Asunción">                        
+                        </div>                    
                     
-                    </select>
-                
-                </div>
-                
-                
-                <!-- ==========================================
-                     DATOS DE FACTURACIÓN
-                ========================================== -->
-                
-                <div
-                    class="datos-factura"
-                    id="datos-factura"
-                    style="display: none;">
-                
-                    <h4>Datos para facturación</h4>
-                
-                    <div class="campo-cliente">
+                        <!-- =============================
+                             BARRIO
+                        ============================== -->                    
+                        <div class="campo-cliente">                        
+                            <label for="cliente-barrio">
+                                Barrio *
+                            </label>                        
+                            <input
+                                type="text"
+                                id="cliente-barrio"
+                                placeholder="Ej: Mercado 4">                        
+                        </div>                    
                     
-                        <label for="cliente-razon-social">
-                            Razón Social *
-                        </label>
+                        <!-- =============================
+                             TIPO DE ENTREGA
+                        ============================== -->                    
+                        <div class="campo-cliente">                        
+                            <label for="cliente-entrega">
+                                Tipo de entrega *
+                            </label>                        
+                            <select id="cliente-entrega">                            
+                                <option value="">
+                                    Seleccionar forma de entrega
+                                </option>                            
+                                <option value="Envío a domicilio">
+                                    Envío a domicilio
+                                </option>                            
+                                <option value="Retiro en tienda">
+                                    Retiro en tienda
+                                </option>                            
+                            </select>                        
+                        </div>                    
                     
-                        <input
-                            type="text"
-                            id="cliente-razon-social"
-                            placeholder="Ej: Juan Pérez o Empresa S.A.">
+                        <!-- =============================
+                             DIRECCIÓN
+                        ============================== -->                    
+                        <div
+                            class="campo-cliente"
+                            id="campo-direccion">                    
+                            <label for="cliente-direccion">
+                                Dirección
+                            </label>                        
+                            <textarea
+                                id="cliente-direccion"
+                                rows="2"
+                                placeholder="Ej: Avenida N.º 1111"></textarea>                        
+                        </div>                    
+                    
+                        <!-- ==========================================
+                             FACTURA
+                        ========================================== -->
+                        <div class="campo-cliente">                        
+                            <label for="cliente-factura">
+                                ¿Necesita factura?
+                            </label>                        
+                            <select id="cliente-factura">                            
+                                <option value="No">
+                                    No
+                                </option>                            
+                                <option value="Sí">
+                                    Sí
+                                </option>                            
+                            </select>                        
+                        </div>
+
+                        <!-- ==========================================
+                             DATOS DE FACTURACIÓN
+                        ========================================== -->
+                        <div
+                            class="datos-factura"
+                            id="datos-factura"
+                            style="display: none;">
+                            <h4>Datos para facturación</h4>
+                            <div class="campo-cliente">                            
+                                <label for="cliente-razon-social">
+                                    Razón Social *
+                                </label>                            
+                                <input
+                                    type="text"
+                                    id="cliente-razon-social"
+                                    placeholder="Ej: Juan Pérez o Empresa S.A.">                            
+                            </div>                       
+                        
+                            <div class="campo-cliente">                            
+                                <label for="cliente-ruc">
+                                    RUC *
+                                </label>                            
+                                <input
+                                    type="text"
+                                    id="cliente-ruc"
+                                    placeholder="Ej: 80012345-6">                            
+                            </div>                        
+                        </div>                    
+                    
+                        <!-- =============================
+                             OBSERVACIONES
+                        ============================== -->                    
+                        <div class="campo-cliente">                        
+                            <label for="cliente-observaciones">
+                                Observaciones
+                            </label>                        
+                            <textarea
+                                id="cliente-observaciones"
+                                rows="2"
+                                placeholder="Ej: Portón gris, tocar timbre"></textarea>                        
+                        </div>                   
                     
                     </div>
-                
-                
-                    <div class="campo-cliente">
-                    
-                        <label for="cliente-ruc">
-                            RUC *
-                        </label>
-                    
-                        <input
-                            type="text"
-                            id="cliente-ruc"
-                            placeholder="Ej: 80012345-6">
-                    
-                    </div>
-                
                 </div>
-
-
-                <!-- =============================
-                     OBSERVACIONES
-                ============================== -->
-
-                <div class="campo-cliente">
-
-                    <label for="cliente-observaciones">
-                        Observaciones
-                    </label>
-
-                    <textarea
-                        id="cliente-observaciones"
-                        rows="2"
-                        placeholder="Ej: Portón gris, tocar timbre"></textarea>
-
-                </div>
-
-
             </div>
-            
-        </div>
-        
+        </div>        
         <!-- =====================================
              FOOTER FIJO DEL CARRITO
         ====================================== -->
         <div class="carrito-footer">
-            <div class="carrito-total">
+            <div class="carrito-total" id="carrito-footer-subtotal">
                 <span>
                     Subtotal:
                 </span>
@@ -420,9 +385,9 @@
                 </span>
             </div>
 
-            <p class="mensaje-whatsapp-carrito">
-                💬 ¿Necesitas ayuda con tu pedido?<br>
-                Estamos para ayudarte por WhatsApp.
+            <p class="mensaje-whatsapp-carrito" id="carrito-footer-ayuda">
+                💬 ¿Necesitas ayuda? Escríbenos por WhatsApp.<br>
+                
             </p>
 
             <button

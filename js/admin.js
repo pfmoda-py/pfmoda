@@ -17,6 +17,16 @@ let modoEdicionBanner = false;
 let productosAdmin = [];
 let productoEditando = null;
 
+function escaparHTML(texto) {
+    if (texto === null || texto === undefined) return "";
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await iniciarControlDeAcceso();
 });
@@ -303,14 +313,14 @@ async function cargarUsuariosAdmin() {
         const activo = u.activo === true || String(u.activo).toLowerCase() === "true";
 
         const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${u.usuario}</td>
-            <td>${u.nombre}</td>
-            <td>${u.email}</td>
-            <td>${u.rol}</td>
+                fila.innerHTML = `
+            <td>${escaparHTML(u.usuario)}</td>
+            <td>${escaparHTML(u.nombre)}</td>
+            <td>${escaparHTML(u.email)}</td>
+            <td>${escaparHTML(u.rol)}</td>
             <td>${activo ? "Activo" : "Deshabilitado"}</td>
             <td>
-                <button type="button" class="btn-admin-secundario btn-toggle-usuario" data-usuario="${u.usuario}" data-activo="${activo}">
+                <button type="button" class="btn-admin-secundario btn-toggle-usuario" data-usuario="${escaparHTML(u.usuario)}" data-activo="${activo}">
                     ${activo ? "Deshabilitar" : "Habilitar"}
                 </button>
             </td>
@@ -537,7 +547,7 @@ function abrirDetallePedido(numeroPedido) {
             <!-- BLOQUE: CLIENTE -->
             <div class="card-info-modal">
                 <h4>👤 Cliente</h4>
-                <div class="fila-info"><strong>Nombre:</strong> <span>${pedido.nombreCliente || "-"}</span></div>
+                <div class="fila-info"><strong>Nombre:</strong> <span>${escaparHTML(pedido.nombreCliente) || "-"}</span></div>
                 <div class="fila-info">
                     <strong>WhatsApp:</strong> 
                     <span>
@@ -553,9 +563,9 @@ function abrirDetallePedido(numeroPedido) {
             <!-- BLOQUE: ENVÍO -->
             <div class="card-info-modal">
                 <h4>🚚 Entrega y Dirección</h4>
-                <div class="fila-info"><strong>Tipo:</strong> <span class="badge-tipo-entrega">${pedido.entrega || "-"}</span></div>
-                <div class="fila-info"><strong>Ubicación:</strong> <span>${pedido.ciudad || "-"} ${pedido.barrio ? `(${pedido.barrio})` : ""}</span></div>
-                <div class="fila-info"><strong>Dirección:</strong> <span>${pedido.direccion || "-"}</span></div>
+                <div class="fila-info"><strong>Tipo:</strong> <span class="badge-tipo-entrega">${escaparHTML(pedido.entrega) || "-"}</span></div>
+                <div class="fila-info"><strong>Ubicación:</strong> <span>${escaparHTML(pedido.ciudad) || "-"} ${pedido.barrio ? `(${escaparHTML(pedido.barrio)})` : ""}</span></div>
+                <div class="fila-info"><strong>Dirección:</strong> <span>${escaparHTML(pedido.direccion) || "-"}</span></div>
             </div>
 
             <!-- BLOQUE: FACTURACIÓN -->
@@ -568,12 +578,12 @@ function abrirDetallePedido(numeroPedido) {
 
                 <div class="fila-info">
                     <strong>Razón Social:</strong> 
-                    <span>${pedido.razonSocial || pedido.rAzonSocial || pedido.nombreFactura || "-"}</span>
+                    <span>${escaparHTML(pedido.razonSocial || pedido.rAzonSocial || pedido.nombreFactura) || "-"}</span>
                 </div>
 
                 <div class="fila-info">
                     <strong>RUC / CI:</strong> 
-                    <span>${pedido.rUC || pedido.RUC || pedido.ruc || "-"}</span>
+                    <span>${escaparHTML(pedido.rUC || pedido.RUC || pedido.ruc) || "-"}</span>
                 </div>
             </div>
 
@@ -583,7 +593,7 @@ function abrirDetallePedido(numeroPedido) {
         ${pedido.observaciones ? `
             <div class="card-info-modal observaciones-block">
                 <h4>📝 Observaciones del Cliente</h4>
-                <p>${pedido.observaciones}</p>
+                <p>${escaparHTML(pedido.observaciones)}</p>
             </div>
         ` : ""}
 
@@ -610,9 +620,9 @@ function abrirDetallePedido(numeroPedido) {
                                 const total = Number(item.total || (precio * cantidad));
                                 return `
                                     <tr>
-                                        <td><code>${item.codigo || "-"}</code></td>
-                                        <td><strong>${item.nombre || "-"}</strong></td>
-                                        <td>${item.color ? `Color: ${item.color}` : ''} ${item.talle ? `| Talle: ${item.talle}` : ''}</td>
+                                        <td><code>${escaparHTML(item.codigo) || "-"}</code></td>
+                                        <td><strong>${escaparHTML(item.nombre) || "-"}</strong></td>
+                                        <td>${item.color ? `Color: ${escaparHTML(item.color)}` : ''} ${item.talle ? `| Talle: ${escaparHTML(item.talle)}` : ''}</td>
                                         <td>${cantidad}</td>
                                         <td>₲ ${precio.toLocaleString("es-PY")}</td>
                                         <td><strong>₲ ${total.toLocaleString("es-PY")}</strong></td>
