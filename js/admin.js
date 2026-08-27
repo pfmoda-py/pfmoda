@@ -87,6 +87,7 @@ function configurarFormularioLogin() {
 
             if (resultado && resultado.ok) {
                 setAdminToken(resultado.token);
+                sessionStorage.setItem("pf_moda_rol_actual", resultado.rol);
                 ocultarLogin();
                 cargarPanelCompleto();
             } else {
@@ -208,8 +209,131 @@ function cargarPanelCompleto() {
     cargarSubcategoriasAdmin();
     cargarBannersAdmin();
     configurarEventosBanners();
-    configurarLogout();   
+    configurarLogout(); 
+    configurarSeccionUsuariosAdmin();  
     
+}
+
+
+/* =========================================================
+   GESTIÓN DE USUARIOS ADMIN
+========================================================= */
+
+async function configurarSeccionUsuariosAdmin() {
+    const sesionGuardada = sessionStorage.getItem("pf_moda_rol_actual");
+    // El rol lo vamos a guardar en el login (ver ajuste abajo)
+
+    const seccion = document.getElementById("seccion-usuarios-admin");
+    if (sesionGuardada !== "superadmin") {
+        if (seccion) seccion.style.display = "none";
+        return;
+    }
+
+    if (seccion) seccion.style.display = "";
+    await cargarUsuariosAdmin();
+
+    const btnNuevo = document.getElementById("btn-nuevo-usuario-admin");
+    const modal = document.getElementById("modal-usuario-admin");
+    const btnCerrar = document.getElementById("btn-cerrar-usuario-admin");
+    const btnCancelar = document.getElementById("btn-cancelar-usuario-admin");
+    const form = document.getElementById("form-usuario-admin");
+
+    if (btnNuevo) btnNuevo.addEventListener("click", () => {
+        form.reset();
+        document.getElementById("usuario-admin-mensaje").textContent = "";
+        modal.classList.add("activo");
+    });
+
+    [btnCerrar, btnCancelar].forEach(btn => {
+        if (btn) btn.addEventListener("click", () => modal.classList.remove("activo"));
+    });
+
+    if (form && !form.dataset.listo) {
+        form.dataset.listo = "true";
+        form.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            const nuevoUsuario = {
+                usuario: document.getElementById("nuevo-admin-usuario").value.trim(),
+                nombre: document.getElementById("nuevo-admin-nombre").value.trim(),
+                email: document.getElementById("nuevo-admin-email").value.trim(),
+                password: document.getElementById("nuevo-admin-password").value,
+                rol: document.getElementById("nuevo-admin-rol").value
+            };
+
+            const mensajeEl = document.getElementById("usuario-admin-mensaje");
+            const boton = form.querySelector("button[type=submit]");
+            boton.disabled = true;
+            boton.textContent = "Creando...";
+
+            const resultado = await api.crearUsuarioAdmin(nuevoUsuario);
+
+            if (resultado && resultado.ok) {
+                modal.classList.remove("activo");
+                await cargarUsuariosAdmin();
+            } else {
+                mensajeEl.textContent = resultado?.error || "No se pudo crear el usuario.";
+            }
+
+            boton.disabled = false;
+            boton.textContent = "Crear Usuario";
+        });
+    }
+}
+
+async function cargarUsuariosAdmin() {
+    const body = document.getElementById("usuarios-admin-body");
+    if (!body) return;
+
+    const resultado = await api.listarUsuariosAdmin();
+
+    if (!resultado || !resultado.ok) {
+        body.innerHTML = `<tr><td colspan="6" class="tabla-vacia">${resultado?.error || "No se pudo cargar."}</td></tr>`;
+        return;
+    }
+
+    if (resultado.usuarios.length === 0) {
+        body.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay usuarios.</td></tr>`;
+        return;
+    }
+
+    body.innerHTML = "";
+
+    resultado.usuarios.forEach(u => {
+        const activo = u.activo === true || String(u.activo).toLowerCase() === "true";
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${u.usuario}</td>
+            <td>${u.nombre}</td>
+            <td>${u.email}</td>
+            <td>${u.rol}</td>
+            <td>${activo ? "Activo" : "Deshabilitado"}</td>
+            <td>
+                <button type="button" class="btn-admin-secundario btn-toggle-usuario" data-usuario="${u.usuario}" data-activo="${activo}">
+                    ${activo ? "Deshabilitar" : "Habilitar"}
+                </button>
+            </td>
+        `;
+        body.appendChild(fila);
+    });
+
+    body.querySelectorAll(".btn-toggle-usuario").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const usuario = btn.dataset.usuario;
+            const activoActual = btn.dataset.activo === "true";
+
+            btn.disabled = true;
+            const resultado = await api.cambiarEstadoUsuarioAdmin(usuario, !activoActual);
+
+            if (resultado && resultado.ok) {
+                await cargarUsuariosAdmin();
+            } else {
+                alert(resultado?.error || "No se pudo cambiar el estado.");
+                btn.disabled = false;
+            }
+        });
+    });
 }
 
 function configurarLogout() {
@@ -221,6 +345,7 @@ function configurarLogout() {
         const token = getAdminToken();
         await api.cerrarSesionAdmin(token);
         limpiarAdminToken();
+        sessionStorage.removeItem("pf_moda_rol_actual");
         window.location.reload();
     });
 }

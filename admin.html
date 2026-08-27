@@ -21,26 +21,26 @@
         <div id="login-overlay" class="login-overlay">
 
         <form id="form-login-admin" class="login-box">
-        
+
             <div class="login-logo">PF <span>Moda</span></div>
             <h2>Acceso administrativo</h2>
-        
+
             <label for="login-usuario">Usuario</label>
             <input type="text" id="login-usuario" autocomplete="username" required>
-        
+
             <label for="login-password">Contraseña</label>
             <input type="password" id="login-password" autocomplete="current-password" required>
-        
+
             <button type="submit" id="btn-login-admin">Ingresar</button>
-        
+
             <p id="login-error" class="login-error"></p>
-        
+
             <p style="text-align:center; margin-top:10px;">
                 <a href="#" id="link-olvide-clave" style="font-size:13px; color:#555;">¿Olvidaste tu contraseña?</a>
             </p>
-        
+
         </form>
-    
+
         <form id="form-olvide-clave" class="login-box" style="display:none;">
             <h2>Recuperar contraseña</h2>
             <label for="olvide-usuario-email">Usuario o email</label>
@@ -51,7 +51,7 @@
                 <a href="#" id="link-volver-login" style="font-size:13px; color:#555;">Volver a iniciar sesión</a>
             </p>
         </form>
-    
+
         <form id="form-nueva-clave" class="login-box" style="display:none;">
             <h2>Crear nueva contraseña</h2>
             <label for="nueva-clave-1">Nueva contraseña</label>
@@ -61,7 +61,7 @@
             <button type="submit">Guardar contraseña</button>
             <p id="nueva-clave-mensaje" class="login-error"></p>
         </form>
-    
+
     </div>
     
         <!-- =========================================
@@ -519,35 +519,70 @@
                 GESTIÓN DE BANNERS
             ===================================================== -->
             <section class="admin-seccion banners-admin">
-            <div class="seccion-header">
-                <div>
-                    <h2>Banners</h2>
-                    <p>Administra la imagen y el texto de la portada principal.</p>
+                <div class="seccion-header">
+                    <div>
+                        <h2>Banners</h2>
+                        <p>Administra la imagen y el texto de la portada principal.</p>
+                    </div>
+                    <button type="button" class="btn-admin-principal" id="btn-nuevo-banner">
+                        + Nuevo Banner
+                    </button>
                 </div>
-                <button type="button" class="btn-admin-principal" id="btn-nuevo-banner">
-                    + Nuevo Banner
-                </button>
-            </div>
 
-            <div class="tabla-responsive">
-                <table class="tabla-admin">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Enlace</th>
-                            <th>Orden</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="banners-admin-body">
-                        <tr>
-                            <td colspan="6" class="tabla-vacia">Cargando banners...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="tabla-responsive">
+                    <table class="tabla-admin">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Enlace</th>
+                                <th>Orden</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="banners-admin-body">
+                            <tr>
+                                <td colspan="6" class="tabla-vacia">Cargando banners...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 GESTIÓN DE USUARIOS ADMIN (solo superadmin)
+            ===================================================== -->
+            <section class="admin-seccion usuarios-admin" id="seccion-usuarios-admin" style="display:none;">
+            	<div class="seccion-header">
+            		<div>
+            			<h2>Usuarios administradores</h2>
+            			<p>Gestiona quién puede acceder al panel.</p>
+            		</div>
+            		<button type="button" class="btn-admin-principal" id="btn-nuevo-usuario-admin">
+            			+ Nuevo Usuario
+            		</button>
+            	</div>
+            
+            	<div class="tabla-responsive">
+            		<table class="tabla-admin">
+            			<thead>
+            				<tr>
+            					<th>Usuario</th>
+            					<th>Nombre</th>
+            					<th>Email</th>
+            					<th>Rol</th>
+            					<th>Estado</th>
+            					<th>Acciones</th>
+            				</tr>
+            			</thead>
+            			<tbody id="usuarios-admin-body">
+            				<tr>
+            					<td colspan="6" class="tabla-vacia">Cargando usuarios...</td>
+            				</tr>
+            			</tbody>
+            		</table>
+            	</div>
             </section>
             
             <!-- =====================================================
@@ -555,248 +590,239 @@
             ===================================================== -->
             
             <div
-            id="modal-producto-admin"
-            class="modal-admin-overlay">
-        
-            <div class="modal-admin">
+                id="modal-producto-admin"
+                class="modal-admin-overlay">
             
-                <div class="modal-admin-header">
-                
-                    <h2 id="titulo-modal-producto">
-                        Nuevo Producto
-                    </h2>
-                
-                    <button
-                        id="btn-cerrar-producto-admin"
-                        class="modal-admin-cerrar">
-                
-                        ×
-                
-                    </button>
-                
-                </div>
-                
-                <form id="form-producto-admin">
-                
-                    <!-- 📌 AGREGAR AQUÍ: Inicio del contenedor con Scroll -->
-                    <div class="modal-admin-body">
+                <div class="modal-admin">                
+                    <div class="modal-admin-header">                    
+                        <h2 id="titulo-modal-producto">
+                            Nuevo Producto
+                        </h2>                    
+                        <button
+                            id="btn-cerrar-producto-admin"
+                            class="modal-admin-cerrar">                    
+                            ×                    
+                        </button>                    
+                    </div>
 
-                        <!-- CÓDIGO -->
-                        <div class="campo-admin">
-                            <label for="admin-codigo">
-                                Código *
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-codigo"
-                                required>
-                        </div>
-                    
-                        <!-- NOMBRE -->
-                        <div class="campo-admin">
-                            <label for="admin-nombre">
-                                Nombre *
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-nombre"
-                                required>
-                        </div>
-                    
-                        <!-- CATEGORÍA -->
-                        <div class="campo-admin">
-                            <label for="admin-categoria">Categoría</label>
-                            <select id="admin-categoria">
-                                <option value="">Selecciona una categoría...</option>
-                            </select>
-                        </div>
-
-                        <!-- SUBCATEGORÍA -->
-                        <div class="campo-admin">
-                            <label for="admin-subcategoria">Subcategoría</label>
-                            <select id="admin-subcategoria" disabled>
-                                <option value="">Selecciona primero una categoría...</option>
-                            </select>
-                        </div>
-                    
-                        <!-- PRECIOS -->
-                        <div class="fila-admin">
+                    <form id="form-producto-admin">                    
+                        <!-- 📌 AGREGAR AQUÍ: Inicio del contenedor con Scroll -->
+                        <div class="modal-admin-body">
+                            <!-- CÓDIGO -->
                             <div class="campo-admin">
-                                <label for="admin-precio">
-                                    Precio
+                                <label for="admin-codigo">
+                                    Código *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="admin-codigo"
+                                    required>
+                            </div>                        
+                            <!-- NOMBRE -->
+                            <div class="campo-admin">
+                                <label for="admin-nombre">
+                                    Nombre *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="admin-nombre"
+                                    required>
+                            </div>
+                        
+                            <!-- CATEGORÍA -->
+                            <div class="campo-admin">
+                                <label for="admin-categoria">Categoría</label>
+                                <select id="admin-categoria">
+                                    <option value="">Selecciona una categoría...</option>
+                                </select>
+                            </div>
+
+                            <!-- SUBCATEGORÍA -->
+                            <div class="campo-admin">
+                                <label for="admin-subcategoria">Subcategoría</label>
+                                <select id="admin-subcategoria" disabled>
+                                    <option value="">Selecciona primero una categoría...</option>
+                                </select>
+                            </div>
+                        
+                            <!-- PRECIOS -->
+                            <div class="fila-admin">
+                                <div class="campo-admin">
+                                    <label for="admin-precio">
+                                        Precio
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="admin-precio"
+                                        min="0">
+                                </div>
+                            
+                                <div class="campo-admin">
+                                    <label for="admin-precio-oferta">
+                                        Precio Oferta
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="admin-precio-oferta"
+                                        min="0">
+                                </div>
+                            </div>
+                        
+                            <!-- COLOR -->
+                            <div class="campo-admin">
+                                <label for="admin-color">
+                                    Color
+                                </label>
+                                <input
+                                    type="text"
+                                    id="admin-color"
+                                    placeholder="Ej: Negro, Blanco">
+                            </div>
+                        
+                            <!-- TALLES -->
+                            <div class="campo-admin">
+                                <label for="admin-talles">
+                                    Talles
+                                </label>
+                                <input
+                                    type="text"
+                                    id="admin-talles"
+                                    placeholder="Ej: S,M,L,XL">
+                            </div>
+                        
+                            <!-- STOCK -->
+                            <div class="campo-admin">
+                                <label for="admin-stock">
+                                    Stock
                                 </label>
                                 <input
                                     type="number"
-                                    id="admin-precio"
+                                    id="admin-stock"
                                     min="0">
                             </div>
                         
+                            <!-- DESCRIPCIÓN -->
                             <div class="campo-admin">
-                                <label for="admin-precio-oferta">
-                                    Precio Oferta
+                                <label for="admin-descripcion">
+                                    Descripción
+                                </label>
+                                <textarea
+                                    id="admin-descripcion"
+                                    rows="3"></textarea>
+                            </div>
+                        
+                            <!-- MATERIAL -->
+                            <div class="campo-admin">
+                                <label for="admin-material">
+                                    Material
                                 </label>
                                 <input
-                                    type="number"
-                                    id="admin-precio-oferta"
-                                    min="0">
+                                    type="text"
+                                    id="admin-material">
                             </div>
-                        </div>
-                    
-                        <!-- COLOR -->
-                        <div class="campo-admin">
-                            <label for="admin-color">
-                                Color
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-color"
-                                placeholder="Ej: Negro, Blanco">
-                        </div>
-                    
-                        <!-- TALLES -->
-                        <div class="campo-admin">
-                            <label for="admin-talles">
-                                Talles
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-talles"
-                                placeholder="Ej: S,M,L,XL">
-                        </div>
-                    
-                        <!-- STOCK -->
-                        <div class="campo-admin">
-                            <label for="admin-stock">
-                                Stock
-                            </label>
-                            <input
-                                type="number"
-                                id="admin-stock"
-                                min="0">
-                        </div>
-                    
-                        <!-- DESCRIPCIÓN -->
-                        <div class="campo-admin">
-                            <label for="admin-descripcion">
-                                Descripción
-                            </label>
-                            <textarea
-                                id="admin-descripcion"
-                                rows="3"></textarea>
-                        </div>
-                    
-                        <!-- MATERIAL -->
-                        <div class="campo-admin">
-                            <label for="admin-material">
-                                Material
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-material">
-                        </div>
-                    
-                        <!-- ESTADO -->
-                        <div class="campo-admin">
-                            <label for="admin-estado">
-                                Estado
-                            </label>
-                            <select id="admin-estado">
-                                <option value="Activo">
-                                    Activo
-                                </option>
-                                <option value="Inactivo">
-                                    Inactivo
-                                </option>
-                            </select>
-                        </div>
-                    
-                        <!-- ETIQUETA -->
-                        <div class="campo-admin">
-                            <label for="admin-etiqueta">
-                                Etiqueta
-                            </label>
-                            <input
-                                type="text"
-                                id="admin-etiqueta"
-                                placeholder="Ej: Nuevo">
-                        </div>
-                    
-                        <!-- IMÁGENES -->
-                        <div class="campo-admin">
-                            <label for="admin-imagen-principal">
-                                Imagen Principal *
-                            </label>
-                            <input
-                                type="url"
-                                id="admin-imagen-principal"
-                                placeholder="URL de la imagen o Google Drive">
-                            <div class="imagen-preview-container" id="preview-admin-imagen-principal">
-                                <span>Sin imagen</span>
+                        
+                            <!-- ESTADO -->
+                            <div class="campo-admin">
+                                <label for="admin-estado">
+                                    Estado
+                                </label>
+                                <select id="admin-estado">
+                                    <option value="Activo">
+                                        Activo
+                                    </option>
+                                    <option value="Inactivo">
+                                        Inactivo
+                                    </option>
+                                </select>
                             </div>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-imagen-2">
-                                Imagen 2
-                            </label>
-                            <input
-                                type="url"
-                                id="admin-imagen-2"
-                                placeholder="URL de imagen secundaria">
-                            <div class="imagen-preview-container" id="preview-admin-imagen-2">
-                                <span>Sin imagen</span>
+                        
+                            <!-- ETIQUETA -->
+                            <div class="campo-admin">
+                                <label for="admin-etiqueta">
+                                    Etiqueta
+                                </label>
+                                <input
+                                    type="text"
+                                    id="admin-etiqueta"
+                                    placeholder="Ej: Nuevo">
                             </div>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-imagen-3">
-                                Imagen 3
-                            </label>
-                            <input
-                                type="url"
-                                id="admin-imagen-3"
-                                placeholder="URL de imagen secundaria">
-                            <div class="imagen-preview-container" id="preview-admin-imagen-3">
-                                <span>Sin imagen</span>
+                        
+                            <!-- IMÁGENES -->
+                            <div class="campo-admin">
+                                <label for="admin-imagen-principal">
+                                    Imagen Principal *
+                                </label>
+                                <input
+                                    type="url"
+                                    id="admin-imagen-principal"
+                                    placeholder="URL de la imagen o Google Drive">
+                                <div class="imagen-preview-container" id="preview-admin-imagen-principal">
+                                    <span>Sin imagen</span>
+                                </div>
                             </div>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-imagen-4">
-                                Imagen 4
-                            </label>
-                            <input
-                                type="url"
-                                id="admin-imagen-4"
-                                placeholder="URL de imagen secundaria">
-                            <div class="imagen-preview-container" id="preview-admin-imagen-4">
-                                <span>Sin imagen</span>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-imagen-2">
+                                    Imagen 2
+                                </label>
+                                <input
+                                    type="url"
+                                    id="admin-imagen-2"
+                                    placeholder="URL de imagen secundaria">
+                                <div class="imagen-preview-container" id="preview-admin-imagen-2">
+                                    <span>Sin imagen</span>
+                                </div>
                             </div>
-                        </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-imagen-3">
+                                    Imagen 3
+                                </label>
+                                <input
+                                    type="url"
+                                    id="admin-imagen-3"
+                                    placeholder="URL de imagen secundaria">
+                                <div class="imagen-preview-container" id="preview-admin-imagen-3">
+                                    <span>Sin imagen</span>
+                                </div>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-imagen-4">
+                                    Imagen 4
+                                </label>
+                                <input
+                                    type="url"
+                                    id="admin-imagen-4"
+                                    placeholder="URL de imagen secundaria">
+                                <div class="imagen-preview-container" id="preview-admin-imagen-4">
+                                    <span>Sin imagen</span>
+                                </div>
+                            </div>
 
-                    </div>
-                    <!-- 📌 AGREGAR AQUÍ: Fin del contenedor modal-admin-body -->
-                
-                    <!-- BOTONES (Quedan fijos en la parte inferior) -->
-                    <div class="modal-admin-footer">
-                        <button
-                            type="button"
-                            id="btn-cancelar-producto"
-                            class="btn-admin-secundario">
-                            Cancelar
-                        </button>
+                        </div>
+                        <!-- 📌 AGREGAR AQUÍ: Fin del contenedor modal-admin-body -->
                     
-                        <button
-                            type="submit"
-                            class="btn-admin-principal">
-                            Guardar Producto
-                        </button>
-                    </div>
+                        <!-- BOTONES (Quedan fijos en la parte inferior) -->
+                        <div class="modal-admin-footer">
+                            <button
+                                type="button"
+                                id="btn-cancelar-producto"
+                                class="btn-admin-secundario">
+                                Cancelar
+                            </button>
+                        
+                            <button
+                                type="submit"
+                                class="btn-admin-principal">
+                                Guardar Producto
+                            </button>
+                        </div>
+                    
+                    </form>
+
                 
-                </form>
-                
-            
-            </div>
+                </div>
         
             </div>
         
@@ -804,152 +830,205 @@
                  MODAL CATEGORÍA
             ===================================================== -->
             <div id="modal-categoria-admin" class="modal-admin-overlay">
-            <div class="modal-admin">
-                <div class="modal-admin-header">
-                    <h2 id="titulo-modal-categoria">Nueva Categoría</h2>
-                    <button id="btn-cerrar-categoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
-                </div>
-            
-                <form id="form-categoria-admin">
-                    <!-- 📌 Contenedor con Scroll para los campos -->
-                    <div class="modal-admin-body">
-                        <div class="campo-admin">
-                            <label for="admin-cat-id">ID *</label>
-                            <input type="text" id="admin-cat-id" placeholder="Ej: CAT01" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-cat-nombre">Nombre *</label>
-                            <input type="text" id="admin-cat-nombre" placeholder="Ej: Camperas" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-cat-orden">Orden</label>
-                            <input type="number" id="admin-cat-orden" value="1" min="1">
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-cat-estado">Estado</label>
-                            <select id="admin-cat-estado">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                            </select>
-                        </div>
+                <div class="modal-admin">
+                    <div class="modal-admin-header">
+                        <h2 id="titulo-modal-categoria">Nueva Categoría</h2>
+                        <button id="btn-cerrar-categoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
                     </div>
                 
-                    <!-- 📌 Footer con botones FIJOS abajo -->
-                    <div class="modal-admin-footer">
-                        <button type="button" id="btn-cancelar-categoria" class="btn-admin-secundario">Cancelar</button>
-                        <button type="submit" class="btn-admin-principal">Guardar Categoría</button>
-                    </div>
-                </form>
-            </div>
+                    <form id="form-categoria-admin">
+                        <!-- 📌 Contenedor con Scroll para los campos -->
+                        <div class="modal-admin-body">
+                            <div class="campo-admin">
+                                <label for="admin-cat-id">ID *</label>
+                                <input type="text" id="admin-cat-id" placeholder="Ej: CAT01" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-cat-nombre">Nombre *</label>
+                                <input type="text" id="admin-cat-nombre" placeholder="Ej: Camperas" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-cat-orden">Orden</label>
+                                <input type="number" id="admin-cat-orden" value="1" min="1">
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-cat-estado">Estado</label>
+                                <select id="admin-cat-estado">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <!-- 📌 Footer con botones FIJOS abajo -->
+                        <div class="modal-admin-footer">
+                            <button type="button" id="btn-cancelar-categoria" class="btn-admin-secundario">Cancelar</button>
+                            <button type="submit" class="btn-admin-principal">Guardar Categoría</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         
             <!-- =====================================================
                  MODAL SUBCATEGORÍA
             ===================================================== -->
             <div id="modal-subcategoria-admin" class="modal-admin-overlay">
-            <div class="modal-admin">
-                <div class="modal-admin-header">
-                    <h2 id="titulo-modal-subcategoria">Nueva Subcategoría</h2>
-                    <button id="btn-cerrar-subcategoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
-                </div>
-            
-                <form id="form-subcategoria-admin">
-                    <!-- 📌 Contenedor con Scroll para los campos -->
-                    <div class="modal-admin-body">
-                        <div class="campo-admin">
-                            <label for="admin-subcat-id">ID *</label>
-                            <input type="text" id="admin-subcat-id" placeholder="Ej: SUB01" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-subcat-nombre">Nombre Subcategoría *</label>
-                            <input type="text" id="admin-subcat-nombre" placeholder="Ej: Invierno" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-subcat-categoria">Categoría Padre *</label>
-                            <select id="admin-subcat-categoria" required>
-                                <option value="">Selecciona una categoría...</option>
-                            </select>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-subcat-orden">Orden</label>
-                            <input type="number" id="admin-subcat-orden" value="1" min="1">
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-subcat-estado">Estado</label>
-                            <select id="admin-subcat-estado">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                            </select>
-                        </div>
+                <div class="modal-admin">
+                    <div class="modal-admin-header">
+                        <h2 id="titulo-modal-subcategoria">Nueva Subcategoría</h2>
+                        <button id="btn-cerrar-subcategoria-admin" class="modal-admin-cerrar" type="button">&times;</button>
                     </div>
                 
-                    <!-- 📌 Footer con botones FIJOS abajo -->
-                    <div class="modal-admin-footer">
-                        <button type="button" id="btn-cancelar-subcategoria" class="btn-admin-secundario">Cancelar</button>
-                        <button type="submit" class="btn-admin-principal">Guardar Subcategoría</button>
-                    </div>
-                </form>
-            </div>
+                    <form id="form-subcategoria-admin">
+                        <!-- 📌 Contenedor con Scroll para los campos -->
+                        <div class="modal-admin-body">
+                            <div class="campo-admin">
+                                <label for="admin-subcat-id">ID *</label>
+                                <input type="text" id="admin-subcat-id" placeholder="Ej: SUB01" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-subcat-nombre">Nombre Subcategoría *</label>
+                                <input type="text" id="admin-subcat-nombre" placeholder="Ej: Invierno" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-subcat-categoria">Categoría Padre *</label>
+                                <select id="admin-subcat-categoria" required>
+                                    <option value="">Selecciona una categoría...</option>
+                                </select>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-subcat-orden">Orden</label>
+                                <input type="number" id="admin-subcat-orden" value="1" min="1">
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-subcat-estado">Estado</label>
+                                <select id="admin-subcat-estado">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <!-- 📌 Footer con botones FIJOS abajo -->
+                        <div class="modal-admin-footer">
+                            <button type="button" id="btn-cancelar-subcategoria" class="btn-admin-secundario">Cancelar</button>
+                            <button type="submit" class="btn-admin-principal">Guardar Subcategoría</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <!-- =====================================================
                 MODAL BANNER ADMIN
             ===================================================== -->
             <div id="modal-banner-admin" class="modal-admin-overlay">
-            <div class="modal-admin">
-                <div class="modal-admin-header">
-                    <h2 id="titulo-modal-banner">Nuevo Banner</h2>
-                    <button id="btn-cerrar-banner-admin" class="modal-admin-cerrar" type="button">&times;</button>
-                </div>
-            
-                <form id="form-banner-admin">
-                    <div class="modal-admin-body">
-                        <div class="campo-admin">
-                            <label for="admin-ban-id">ID *</label>
-                            <input type="text" id="admin-ban-id" placeholder="Ej: BAN01" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-ban-titulo">Título *</label>
-                            <input type="text" id="admin-ban-titulo" placeholder="Ej: Nueva Colección Invierno" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-ban-imagen">URL de Imagen (Google Drive) *</label>
-                            <input type="text" id="admin-ban-imagen" placeholder="Pega el link para compartir de Drive" required>
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-ban-enlace">Enlace</label>
-                            <input type="text" id="admin-ban-enlace" placeholder="Ej: categoria=Camperas">
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-ban-orden">Orden</label>
-                            <input type="number" id="admin-ban-orden" value="1" min="1">
-                        </div>
-                    
-                        <div class="campo-admin">
-                            <label for="admin-ban-estado">Estado</label>
-                            <select id="admin-ban-estado">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                            </select>
-                        </div>
+                <div class="modal-admin">
+                    <div class="modal-admin-header">
+                        <h2 id="titulo-modal-banner">Nuevo Banner</h2>
+                        <button id="btn-cerrar-banner-admin" class="modal-admin-cerrar" type="button">&times;</button>
                     </div>
                 
-                    <div class="modal-admin-footer">
-                        <button type="button" id="btn-cancelar-banner" class="btn-admin-secundario">Cancelar</button>
-                        <button type="submit" class="btn-admin-principal">Guardar Banner</button>
-                    </div>
-                </form>
+                    <form id="form-banner-admin">
+                        <div class="modal-admin-body">
+                            <div class="campo-admin">
+                                <label for="admin-ban-id">ID *</label>
+                                <input type="text" id="admin-ban-id" placeholder="Ej: BAN01" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-ban-titulo">Título *</label>
+                                <input type="text" id="admin-ban-titulo" placeholder="Ej: Nueva Colección Invierno" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-ban-imagen">URL de Imagen (Google Drive) *</label>
+                                <input type="text" id="admin-ban-imagen" placeholder="Pega el link para compartir de Drive" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-ban-enlace">Enlace</label>
+                                <input type="text" id="admin-ban-enlace" placeholder="Ej: categoria=Camperas">
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-ban-orden">Orden</label>
+                                <input type="number" id="admin-ban-orden" value="1" min="1">
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="admin-ban-estado">Estado</label>
+                                <select id="admin-ban-estado">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <div class="modal-admin-footer">
+                            <button type="button" id="btn-cancelar-banner" class="btn-admin-secundario">Cancelar</button>
+                            <button type="submit" class="btn-admin-principal">Guardar Banner</button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+            <!-- =====================================================
+                 MODAL NUEVO USUARIO ADMIN
+            ===================================================== -->
+            <div id="modal-usuario-admin" class="modal-admin-overlay">
+                <div class="modal-admin">
+                    <div class="modal-admin-header">
+                        <h2>Nuevo Usuario Administrador</h2>
+                        <button id="btn-cerrar-usuario-admin" class="modal-admin-cerrar" type="button">&times;</button>
+                    </div>
+                
+                    <form id="form-usuario-admin">
+                        <div class="modal-admin-body">
+                        
+                            <div class="campo-admin">
+                                <label for="nuevo-admin-usuario">Usuario *</label>
+                                <input type="text" id="nuevo-admin-usuario" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="nuevo-admin-nombre">Nombre *</label>
+                                <input type="text" id="nuevo-admin-nombre" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="nuevo-admin-email">Email *</label>
+                                <input type="email" id="nuevo-admin-email" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="nuevo-admin-password">Contraseña temporal *</label>
+                                <input type="password" id="nuevo-admin-password" minlength="8" autocomplete="new-password" required>
+                            </div>
+                        
+                            <div class="campo-admin">
+                                <label for="nuevo-admin-rol">Rol *</label>
+                                <select id="nuevo-admin-rol" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="superadmin">Superadmin</option>
+                                </select>
+                            </div>
+                        
+                            <p id="usuario-admin-mensaje" class="login-error"></p>
+                        
+                        </div>
+                    
+                        <div class="modal-admin-footer">
+                            <button type="button" id="btn-cancelar-usuario-admin" class="btn-admin-secundario">Cancelar</button>
+                            <button type="submit" class="btn-admin-principal">Crear Usuario</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         
         </main>
@@ -960,23 +1039,23 @@
         
         <div id="modal-pedido-overlay" class="admin-modal-overlay">
     
-        <div class="admin-modal">        
-            <div class="admin-modal-header">            
-                <h2>Detalle del Pedido</h2>            
-                <button
-                    type="button"
-                    id="btn-cerrar-modal-pedido"
-                    class="admin-modal-cerrar">
-                    ×
-                </button>            
-            </div>
-        
-            <div
-                id="detalle-pedido-contenido"
-                class="admin-modal-contenido">        
-                <p>Cargando pedido...</p>        
-            </div>        
-        </div>    
+            <div class="admin-modal">        
+                <div class="admin-modal-header">            
+                    <h2>Detalle del Pedido</h2>            
+                    <button
+                        type="button"
+                        id="btn-cerrar-modal-pedido"
+                        class="admin-modal-cerrar">
+                        ×
+                    </button>            
+                </div>
+            
+                <div
+                    id="detalle-pedido-contenido"
+                    class="admin-modal-contenido">        
+                    <p>Cargando pedido...</p>        
+                </div>        
+            </div>    
         </div> 
         <!-- =========================================
             JAVASCRIPT

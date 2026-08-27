@@ -444,6 +444,54 @@ const api = {
         } catch (error) {
             return { ok: false, error: "No se pudo conectar con el servidor." };
         }
+    },
+
+    listarUsuariosAdmin: async function() {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ accion: "listarUsuariosAdmin", token: getAdminToken() })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    crearUsuarioAdmin: async function(nuevoUsuario) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "crearUsuarioAdmin",
+                    nuevoUsuario: nuevoUsuario,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    cambiarEstadoUsuarioAdmin: async function(usuarioObjetivo, nuevoEstado) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "cambiarEstadoUsuarioAdmin",
+                    usuarioObjetivo: usuarioObjetivo,
+                    nuevoEstado: nuevoEstado,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { error: "No se pudo conectar con el servidor." };
+        }
     }
 
 };
