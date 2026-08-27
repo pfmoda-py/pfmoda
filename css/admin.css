@@ -1,778 +1,691 @@
-/* =========================================
-   PF MODA - PANEL ADMINISTRATIVO
-========================================= */
+/* ============================================================
+   PF MODA — PANEL ADMINISTRATIVO
+   CSS UNIFICADO Y ORGANIZADO
+   ------------------------------------------------------------
+   Estructura:
+   01. Variables y base
+   02. Cabecera
+   03. Contenido general
+   04. Dashboard
+   05. Secciones
+   06. Botones generales
+   07. Tablas
+   08. Detalle de pedido
+   09. Modal de detalle de pedido
+   10. Modal de administración
+   11. Formularios administrativos
+   12. Gestión de productos
+   13. Estados, badges y acciones
+   14. Alertas y estados de carga
+   15. Vista previa de imágenes
+   16. Login administrativo
+   17. Responsive
+   ============================================================ */
+
+
+/* ============================================================
+   01. VARIABLES Y ESTILOS BASE
+============================================================ */
+
+:root {
+    /* Colores de marca */
+    --admin-negro: #111111;
+    --admin-negro-hover: #242424;
+    --admin-dorado: #b08d35;
+    --admin-dorado-login: #c9a227;
+
+    /* Fondos */
+    --admin-fondo: #f5f5f5;
+    --admin-blanco: #ffffff;
+    --admin-gris-claro: #f8f8f8;
+    --admin-gris-footer: #f9fafb;
+
+    /* Bordes */
+    --admin-borde: #dddddd;
+    --admin-borde-suave: #e5e7eb;
+
+    /* Texto */
+    --admin-texto: #222222;
+    --admin-texto-secundario: #666666;
+    --admin-texto-suave: #777777;
+
+    /* Estados */
+    --admin-exito-fondo: #f0fdf4;
+    --admin-exito-texto: #15803d;
+    --admin-exito-borde: #bbf7d0;
+
+    --admin-error-fondo: #fef2f2;
+    --admin-error-texto: #b91c1c;
+    --admin-error-borde: #fecaca;
+
+    /* Radios */
+    --admin-radio-sm: 6px;
+    --admin-radio-md: 8px;
+    --admin-radio-lg: 12px;
+
+    /* Sombras */
+    --admin-sombra:
+        0 2px 8px rgba(0, 0, 0, 0.08);
+
+    --admin-sombra-modal:
+        0 20px 60px rgba(0, 0, 0, 0.25);
+
+    /* Transiciones */
+    --admin-transicion: 0.2s ease;
+}
 
 * {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    color: #222;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+    background: var(--admin-fondo);
+    color: var(--admin-texto);
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 
-/* =========================================
-   HEADER
-========================================= */
+/* ============================================================
+   02. CABECERA ADMINISTRATIVA
+============================================================ */
 
 .admin-header {
-
-    height: 70px;
-
-    background: #111;
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
+    min-height: 70px;
     padding: 0 30px;
 
+    display: flex;
+    align-items: center;
+
+    background: var(--admin-negro);
+    color: #ffffff;
+
     position: sticky;
-
     top: 0;
-
     z-index: 100;
 
+    border-bottom: 1px solid #242424;
 }
-
 
 .admin-logo {
+    flex-shrink: 0;
 
+    color: #ffffff;
     font-size: 24px;
-
     font-weight: 700;
-
     letter-spacing: 1px;
-
 }
-
 
 .admin-logo span {
-
-    color: #b08d35;
-
+    color: var(--admin-dorado);
 }
-
 
 .admin-titulo {
+    margin-left: 34px;
 
-    font-size: 20px;
-
+    color: #f5f5f5;
+    font-size: 18px;
     font-weight: 600;
-
 }
 
+
+/* Botón volver a la tienda */
 
 .btn-volver-tienda {
+    margin-left: auto;
 
-    color: white;
+    min-height: 38px;
+    padding: 0 15px;
 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    color: #ffffff;
+    background: transparent;
+
+    border: 1px solid var(--admin-dorado);
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 500;
     text-decoration: none;
+    white-space: nowrap;
 
-    border: 1px solid #b08d35;
-
-    padding: 9px 15px;
-
-    border-radius: 5px;
-
+    transition:
+        background var(--admin-transicion),
+        color var(--admin-transicion),
+        border-color var(--admin-transicion);
 }
-
 
 .btn-volver-tienda:hover {
-
-    background: #b08d35;
-
+    background: var(--admin-dorado);
+    border-color: var(--admin-dorado);
+    color: #111111;
 }
 
 
-/* =========================================
-   CONTENIDO
-========================================= */
+/* Botón cerrar sesión */
+
+.btn-logout-admin {
+    margin-left: 10px;
+
+    min-height: 38px;
+    padding: 0 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    background: #222222;
+    color: #ffffff;
+
+    border: 1px solid #555555;
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+    white-space: nowrap;
+    opacity: 1;
+
+    transition:
+        background var(--admin-transicion),
+        border-color var(--admin-transicion),
+        color var(--admin-transicion);
+}
+
+.btn-logout-admin:hover {
+    background: #333333;
+    border-color: #777777;
+    color: #ffffff;
+}
+
+.btn-logout-admin:disabled {
+    opacity: 1;
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   03. CONTENIDO GENERAL
+============================================================ */
 
 .admin-main {
-
     width: 100%;
-
     max-width: 1400px;
 
     margin: 0 auto;
-
     padding: 30px;
-
 }
 
 
-/* =========================================
-   DASHBOARD
-========================================= */
+/* ============================================================
+   04. DASHBOARD
+============================================================ */
 
 .admin-dashboard {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 
     gap: 20px;
-
     margin-bottom: 30px;
-
 }
-
 
 .admin-card {
-
-    background: white;
-
-    border-radius: 8px;
-
     padding: 25px;
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.08);
+    background: var(--admin-blanco);
+    border-radius: var(--admin-radio-md);
 
+    box-shadow: var(--admin-sombra);
 }
 
-
 .admin-card-titulo {
-
     display: block;
-
-    color: #666;
 
     margin-bottom: 10px;
 
+    color: var(--admin-texto-secundario);
 }
-
 
 .admin-card strong {
-
+    color: var(--admin-dorado);
     font-size: 32px;
-
-    color: #b08d35;
-
 }
 
 
-/* =========================================
-   SECCIONES
-========================================= */
+/* ============================================================
+   05. SECCIONES
+============================================================ */
 
 .admin-seccion {
-
-    background: white;
-
-    border-radius: 8px;
-
+    margin-bottom: 30px;
     padding: 25px;
 
-    margin-bottom: 30px;
+    background: var(--admin-blanco);
+    border-radius: var(--admin-radio-md);
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.08);
-
+    box-shadow: var(--admin-sombra);
 }
 
-
-.admin-seccion-header {
-
+.admin-seccion-header,
+.seccion-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 20px;
-
     margin-bottom: 20px;
-
 }
-
 
 .admin-seccion-header h1,
-.admin-seccion-header h2 {
-
+.admin-seccion-header h2,
+.seccion-header h2 {
     margin: 0 0 5px;
-
 }
 
-
-.admin-seccion-header p {
-
+.admin-seccion-header p,
+.seccion-header p {
     margin: 0;
-
-    color: #666;
-
+    color: var(--admin-texto-secundario);
 }
 
 
-/* =========================================
-   BOTONES
-========================================= */
+/* ============================================================
+   06. BOTONES GENERALES
+============================================================ */
+
+.btn-admin,
+.btn-admin-principal,
+.btn-admin-secundario,
+.btn-secundario,
+.btn-ver-pedido,
+.btn-editar-producto,
+.btn-guardar-estado-modal {
+    cursor: pointer;
+    font-family: inherit;
+}
 
 .btn-admin {
-
-    border: none;
-
-    background: #111;
-
-    color: white;
-
     padding: 10px 18px;
 
-    border-radius: 5px;
+    background: var(--admin-negro);
+    color: #ffffff;
 
-    cursor: pointer;
+    border: none;
+    border-radius: 6px;
 
     font-size: 14px;
+    font-weight: 500;
 
+    transition:
+        background var(--admin-transicion),
+        transform var(--admin-transicion);
 }
-
 
 .btn-admin:hover {
-
-    background: #b08d35;
-
+    background: var(--admin-dorado);
 }
-
 
 .btn-secundario {
-
-    background: #777;
-
+    background: #777777;
 }
 
 
-/* =========================================
-   TABLAS
-========================================= */
+/* Botón principal usado en formularios */
 
-.tabla-contenedor {
+.btn-admin-principal {
+    padding: 9px 20px;
 
+    background: #111827;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    transition:
+        background var(--admin-transicion),
+        box-shadow var(--admin-transicion);
+}
+
+.btn-admin-principal:hover {
+    background: #1f2937;
+}
+
+
+/* Botón secundario usado en formularios */
+
+.btn-admin-secundario {
+    padding: 9px 18px;
+
+    background: #ffffff;
+    color: #374151;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    transition:
+        background var(--admin-transicion),
+        border-color var(--admin-transicion);
+}
+
+.btn-admin-secundario:hover {
+    background: #f3f4f6;
+    border-color: #bfc3c8;
+}
+
+.btn-admin-principal:disabled,
+.btn-admin-secundario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   07. TABLAS
+============================================================ */
+
+.tabla-contenedor,
+.tabla-responsive {
     width: 100%;
-
     overflow-x: auto;
-
 }
-
 
 .tabla-admin {
-
     width: 100%;
-
-    border-collapse: collapse;
-
     min-width: 900px;
 
+    border-collapse: collapse;
 }
-
 
 .tabla-admin th {
-
-    background: #111;
-
-    color: white;
-
     padding: 12px;
+
+    background: var(--admin-negro);
+    color: #ffffff;
 
     text-align: left;
-
     font-size: 14px;
-
+    font-weight: 600;
+    white-space: nowrap;
 }
-
 
 .tabla-admin td {
-
     padding: 12px;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--admin-borde);
 
     font-size: 14px;
-
+    vertical-align: middle;
 }
 
+.tabla-admin tbody tr {
+    transition: background var(--admin-transicion);
+}
 
 .tabla-admin tbody tr:hover {
-
     background: #f8f8f8;
-
 }
 
-
-.tabla-cargando {
-
+.tabla-cargando,
+.tabla-vacia {
     text-align: center;
-
     padding: 30px !important;
-
-    color: #777;
-
+    color: var(--admin-texto-suave);
 }
 
 
-/* =========================================
-   DETALLE PEDIDO
-========================================= */
+/* Miniatura de producto */
+
+.producto-admin-miniatura {
+    width: 60px;
+    height: 60px;
+
+    object-fit: cover;
+    display: block;
+
+    border: 1px solid var(--admin-borde);
+    border-radius: 6px;
+}
+
+
+/* Botón editar producto */
+
+.btn-editar-producto {
+    padding: 8px 12px;
+
+    background: var(--admin-negro);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    transition: background var(--admin-transicion);
+}
+
+.btn-editar-producto:hover {
+    background: var(--admin-negro-hover);
+}
+
+
+/* ============================================================
+   08. DETALLE DE PEDIDO — ESTRUCTURA GENERAL
+============================================================ */
 
 .detalle-pedido {
-
     margin-top: 30px;
-
 }
-
 
 .detalle-bloque {
-
     margin-top: 25px;
-
 }
 
-
 .detalle-bloque h3 {
-
-    margin-bottom: 15px;
-
-    border-bottom: 1px solid #ddd;
+    margin: 0 0 15px;
 
     padding-bottom: 10px;
 
+    border-bottom: 1px solid var(--admin-borde);
 }
-
 
 .detalle-grid {
-
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
 
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 10px;
-
+    gap: 12px;
 }
 
-
-.detalle-item {
-
+.detalle-item,
+.detalle-grid > div {
     padding: 10px;
 
-    background: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 
-    border-radius: 5px;
-
+    background: #f8f8f8;
+    border-radius: 6px;
 }
 
-
-.detalle-item strong {
-
+.detalle-item strong,
+.detalle-grid strong {
     display: block;
 
     margin-bottom: 4px;
 
+    color: #555555;
+    font-size: 13px;
+}
+
+.detalle-grid span {
+    color: #222222;
+    font-size: 15px;
+}
+
+.detalle-observaciones {
+    margin-top: 15px;
+    padding: 12px;
+
+    background: #f8f8f8;
+    border-radius: 6px;
+}
+
+.detalle-observaciones p {
+    margin: 6px 0 0;
 }
 
 
-/* =========================================
-   RESPONSIVE
-========================================= */
-
-@media (max-width: 800px) {
-
-    .admin-header {
-
-        padding: 0 15px;
-
-    }
-
-    .admin-titulo {
-
-        display: none;
-
-    }
-
-    .admin-main {
-
-        padding: 15px;
-
-    }
-
-    .admin-dashboard {
-
-        grid-template-columns: 1fr;
-
-    }
-
-    .detalle-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
-}
-
-/* =========================================================
-   MODAL DETALLE PEDIDO - ADMIN
-========================================================= */
+/* ============================================================
+   09. MODAL DE DETALLE DE PEDIDO
+============================================================ */
 
 .admin-modal-overlay {
-
     position: fixed;
-
     inset: 0;
-
-    background: rgba(0, 0, 0, 0.55);
+    z-index: 9999;
 
     display: none;
-
     align-items: center;
-
     justify-content: center;
 
     padding: 20px;
 
-    z-index: 9999;
-
+    background: rgba(0, 0, 0, 0.55);
 }
-
 
 .admin-modal-overlay.activo {
-
     display: flex;
-
 }
 
-
 .admin-modal {
-
     width: min(1000px, 100%);
-
     max-height: 90vh;
 
-    background: #ffffff;
+    display: flex;
+    flex-direction: column;
 
+    background: #ffffff;
     border-radius: 10px;
 
     overflow: hidden;
 
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-
+    box-shadow: var(--admin-sombra-modal);
 }
 
-
 .admin-modal-header {
+    flex-shrink: 0;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding: 18px 22px;
 
     border-bottom: 1px solid #eeeeee;
-
 }
-
 
 .admin-modal-header h2 {
-
     margin: 0;
-
     font-size: 22px;
-
 }
 
-
 .admin-modal-cerrar {
-
     width: 36px;
-
     height: 36px;
 
-    border: none;
+    padding: 2px 6px;
 
     background: transparent;
+    color: #777777;
+
+    border: none;
+    border-radius: 6px;
 
     font-size: 28px;
+    line-height: 1;
 
     cursor: pointer;
 
-    line-height: 1;
-
+    transition:
+        color var(--admin-transicion),
+        background var(--admin-transicion);
 }
 
+.admin-modal-cerrar:hover {
+    color: #111827;
+    background: #f3f4f6;
+}
 
 .admin-modal-contenido {
-
     padding: 22px;
 
     max-height: calc(90vh - 75px);
 
     overflow-y: auto;
-
 }
 
 
-.detalle-pedido-seccion {
-
-    margin-bottom: 25px;
-
-}
-
-
-.detalle-pedido-seccion h3 {
-
-    margin: 0 0 15px;
-
-    font-size: 18px;
-
-    border-bottom: 1px solid #eeeeee;
-
-    padding-bottom: 10px;
-
-}
-
-
-.detalle-grid {
-
-    display: grid;
-
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 12px;
-
-}
-
-
-.detalle-grid > div {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 3px;
-
-    padding: 10px;
-
-    background: #f8f8f8;
-
-    border-radius: 5px;
-
-}
-
-
-.detalle-grid strong {
-
-    font-size: 13px;
-
-    color: #666;
-
-}
-
-
-.detalle-grid span {
-
-    font-size: 15px;
-
-    color: #222;
-
-}
-
-
-.detalle-observaciones {
-
-    margin-top: 15px;
-
-    padding: 12px;
-
-    background: #f8f8f8;
-
-    border-radius: 5px;
-
-}
-
-
-.detalle-observaciones p {
-
-    margin: 6px 0 0;
-
-}
-
-
-.tabla-detalle-wrapper {
-
-    overflow-x: auto;
-
-}
-
-
-.tabla-detalle-pedido {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-}
-
-
-.tabla-detalle-pedido th {
-
-    background: #111;
-
-    color: #fff;
-
-    padding: 10px;
-
-    text-align: left;
-
-    font-size: 13px;
-
-}
-
-
-.tabla-detalle-pedido td {
-
-    padding: 10px;
-
-    border-bottom: 1px solid #eeeeee;
-
-    font-size: 14px;
-
-}
-
-
-.btn-ver-pedido {
-
-    border: none;
-
-    background: #111;
-
-    color: #fff;
-
-    padding: 7px 14px;
-
-    border-radius: 4px;
-
-    cursor: pointer;
-
-}
-
-
-.btn-ver-pedido:hover {
-
-    opacity: 0.85;
-
-}
-
-
-.estado-pedido {
-
-    display: inline-block;
-
-    padding: 5px 9px;
-
-    border-radius: 4px;
-
-    background: #eeeeee;
-
-    font-size: 12px;
-
-}
-
-
-.admin-cargando,
-.admin-sin-datos {
-
-    text-align: center;
-
-    padding: 25px;
-
-    color: #666;
-
-}
-
-
-.admin-error {
-
-    color: #b00020;
-
-    padding: 15px;
-
-    background: #fff0f0;
-
-    border-radius: 5px;
-
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 700px) {
-
-    .admin-modal-overlay {
-
-        padding: 10px;
-
-    }
-
-
-    .admin-modal {
-
-        max-height: 95vh;
-
-    }
-
-
-    .detalle-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
-
-    .admin-modal-contenido {
-
-        padding: 15px;
-
-    }
-
-}
-
-/* =========================================================
-   ESTILOS PARA EL MODAL DE DETALLE DE PEDIDO (MEJORADO)
-========================================================= */
+/* Cabecera mejorada del pedido */
 
 .modal-pedido-cabecera {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #f0f0f0;
+    justify-content: space-between;
+
+    gap: 15px;
+
     margin-bottom: 15px;
+    padding-bottom: 12px;
+
+    border-bottom: 2px solid #f0f0f0;
 }
 
 .badge-num-pedido {
+    padding: 4px 10px;
+
+    background: #f4f4f4;
+    color: #111111;
+
+    border-radius: 6px;
+
     font-size: 1.2rem;
     font-weight: 700;
-    color: #111;
-    background: #f4f4f4;
-    padding: 4px 10px;
-    border-radius: 6px;
 }
 
 .fecha-modal {
-    font-size: 0.9rem;
-    color: #666;
     margin-left: 10px;
+
+    color: #666666;
+    font-size: 0.9rem;
 }
 
 .monto-destacado-modal {
@@ -781,92 +694,120 @@ body {
 
 .monto-destacado-modal small {
     display: block;
+
+    color: #777777;
     font-size: 0.8rem;
-    color: #777;
 }
 
 .monto-destacado-modal strong {
+    color: #d4af37;
     font-size: 1.4rem;
-    color: #d4af37; /* Color dorado elegante o el color de tu marca */
 }
 
-/* BARRA DE ACCIÓN DE ESTADO */
+
+/* Barra de acción del estado */
+
 .panel-accion-estado {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 10px 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 15px;
+
     margin-bottom: 20px;
+    padding: 10px 15px;
+
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
 }
 
 .controles-estado-modal {
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
 .select-estado-modal {
     padding: 6px 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #cccccc;
     border-radius: 6px;
-    border: 1px solid #ccc;
+
     font-weight: 600;
 }
 
 .btn-guardar-estado-modal {
-    background: #111;
-    color: #fff;
-    border: none;
     padding: 6px 14px;
+
+    background: var(--admin-negro);
+    color: #ffffff;
+
+    border: none;
     border-radius: 6px;
-    cursor: pointer;
+
     font-weight: 600;
-    transition: background 0.2s;
+
+    transition: background var(--admin-transicion);
 }
 
 .btn-guardar-estado-modal:hover {
-    background: #333;
+    background: #333333;
 }
 
-/* TARJETAS DE INFORMACIÓN */
+
+/* Tarjetas de información */
+
 .grid-modal-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+
     gap: 15px;
     margin-bottom: 15px;
 }
 
 .card-info-modal {
+    padding: 12px 15px;
+
     background: #ffffff;
+
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 12px 15px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .card-info-modal h4 {
-    margin: 0 0 10px 0;
-    font-size: 0.95rem;
-    color: #333;
-    border-bottom: 1px solid #edf2f7;
+    margin: 0 0 10px;
     padding-bottom: 6px;
+
+    color: #333333;
+
+    border-bottom: 1px solid #edf2f7;
+
+    font-size: 0.95rem;
 }
 
 .fila-info {
     display: flex;
     justify-content: space-between;
-    font-size: 0.88rem;
+
+    gap: 10px;
+
     margin-bottom: 6px;
+
+    font-size: 0.88rem;
 }
 
 .fila-info strong {
-    color: #555;
+    color: #555555;
 }
 
 .link-wa-modal {
     color: #25d366;
-    font-weight: bold;
+    font-weight: 700;
     text-decoration: none;
 }
 
@@ -876,167 +817,422 @@ body {
 
 .observaciones-block {
     margin-bottom: 20px;
+
     background: #fffbeb;
     border-color: #fef3c7;
 }
 
 .observaciones-block p {
     margin: 0;
-    font-size: 0.9rem;
+
     color: #92400e;
+    font-size: 0.9rem;
 }
 
-/* TABLA DE PRODUCTOS DENTRO DEL MODAL */
+
+/* Tabla de productos dentro del modal */
+
 .seccion-productos-modal {
     margin-top: 20px;
 }
 
 .seccion-productos-modal h4 {
-    margin-bottom: 10px;
+    margin: 0 0 10px;
     font-size: 1rem;
 }
 
 .wrapper-tabla-modal {
     overflow-x: auto;
+
     border: 1px solid #e2e8f0;
     border-radius: 8px;
 }
 
 .tabla-modal-detalles {
     width: 100%;
+
     border-collapse: collapse;
+
     font-size: 0.88rem;
 }
 
 .tabla-modal-detalles th {
+    padding: 10px;
+
     background: #f7fafc;
     color: #4a5568;
-    padding: 10px;
+
     text-align: left;
+
     border-bottom: 1px solid #e2e8f0;
 }
 
 .tabla-modal-detalles td {
     padding: 10px;
+
     border-bottom: 1px solid #edf2f7;
 }
 
 .tabla-modal-detalles code {
-    background: #edf2f7;
     padding: 2px 6px;
+
+    background: #edf2f7;
+
     border-radius: 4px;
+
     font-size: 0.8rem;
 }
 
+.tabla-detalle-wrapper {
+    overflow-x: auto;
+}
+
+.tabla-detalle-pedido {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-detalle-pedido th {
+    padding: 10px;
+
+    background: var(--admin-negro);
+    color: #ffffff;
+
+    text-align: left;
+    font-size: 13px;
+}
+
+.tabla-detalle-pedido td {
+    padding: 10px;
+
+    border-bottom: 1px solid #eeeeee;
+
+    font-size: 14px;
+}
+
+.btn-ver-pedido {
+    padding: 7px 14px;
+
+    background: var(--admin-negro);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 5px;
+
+    transition: background var(--admin-transicion);
+}
+
+.btn-ver-pedido:hover {
+    background: var(--admin-negro-hover);
+}
+
+.estado-pedido {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    background: #eeeeee;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+}
+
+
+/* Estados generales del modal */
+
+.admin-cargando,
+.admin-sin-datos {
+    padding: 25px;
+
+    color: #666666;
+
+    text-align: center;
+}
+
+.admin-error {
+    padding: 15px;
+
+    background: #fff0f0;
+    color: #b00020;
+
+    border-radius: 6px;
+}
+
+
 /* ============================================================
-   GESTIÓN DE PRODUCTOS
+   10. MODALES DE ADMINISTRACIÓN
+   Productos / Categorías / Subcategorías / Banners
+============================================================ */
+
+.modal-admin-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.modal-admin-overlay.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-admin {
+    width: min(650px, 95%);
+    max-height: 88vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.2),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    transform: translateY(-10px);
+
+    transition: transform 0.25s ease;
+}
+
+.modal-admin-overlay.activo .modal-admin {
+    transform: translateY(0);
+}
+
+
+/* Encabezado */
+
+.modal-admin-header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-admin-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-admin-cerrar {
+    padding: 2px 6px;
+
+    background: transparent;
+    color: #9ca3af;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 1.6rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        color var(--admin-transicion),
+        background var(--admin-transicion);
+}
+
+.modal-admin-cerrar:hover {
+    color: #111827;
+    background: #f3f4f6;
+}
+
+
+/* ============================================================
+   11. FORMULARIOS ADMINISTRATIVOS
+============================================================ */
+
+#form-producto-admin,
+#form-categoria-admin,
+#form-subcategoria-admin {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+#form-producto-admin {
+    padding: 0;
+}
+
+.modal-admin-body {
+    flex: 1;
+
+    padding: 16px 24px;
+
+    overflow-y: auto;
+}
+
+
+/* Filas de campos */
+
+.fila-admin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+/* Campo individual */
+
+.campo-admin {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.campo-admin label {
+    color: #374151;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.campo-admin input,
+.campo-admin select,
+.campo-admin textarea {
+    width: 100%;
+
+    padding: 9px 12px;
+
+    background: #ffffff;
+    color: #111827;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 0.9rem;
+
+    transition:
+        border-color var(--admin-transicion),
+        box-shadow var(--admin-transicion),
+        background var(--admin-transicion);
+}
+
+.campo-admin textarea {
+    resize: vertical;
+}
+
+.campo-admin input:hover,
+.campo-admin select:hover,
+.campo-admin textarea:hover {
+    border-color: #b8bdc4;
+}
+
+.campo-admin input:focus,
+.campo-admin select:focus,
+.campo-admin textarea:focus {
+    border-color: #111827;
+
+    box-shadow:
+        0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+.campo-admin input:disabled,
+.campo-admin input[readonly] {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+
+/* Pie del modal */
+
+.modal-admin-footer {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: auto;
+    padding: 16px 24px;
+
+    background: #f9fafb;
+
+    border-top: 1px solid #f3f4f6;
+}
+
+
+/* Modal de banners: conserva scroll interno */
+
+#modal-banner-admin .modal-admin {
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-banner-admin .modal-admin-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+
+/* ============================================================
+   12. GESTIÓN DE PRODUCTOS
 ============================================================ */
 
 .productos-admin {
     margin-top: 30px;
 }
 
-.seccion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 25px;
-}
 
-.seccion-header h2 {
-    margin: 0 0 5px;
-}
+/* ============================================================
+   13. ESTADOS, BADGES Y ACCIONES
+============================================================ */
 
-.seccion-header p {
-    margin: 0;
-    color: #666;
-}
-
-
-.btn-admin-principal {
-    background: #111;
-    color: #fff;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.btn-admin-principal:hover {
-    opacity: 0.9;
-}
-
-
-.btn-admin-secundario {
-    background: #eee;
-    color: #222;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-
-/* TABLA */
-
-.tabla-responsive {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.tabla-admin {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.tabla-admin th {
-    background: #111;
-    color: #fff;
-    padding: 12px;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.tabla-admin td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    vertical-align: middle;
-}
-
-.tabla-vacia {
-    text-align: center;
-    padding: 30px !important;
-    color: #777;
-}
-
-
-.producto-admin-miniatura {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-
-.btn-editar-producto {
-    background: #111;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-
-/* ESTADO */
+/* Estado de producto */
 
 .estado-producto {
     display: inline-block;
+
     padding: 5px 9px;
+
     border-radius: 20px;
+
     font-size: 12px;
     font-weight: 600;
 }
@@ -1047,249 +1243,150 @@ body {
 }
 
 .estado-producto.inactivo {
-    background: #eee;
-    color: #777;
+    background: #eeeeee;
+    color: #777777;
+}
+
+
+/* Badge categoría */
+
+.badge-categoria {
+    display: inline-block;
+
+    padding: 3px 8px;
+
+    background: #f1f5f9;
+    color: #475569;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* Badge subcategoría */
+
+.badge-subcategoria {
+    display: inline-block;
+
+    margin-left: 4px;
+    padding: 3px 8px;
+
+    background: #eff6ff;
+    color: #1d4ed8;
+
+    border: 1px solid #bfdbfe;
+    border-radius: 4px;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+
+/* Acciones de tabla */
+
+.acciones-tabla {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+
+/* Botones peligrosos / eliminar */
+
+.btn-eliminar-producto,
+.btn-admin-danger {
+    padding: 8px 12px;
+
+    background: #ef4444;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background var(--admin-transicion),
+        transform var(--admin-transicion);
+}
+
+.btn-eliminar-producto:hover,
+.btn-admin-danger:hover {
+    background: #dc2626;
 }
 
 
 /* ============================================================
-   MODALES DE ADMINISTRACIÓN (PRODUCTOS, CATEGORÍAS, SUBCATEGORÍAS)
+   14. ALERTAS Y ESTADOS DE CARGA
 ============================================================ */
 
-/* 📌 Overlay unificado: Fondo oscuro NÍTIDO (sin blur) */
-.modal-admin-overlay {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.65); /* Eliminado el backdrop-filter: blur */
+.admin-alerta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 20px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
-}
-
-/* Estado activo para abrir cualquier modal */
-.modal-admin-overlay.activo {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* 📌 Ventana Modal adaptable */
-.modal-admin {
-    background: #ffffff;
-    width: min(650px, 95%);
-    max-height: 88vh; /* Control estricto de altura */
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Mantiene esquinas redondeadas y encapsula scroll */
-    transform: translateY(-10px);
-    transition: transform 0.25s ease;
-}
-
-.modal-admin-overlay.activo .modal-admin {
-    transform: translateY(0);
-}
-
-/* Encabezado fijo */
-.modal-admin-header {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #f3f4f6;
-    flex-shrink: 0; /* Impide que el header se aplaste */
-}
 
-.modal-admin-header h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
-}
-
-.modal-admin-cerrar {
-    background: transparent;
-    border: none;
-    font-size: 1.6rem;
-    color: #9ca3af;
-    cursor: pointer;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 6px;
-    transition: color 0.2s, background 0.2s;
-}
-
-.modal-admin-cerrar:hover {
-    color: #111827;
-    background-color: #f3f4f6;
-}
-
-/* 📌 Formularios flexibles para TODOS los modales */
-#form-producto-admin,
-#form-categoria-admin,
-#form-subcategoria-admin {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden; /* Permite que el scroll ocurra adentro en .modal-admin-body */
-}
-
-/* Contenedor con Scroll para los campos si son largos */
-.modal-admin-body {
-    flex: 1;
-    overflow-y: auto; /* Scroll interno fluido */
-    padding: 16px 24px;
-}
-
-/* Soporte para si no usas .modal-admin-body en el modal de producto viejo */
-#form-producto-admin {
-    padding: 0; /* La sangría la maneja el body/footer */
-}
-
-/* Filas en grid para campos dobles (Ej: Precio / Precio Oferta) */
-.fila-admin {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-/* Estilos de los inputs */
-.campo-admin {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 14px;
-}
-
-.campo-admin label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #374151;
-}
-
-.campo-admin input,
-.campo-admin select,
-.campo-admin textarea {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #111827;
-    background-color: #ffffff;
-    box-sizing: border-box;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit;
-}
-
-.campo-admin textarea {
-    resize: vertical;
-}
-
-.campo-admin input:focus,
-.campo-admin select:focus,
-.campo-admin textarea:focus {
-    border-color: #111827;
-    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
-}
-
-.campo-admin input:disabled,
-.campo-admin input[readonly] {
-    background-color: #f3f4f6;
-    color: #6b7280;
-    cursor: not-allowed;
-}
-
-/* 📌 Pie de página FIJO e IMPOSIBLE de cortar */
-.modal-admin-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
     gap: 12px;
-    padding: 16px 24px;
-    background-color: #f9fafb;
-    border-top: 1px solid #f3f4f6;
-    flex-shrink: 0; /* 📌 Garantiza que los botones NUNCA se corten ni salgan de pantalla */
-    margin-top: auto;
-}
 
-.btn-admin-secundario {
-    background: #ffffff;
-    border: 1px solid #d1d5db;
-    color: #374151;
-    padding: 9px 18px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
+
+    font-size: 14px;
 }
 
-.btn-admin-secundario:hover {
-    background: #f3f4f6;
+.admin-alerta.exito {
+    background: var(--admin-exito-fondo);
+    color: var(--admin-exito-texto);
+    border: 1px solid var(--admin-exito-borde);
 }
 
-.btn-admin-principal {
-    background: #111827;
-    border: none;
-    color: #ffffff;
-    padding: 9px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
+.admin-alerta.error {
+    background: var(--admin-error-fondo);
+    color: var(--admin-error-texto);
+    border: 1px solid var(--admin-error-borde);
 }
 
-.btn-admin-principal:hover {
-    background: #1f2937;
-}
 
-/* RESPONSIVE */
-@media (max-width: 700px) {
-    .seccion-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
+/* ============================================================
+   15. VISTA PREVIA DE IMÁGENES
+============================================================ */
 
-    .fila-admin {
-        grid-template-columns: 1fr;
-    }
-
-    .modal-admin-overlay {
-        padding: 10px;
-    }
-}
-
-/* =========================================
-   ETAPA 4: VISTA PREVIA DE IMÁGENES
-========================================= */
 .imagen-preview-container {
     width: 140px;
     height: 140px;
+
     margin-top: 8px;
-    border: 2px dashed #e2e8f0;
-    border-radius: 8px;
+    padding: 4px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     overflow: hidden;
+
     background: #f8fafc;
     color: #94a3b8;
+
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+
     font-size: 12px;
     font-weight: 500;
     text-align: center;
-    padding: 4px;
-    transition: all 0.2s ease;
+
+    transition:
+        border-color var(--admin-transicion),
+        background var(--admin-transicion);
 }
 
 .imagen-preview-container:hover {
@@ -1299,103 +1396,336 @@ body {
 .imagen-preview {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+
     display: block;
+
+    object-fit: cover;
+
     border-radius: 6px;
 }
 
+
 /* ============================================================
-   ETAPA 5: ADICIONALES DE GESTIÓN Y RETROALIMENTACIÓN
+   16. LOGIN ADMINISTRATIVO
 ============================================================ */
 
-/* Badges para categorías y subcategorías en tablas */
-.badge-categoria {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    background-color: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-}
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
 
-.badge-subcategoria {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    background-color: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    margin-left: 4px;
-}
-
-/* Botón de acción: Eliminar / Inactivo */
-.btn-eliminar-producto,
-.btn-admin-danger {
-    background-color: #ef4444;
-    color: #ffffff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background-color 0.2s ease;
-}
-
-.btn-eliminar-producto:hover,
-.btn-admin-danger:hover {
-    background-color: #dc2626;
-}
-
-/* Contenedor de acciones en filas de tablas */
-.acciones-tabla {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* Mensajes de notificación / Alertas dinámicas */
-.admin-alerta {
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            #242424 0%,
+            #151515 42%,
+            #0d0d0d 100%
+        );
 }
 
-.admin-alerta.exito {
-    background-color: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-}
+.login-box {
+    width: 100%;
+    max-width: 380px;
 
-.admin-alerta.error {
-    background-color: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-}
+    padding: 38px 36px 36px;
 
-/* Estados de carga en botones (deshabilitado activo) */
-.btn-admin-principal:disabled,
-.btn-admin-secundario:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-/* Fix scroll interno — Modal de Banner */
-#modal-banner-admin .modal-admin {
-    max-height: 90vh;
     display: flex;
     flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 14px;
+
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.35),
+        0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
-#modal-banner-admin .modal-admin-body {
-    overflow-y: auto;
-    flex: 1;
+
+/* Logo del login */
+
+.login-logo {
+    margin: 0 0 32px;
+
+    color: #111111;
+
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
 }
+
+.login-logo span {
+    color: var(--admin-dorado-login);
+}
+
+
+/* Título del login */
+
+.login-box h1,
+.login-box h2,
+.login-box h3 {
+    margin: 0 0 28px;
+
+    color: #111111;
+
+    font-size: 26px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+
+/* Labels */
+
+.login-box label {
+    display: block;
+
+    margin: 0 0 8px;
+
+    color: #333333;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* Inputs */
+
+.login-box input {
+    width: 100%;
+
+    margin-bottom: 18px;
+    padding: 12px 13px;
+
+    background: #ffffff;
+    color: #111111;
+
+    border: 1px solid #d5d5d5;
+    border-radius: 7px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border-color var(--admin-transicion),
+        box-shadow var(--admin-transicion),
+        background var(--admin-transicion);
+}
+
+.login-box input:hover {
+    border-color: #bdbdbd;
+}
+
+.login-box input:focus {
+    border-color: var(--admin-dorado-login);
+
+    box-shadow:
+        0 0 0 3px rgba(201, 162, 39, 0.12);
+}
+
+
+/* Botón ingresar */
+
+.login-box button {
+    width: 100%;
+
+    margin-top: 6px;
+    padding: 12px 16px;
+
+    background: #111111;
+    color: #ffffff;
+
+    border: 1px solid #111111;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background var(--admin-transicion),
+        border-color var(--admin-transicion),
+        transform 0.15s ease,
+        box-shadow var(--admin-transicion);
+}
+
+.login-box button:hover {
+    background: #242424;
+    border-color: #242424;
+
+    box-shadow:
+        0 5px 14px rgba(0, 0, 0, 0.16);
+}
+
+.login-box button:active {
+    transform: translateY(1px);
+}
+
+.login-box button:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* Error de login */
+.login-error {
+    min-height: 18px;
+
+    margin: 14px 0 0;
+
+    color: #b42318;
+
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+
+/* ============================================================
+   17. RESPONSIVE
+============================================================ */
+
+
+/* Tablet / móvil general */
+
+@media (max-width: 800px) {
+
+    .admin-header {
+        min-height: 64px;
+        padding: 0 15px;
+    }
+
+    .admin-titulo {
+        display: none;
+    }
+
+    .admin-main {
+        padding: 15px;
+    }
+
+    .admin-dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .detalle-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-volver-tienda {
+        margin-left: auto;
+    }
+
+    .btn-logout-admin {
+        margin-left: 10px;
+    }
+}
+
+
+/* Modales */
+
+@media (max-width: 700px) {
+
+    .admin-modal-overlay {
+        padding: 10px;
+    }
+
+    .admin-modal {
+        max-height: 95vh;
+    }
+
+    .admin-modal-contenido {
+        padding: 15px;
+    }
+
+    .seccion-header,
+    .admin-seccion-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .fila-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-accion-estado {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .controles-estado-modal {
+        width: 100%;
+    }
+
+    .select-estado-modal {
+        flex: 1;
+    }
+
+    .modal-pedido-cabecera {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .monto-destacado-modal {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+
+/* Login en móviles */
+
+@media (max-width: 480px) {
+
+    .login-overlay {
+        padding: 18px;
+    }
+
+    .login-box {
+        max-width: 100%;
+
+        padding: 30px 24px 28px;
+
+        border-radius: 12px;
+    }
+
+    .login-logo {
+        margin-bottom: 26px;
+        font-size: 21px;
+    }
+
+    .login-box h1,
+    .login-box h2,
+    .login-box h3 {
+        margin-bottom: 24px;
+        font-size: 23px;
+    }
+
+    .login-box input {
+        padding: 12px;
+    }
+
+    .login-box button {
+        padding: 12px;
+    }
+}
+
+
+/* ============================================================
+   FIN DEL CSS — PF MODA
+============================================================ */

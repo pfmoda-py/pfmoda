@@ -18,6 +18,51 @@
     </head>
     
     <body>
+        <div id="login-overlay" class="login-overlay">
+
+        <form id="form-login-admin" class="login-box">
+        
+            <div class="login-logo">PF <span>Moda</span></div>
+            <h2>Acceso administrativo</h2>
+        
+            <label for="login-usuario">Usuario</label>
+            <input type="text" id="login-usuario" autocomplete="username" required>
+        
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" autocomplete="current-password" required>
+        
+            <button type="submit" id="btn-login-admin">Ingresar</button>
+        
+            <p id="login-error" class="login-error"></p>
+        
+            <p style="text-align:center; margin-top:10px;">
+                <a href="#" id="link-olvide-clave" style="font-size:13px; color:#555;">¿Olvidaste tu contraseña?</a>
+            </p>
+        
+        </form>
+    
+        <form id="form-olvide-clave" class="login-box" style="display:none;">
+            <h2>Recuperar contraseña</h2>
+            <label for="olvide-usuario-email">Usuario o email</label>
+            <input type="text" id="olvide-usuario-email" required>
+            <button type="submit">Enviar enlace</button>
+            <p id="olvide-mensaje" class="login-error"></p>
+            <p style="text-align:center; margin-top:6px;">
+                <a href="#" id="link-volver-login" style="font-size:13px; color:#555;">Volver a iniciar sesión</a>
+            </p>
+        </form>
+    
+        <form id="form-nueva-clave" class="login-box" style="display:none;">
+            <h2>Crear nueva contraseña</h2>
+            <label for="nueva-clave-1">Nueva contraseña</label>
+            <input type="password" id="nueva-clave-1" minlength="8" autocomplete="new-password" required>
+            <label for="nueva-clave-2">Repetir contraseña</label>
+            <input type="password" id="nueva-clave-2" minlength="8" autocomplete="new-password" required>
+            <button type="submit">Guardar contraseña</button>
+            <p id="nueva-clave-mensaje" class="login-error"></p>
+        </form>
+    
+    </div>
     
         <!-- =========================================
              HEADER DEL PANEL
@@ -25,21 +70,14 @@
     
         <header class="admin-header">
 
-        <div class="admin-logo">
-            PF <span>Moda</span>
-        </div>
-
-        <div class="admin-titulo">
-            Panel Administrativo
-        </div>
-
-        <a
-            href="index.html"
-            class="btn-volver-tienda">
-
-            ← Volver a la tienda
-
-        </a>
+            <div class="admin-logo">
+                PF <span>Moda</span>
+            </div>
+            <div class="admin-titulo">
+                Panel Administrativo
+            </div>
+            <a href="index.html" class="btn-volver-tienda">← Volver a la tienda</a>
+            <button id="btn-logout-admin" class="btn-logout-admin" type="button">Cerrar sesión</button>
 
         </header>
     

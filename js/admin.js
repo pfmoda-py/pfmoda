@@ -14,15 +14,216 @@ let modoEdicionSubcategoria = false;
 let listaBannersAdmin = [];
 let modoEdicionBanner = false;
 
-document.addEventListener("DOMContentLoaded", () => {
+let productosAdmin = [];
+let productoEditando = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await iniciarControlDeAcceso();
+});
+
+/* =========================================================
+   CONTROL DE ACCESO
+========================================================= */
+
+function mostrarLogin(mensajeError) {
+    const overlay = document.getElementById("login-overlay");
+    const header = document.querySelector(".admin-header");
+    const main = document.querySelector("main.admin-main");
+
+    if (overlay) overlay.style.display = "flex";
+    if (header) header.style.display = "none";
+    if (main) main.style.display = "none";
+
+    const errorEl = document.getElementById("login-error");
+    if (errorEl) errorEl.textContent = mensajeError || "";
+}
+
+function ocultarLogin() {
+    const overlay = document.getElementById("login-overlay");
+    const header = document.querySelector(".admin-header");
+    const main = document.querySelector("main.admin-main");
+
+    if (overlay) overlay.style.display = "none";
+    if (header) header.style.display = "";
+    if (main) main.style.display = "";
+}
+
+async function iniciarControlDeAcceso() {
+
+    const esPantallaReset = await verificarSiHayTokenDeReset();
+    if (esPantallaReset) return; // se queda en la pantalla de "nueva contraseña"
+
+    const token = getAdminToken();
+
+    if (token) {
+        const sesion = await api.verificarSesionAdmin(token);
+        if (sesion && sesion.ok) {
+            ocultarLogin();
+            cargarPanelCompleto();
+            return;
+        }
+        limpiarAdminToken();
+    }
+
+    mostrarLogin();
+    configurarFormularioLogin();
+}
+
+function configurarFormularioLogin() {
+    const form = document.getElementById("form-login-admin");
+    if (form) {
+        form.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            const usuario = document.getElementById("login-usuario").value.trim();
+            const password = document.getElementById("login-password").value;
+            const boton = document.getElementById("btn-login-admin");
+            const errorEl = document.getElementById("login-error");
+
+            if (boton) { boton.disabled = true; boton.textContent = "Ingresando..."; }
+            if (errorEl) errorEl.textContent = "";
+
+            const resultado = await api.loginAdmin(usuario, password);
+
+            if (resultado && resultado.ok) {
+                setAdminToken(resultado.token);
+                ocultarLogin();
+                cargarPanelCompleto();
+            } else {
+                if (errorEl) errorEl.textContent = resultado?.error || "Usuario o contraseña incorrectos.";
+                if (boton) { boton.disabled = false; boton.textContent = "Ingresar"; }
+            }
+        });
+    }
+
+    const linkOlvide = document.getElementById("link-olvide-clave");
+    const linkVolver = document.getElementById("link-volver-login");
+    const formOlvide = document.getElementById("form-olvide-clave");
+
+    if (linkOlvide) {
+        linkOlvide.addEventListener("click", (e) => {
+            e.preventDefault();
+            form.style.display = "none";
+            formOlvide.style.display = "flex";
+        });
+    }
+
+    if (linkVolver) {
+        linkVolver.addEventListener("click", (e) => {
+            e.preventDefault();
+            formOlvide.style.display = "none";
+            form.style.display = "flex";
+        });
+    }
+
+    if (formOlvide) {
+        formOlvide.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            const valor = document.getElementById("olvide-usuario-email").value.trim();
+            const mensajeEl = document.getElementById("olvide-mensaje");
+            const boton = formOlvide.querySelector("button");
+
+            boton.disabled = true;
+            boton.textContent = "Enviando...";
+
+            await api.solicitarResetPassword(valor);
+
+            // Mensaje SIEMPRE igual, exista o no el usuario (seguridad).
+            mensajeEl.style.color = "#2e7d32";
+            mensajeEl.textContent = "Si el usuario existe, te enviamos un enlace por email.";
+            boton.disabled = false;
+            boton.textContent = "Enviar enlace";
+        });
+    }
+}
+
+async function verificarSiHayTokenDeReset() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("resetToken");
+
+    if (!token) return false;
+
+    const overlay = document.getElementById("login-overlay");
+    const formLogin = document.getElementById("form-login-admin");
+    const formOlvide = document.getElementById("form-olvide-clave");
+    const formNueva = document.getElementById("form-nueva-clave");
+    const mensajeEl = document.getElementById("nueva-clave-mensaje");
+
+    overlay.style.display = "flex";
+    formLogin.style.display = "none";
+    formOlvide.style.display = "none";
+    formNueva.style.display = "flex";
+
+    const validacion = await api.validarTokenReset(token);
+
+    if (!validacion.ok) {
+        mensajeEl.textContent = validacion.error || "Enlace inválido.";
+        formNueva.querySelector("button").disabled = true;
+        return true;
+    }
+
+    formNueva.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+
+        const clave1 = document.getElementById("nueva-clave-1").value;
+        const clave2 = document.getElementById("nueva-clave-2").value;
+
+        if (clave1 !== clave2) {
+            mensajeEl.textContent = "Las contraseñas no coinciden.";
+            return;
+        }
+        if (clave1.length < 8) {
+            mensajeEl.textContent = "La contraseña debe tener al menos 8 caracteres.";
+            return;
+        }
+
+        const boton = formNueva.querySelector("button");
+        boton.disabled = true;
+        boton.textContent = "Guardando...";
+
+        const resultado = await api.restablecerPassword(token, clave1);
+
+        if (resultado.ok) {
+            mensajeEl.style.color = "#2e7d32";
+            mensajeEl.textContent = "Contraseña actualizada. Redirigiendo al login...";
+            setTimeout(() => {
+                window.location.href = window.location.pathname; // saca el ?resetToken de la URL
+            }, 2000);
+        } else {
+            mensajeEl.textContent = resultado.error || "No se pudo actualizar la contraseña.";
+            boton.disabled = false;
+            boton.textContent = "Guardar contraseña";
+        }
+    });
+
+    return true;
+}
+
+function cargarPanelCompleto() {
     inicializarPanel();
     configurarProductosAdmin();
     cargarCategoriasAdmin();
-    cargarSubcategoriasAdmin();
     configurarEventosCategorias();
+    cargarSubcategoriasAdmin();
     cargarBannersAdmin();
     configurarEventosBanners();
-});
+    configurarLogout();   
+    
+}
+
+function configurarLogout() {
+    const btn = document.getElementById("btn-logout-admin");
+    if (!btn || btn.dataset.listo) return;
+    btn.dataset.listo = "true";
+
+    btn.addEventListener("click", async () => {
+        const token = getAdminToken();
+        await api.cerrarSesionAdmin(token);
+        limpiarAdminToken();
+        window.location.reload();
+    });
+}
 
 /* =========================================================
    INICIALIZAR PANEL (OPTIMIZADO CON PROMISE.ALL)
@@ -413,11 +614,6 @@ function formatearFecha(fecha) {
    GESTIÓN DE PRODUCTOS
 ============================================================ */
 
-let productosAdmin = [];
-
-let productoEditando = null;
-
-
 /**
  * Cargar productos
  */
@@ -465,7 +661,6 @@ async function cargarProductosAdmin() {
     renderizarProductosAdmin();
 
 }
-
 
 /**
  * Renderizar tabla
@@ -641,9 +836,6 @@ function renderizarProductosAdmin() {
    FUNCIONES AUXILIARES DE DESPLEGABLES (CATEGORÍAS Y SUBCATEGORÍAS)
 ============================================================ */
 
-/**
- * Llena el selector de Categorías en el modal de productos
- */
 function cargarSelectCategoriasModal(categoriaSeleccionada = '') {
     const selectCat = document.getElementById("admin-categoria");
     if (!selectCat) return;
@@ -778,7 +970,6 @@ function editarProductoAdmin(codigo) {
 
 }
 
-
 /**
  * Cerrar modal
  */
@@ -789,7 +980,6 @@ function cerrarModalProductoAdmin() {
     ).classList.remove("activo");
 
 }
-
 
 /**
  * Obtener datos del formulario
@@ -892,7 +1082,6 @@ function obtenerDatosProductoAdmin() {
     };
 
 }
-
 
 /**
  * Guardar producto
@@ -1410,7 +1599,12 @@ async function cargarBannersAdmin() {
                     <td>${ban.orden || "-"}</td>
                     <td>${ban.estado || "-"}</td>
                     <td>
-                        <button type="button" class="btn-editar-banner" onclick="editarBannerAdmin('${idBan}')">Editar</button>
+                        <div class="acciones-tabla">
+                        <button type="button"
+                                class="btn-editar-banner"
+                                onclick="editarBannerAdmin('${idBan}')">
+                                Editar
+                        </button>
                     </td>
                 </tr>
             `;

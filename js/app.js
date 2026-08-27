@@ -504,6 +504,31 @@ function actualizarActivoSubcategoria() {
     });
 }
 
+function debounce(funcion, tiempo = 250) {
+    let temporizador;
+    return function (...args) {
+        clearTimeout(temporizador);
+        temporizador = setTimeout(() => funcion.apply(this, args), tiempo);
+    };
+}
+
+function resetearFiltroCategoriaPorBusqueda() {
+    if (categoriaActual === "todos" && subcategoriaActual === "todos") return;
+
+    document
+        .querySelectorAll("#categorias-botones .btn-categoria")
+        .forEach(btn => btn.classList.remove("activo"));
+
+    document
+        .querySelector('#categorias-botones .btn-categoria[data-categoria="todos"]')
+        ?.classList.add("activo");
+
+    categoriaActual = "todos";
+    subcategoriaActual = "todos";
+
+    cargarSubcategorias("todos");
+}
+
 function configurarEventos() {    
 
     // ==========================================
@@ -516,18 +541,23 @@ function configurarEventos() {
     const btnBuscarMovil = document.getElementById("btn-buscar-movil");
 
     if (inputBuscar) {
+
         inputBuscar.addEventListener("input", e => {
-            textoBusqueda = e.target.value
-                .toLowerCase()
-                .trim();
+            textoBusqueda = e.target.value.toLowerCase().trim();
+
+            if (textoBusqueda !== "") {
+                resetearFiltroCategoriaPorBusqueda();
+            }
+        
             filtrarYRenderizar();
-            // Mostrar / ocultar botón X
+            
             if (btnLimpiarBusqueda) {
                 btnLimpiarBusqueda.classList.toggle(
                     "visible",
                     inputBuscar.value.trim() !== ""
                 );
             }
+           
         });
     }
 
@@ -1321,7 +1351,7 @@ function filtrarYRenderizar() {
                     loading="lazy" 
                     decoding="async"
                     draggable="false"
-                    onerror="this.onerror=null; this.src='https://via.placeholder.com/600?text=PF+Moda';">
+                    onerror="this.onerror=null; this.classList.add('imagen-error');"
             </div>            
 
             <div class="producto-info">
@@ -1457,7 +1487,7 @@ function actualizarCarritoUI() {
                 src="${escapeHTML(item.imagen || "https://via.placeholder.com/150?text=PF+Moda")}"
                 class="carrito-item-img"
                 alt="${escapeHTML(item.nombre || "Producto")}"
-                onerror="this.src='https://via.placeholder.com/150?text=PF+Moda'">
+                onerror="this.onerror=null; this.classList.add('imagen-error');"
 
             <div class="carrito-item-info">
                 <h4>
@@ -1821,17 +1851,10 @@ async function enviarPedidoWhatsApp() {
         // ⚡ GESTIÓN SEGURA: GENERAR Y GUARDAR NÚMERO DE PEDIDO 
         // (SOLO TRAS LA CONFIRMACIÓN DE LA API)
         // =================================================
-        const ahora = new Date();
-        const año = ahora.getFullYear();
-        const mes = String(ahora.getMonth() + 1).padStart(2, "0");
-        const dia = String(ahora.getDate()).padStart(2, "0");
-
-        let ultimoNumero = Number(localStorage.getItem("pf_moda_ultimo_pedido")) || 0;
-        ultimoNumero++;
-        localStorage.setItem("pf_moda_ultimo_pedido", ultimoNumero);
-
-        const consecutivo = String(ultimoNumero).padStart(4, "0");
-        const numeroPedido = `PF-${año}${mes}${dia}-${consecutivo}`;
+        const numeroPedido = respuesta.numeroPedido;
+        if (!numeroPedido) {
+            throw new Error("El servidor no devolvió el número de pedido.");
+        }
 
         // =================================================
         // CREAR MENSAJE DE WHATSAPP
@@ -1840,11 +1863,12 @@ async function enviarPedidoWhatsApp() {
         mensaje += "Quiero realizar el siguiente pedido:\n\n";
         mensaje += "━━━━━━━━━━━━━━\n";
 
-        carrito.forEach(item => {
+        const itemsReales = respuesta.items || carrito;
+
+        itemsReales.forEach(item => {
             const cantidad = Number(item.cantidad || 0);
             const precio = Number(item.precio || 0);
             const totalItem = cantidad * precio;
-
             mensaje += `${item.nombre || ""}\n`;
             mensaje += `Código: ${item.codigo || "-"}\n`;
             mensaje += `Color: ${item.color || "-"}\n`;
@@ -1854,7 +1878,8 @@ async function enviarPedidoWhatsApp() {
             mensaje += "━━━━━━━━━━━━━━\n";
         });
 
-        mensaje += `\nTotal: Gs. ${totalGeneral.toLocaleString("es-PY")}\n`;
+        const totalReal = Number(respuesta.total || 0);
+        mensaje += `\nTotal: Gs. ${totalReal.toLocaleString("es-PY")}\n`;
         mensaje += "━━━━━━━━━━━━━━\n\n";
 
         mensaje += `N° de pedido: ${numeroPedido}\n`;

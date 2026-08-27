@@ -2371,6 +2371,10 @@ footer.site-footer a:hover {
   font-size: 0.95rem;
 }
 
+.imagen-error {
+    opacity: 0.25;
+}
+
 
 /* =========================================================
    PF MODA
@@ -3261,4 +3265,13 @@ footer.site-footer a:hover {
         width: 100%;
     }
 
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

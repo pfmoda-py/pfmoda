@@ -4,6 +4,20 @@
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxJdd8w31jtDiwp3dV3WVFwL5izh6wkLMxUI2zp_afxUQuDjB_13zoNdNKTtbeMhJ-6Qw/exec"; // <-- Pega tu URL aquí
 
+const TOKEN_KEY = "pf_moda_admin_token";
+
+function getAdminToken() {
+    return localStorage.getItem(TOKEN_KEY) || "";
+}
+
+function setAdminToken(token) {
+    localStorage.setItem(TOKEN_KEY, token);
+}
+
+function limpiarAdminToken() {
+    localStorage.removeItem(TOKEN_KEY);
+}
+
 /* =========================================================
    PETICIONES GET
 ========================================================= */
@@ -39,135 +53,108 @@ const api = {
 
     /* ---------- INICIO TIENDA ---------- */
     getInicio: () =>
-        apiRequest("inicio"),
+    apiRequest("inicio"),
 
     /* ---------- PRODUCTOS ---------- */
     getProductos: () =>
-        apiRequest("productos"),
+    apiRequest("productos"),
 
     /* ---------- CATEGORÍAS ---------- */
     getCategorias: () =>
-        apiRequest("categorias"),
+    apiRequest("categorias"),
 
     /* ---------- SUBCATEGORÍAS ---------- */
     getSubcategorias: () =>
-        apiRequest("subcategorias"),
+    apiRequest("subcategorias"),
 
     /* ---------- BANNERS ---------- */
     getBanners: () =>
-        apiRequest("banners"),
+    apiRequest("banners"),
 
     /* ---------- PROMOCIONES ---------- */
     getPromociones: () =>
-        apiRequest("promociones"),
+    apiRequest("promociones"),
 
     /* ---------- CONFIGURACIÓN ---------- */
     getConfiguracion: () =>
-        apiRequest("configuracion"),
-    getPedidos: () => apiRequest("pedidos"),
-    
+    apiRequest("configuracion"),
+
     /* ---------- PEDIDOS ---------- */
+    getPedidos: () =>
+    apiRequest(`pedidos&token=${encodeURIComponent(getAdminToken())}`),
+    
+    /* ---------- DETALLES PEDIDO ---------- */
     getDetallePedido: (numeroPedido) =>
     apiRequest(
-        `detallePedido&numeroPedido=${encodeURIComponent(numeroPedido)}`
+    `detallePedido&numeroPedido=${encodeURIComponent(numeroPedido)}&token=${encodeURIComponent(getAdminToken())}`
     ),
 
     /* =====================================================
        MÓDULO PRODUCTOS ADMIN (AGREGADO)
     ===================================================== */
     getProductosAdmin: () =>
-        apiRequest("productos"),
+    apiRequest("productos"),
 
     /**
      * Crear producto
      */
     crearProductoAdmin: async function(producto) {
-
         try {
-
             const respuesta =
                 await fetch(API_URL, {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
-
                     body: JSON.stringify({
-
-                        accion:
-                            "crearProductoAdmin",
-
-                        producto:
-                            producto
-
+                        accion: "crearProductoAdmin",
+                        producto: producto,
+                        token: getAdminToken()
                     })
-
                 });
-
             return await respuesta.json();
-
         } catch (error) {
-
             console.error(
                 "Error al crear producto:",
                 error
             );
-
             return {
                 error:
                     "No se pudo crear el producto."
             };
-
         }
-
     },
 
     /**
      * Actualizar producto
      */
     actualizarProductoAdmin: async function(producto) {
-
         try {
-
             const respuesta =
                 await fetch(API_URL, {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
-
                     body: JSON.stringify({
-
                         accion:
                             "actualizarProductoAdmin",
-
                         producto:
-                            producto
-
+                            producto,
+                        token: getAdminToken()
                     })
-
                 });
-
             return await respuesta.json();
-
         } catch (error) {
-
             console.error(
                 "Error al actualizar producto:",
                 error
             );
-
             return {
                 error:
                     "No se pudo actualizar el producto."
             };
-
         }
-
     },
 
     /* =====================================================
@@ -180,7 +167,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "crearCategoria",
-                    categoria: datos
+                    categoria: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -197,7 +185,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "actualizarCategoria",
-                    categoria: datos
+                    categoria: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -217,7 +206,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "crearBanner",
-                    banner: datos
+                    banner: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -234,7 +224,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "actualizarBanner",
-                    banner: datos
+                    banner: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -254,7 +245,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "crearSubcategoria",
-                    subcategoria: datos
+                    subcategoria: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -271,7 +263,8 @@ const api = {
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     accion: "actualizarSubcategoria",
-                    subcategoria: datos
+                    subcategoria: datos,
+                    token: getAdminToken()
                 })
             });
             return await respuesta.json();
@@ -286,47 +279,28 @@ const api = {
     ===================================================== */
 
     registrarPedido: async function(datosPedido) {
-
         try {
-
             const response =
                 await fetch(API_URL, {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
-
                     body: JSON.stringify(datosPedido)
-
                 });
-
-
             const resultado =
                 await response.json();
-
-
             return resultado;
-
-
         } catch (error) {
-
             console.error(
                 "Error al registrar pedido:",
                 error
             );
-
-
             return {
-
                 error:
                     "No se pudo registrar el pedido."
-
             };
-
         }
-
     },
 
     /* =====================================================
@@ -334,57 +308,143 @@ const api = {
     ===================================================== */
 
     actualizarEstadoPedido: async function(datosEstado) {
-
         try {
-
             const response =
                 await fetch(API_URL, {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
-
                     body: JSON.stringify({
-
                         accion: "actualizarEstado",
-
                         numeroPedido:
                             datosEstado.numeroPedido,
-
                         estado:
-                            datosEstado.estado
-
+                            datosEstado.estado,
+                        token: getAdminToken()
                     })
-
                 });
-
-
             const resultado =
                 await response.json();
-
-
             return resultado;
-
-
         } catch (error) {
-
             console.error(
                 "Error al actualizar estado:",
                 error
             );
-
-
             return {
-
                 error:
                     "No se pudo actualizar el estado del pedido."
-
             };
-
         }
+    },
+    
+    /* =====================================================
+       LOGIN ADMIN
+    ===================================================== */
+    loginAdmin: async function(usuario, password) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "loginAdmin",
+                    usuario: usuario,
+                    password: password
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error en login:", error);
+            return { ok: false, error: "No se pudo conectar con el servidor." };
+        }
+    },
 
+    /* =====================================================
+       verificarS esion Admin
+    ===================================================== */
+
+    verificarSesionAdmin: async function(token) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "verificarSesionAdmin",
+                    token: token
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { ok: false };
+        }
+    },
+
+    /* =====================================================
+       cerrar Sesion Admin
+    ===================================================== */
+
+    cerrarSesionAdmin: async function(token) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "cerrarSesionAdmin",
+                    token: token
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { ok: false };
+        }
+    },
+
+    solicitarResetPassword: async function(usuarioOEmail) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "solicitarResetPassword",
+                    usuarioOEmail: usuarioOEmail
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { ok: false, error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    validarTokenReset: async function(token) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ accion: "validarTokenReset", token: token })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { ok: false, error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    restablecerPassword: async function(token, nuevaPassword) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "restablecerPassword",
+                    token: token,
+                    nuevaPassword: nuevaPassword
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { ok: false, error: "No se pudo conectar con el servidor." };
+        }
     }
+
 };
     
