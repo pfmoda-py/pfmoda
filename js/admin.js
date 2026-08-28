@@ -313,7 +313,7 @@ async function cargarUsuariosAdmin() {
         const activo = u.activo === true || String(u.activo).toLowerCase() === "true";
 
         const fila = document.createElement("tr");
-                fila.innerHTML = `
+            fila.innerHTML = `
             <td>${escaparHTML(u.usuario)}</td>
             <td>${escaparHTML(u.nombre)}</td>
             <td>${escaparHTML(u.email)}</td>
@@ -450,11 +450,11 @@ function renderizarTablaPedidos(pedidos) {
             .join("");
 
         fila.innerHTML = `
-            <td>${numeroPedido}</td>
+            <td>${escaparHTML(numeroPedido)}</td>
             <td>${formatearFecha(fecha)}</td>
-            <td>${cliente}</td>
-            <td>${whatsapp}</td>
-            <td>${ciudad}</td>
+            <td>${escaparHTML(cliente)}</td>
+            <td>${escaparHTML(whatsapp)}</td>
+            <td>${escaparHTML(ciudad)}</td>
             <td>₲ ${total.toLocaleString("es-PY")}</td>
             <td>
                 <select class="select-estado-pedido" data-numero-pedido="${numeroPedido}">
@@ -856,41 +856,28 @@ function renderizarProductosAdmin() {
 
 
         fila.innerHTML = `
-
             <td>
-
                 <img
                     src="${imagen}"
                     class="producto-admin-miniatura"
                     onerror="
                         this.src='https://via.placeholder.com/70?text=PF'
                     ">
-
             </td>
-
-
             <td>
                 ${producto.codigo || "-"}
             </td>
-
-
             <td>
                 <strong>
                     ${producto.nombre || "-"}
                 </strong>
             </td>
-
-
             <td>
                 ${producto.categoria || "-"}
             </td>
-
-
             <td>
                 ₲ ${precio.toLocaleString("es-PY")}
             </td>
-
-
             <td>
                 ${
                     oferta > 0
@@ -899,72 +886,46 @@ function renderizarProductosAdmin() {
                     : "-"
                 }
             </td>
-
-
             <td>
                 ${producto.stock ?? 0}
             </td>
-
-
             <td>
-
                 <span
                     class="estado-producto
-                    ${
-                        producto.estado === "Activo"
+                    ${producto.estado === "Activo"
                         ? "activo"
                         : "inactivo"
                     }">
-
                     ${producto.estado || "-"}
-
                 </span>
-
             </td>
-
-
             <td>
-
                 <button
                     class="btn-editar-producto"
                     data-codigo="${producto.codigo}">
-
                     Editar
-
                 </button>
-
             </td>
-
         `;
-
-
         tbody.appendChild(fila);
-
     });
-
 
     document
         .querySelectorAll(
             ".btn-editar-producto"
         )
-        .forEach(btn => {
-
-            btn.addEventListener(
-                "click",
-                function() {
-
-                    const codigo =
-                        this.dataset.codigo;
-
-                    editarProductoAdmin(
-                        codigo
-                    );
-
-                }
-            );
-
-        });
-
+    .forEach(btn => {
+        btn.addEventListener(
+            "click",
+            function() {
+                const codigo =
+                    this.dataset.codigo;
+                editarProductoAdmin(
+                    codigo
+                );
+            }
+        );
+    });
 }
 
 /* ============================================================

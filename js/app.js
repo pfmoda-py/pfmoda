@@ -986,7 +986,7 @@ function configurarFooterUI() {
     if (suscripcionForm) {
         suscripcionForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('¡Gracias por suscribirte a PF Moda!');
+            alert('¡Gracias por tu interés en PF Moda! 🖤 Te informamos que por el momento este espacio de registro se encuentra en desarrollo, por lo que tu correo no ha sido guardado. Muy pronto habilitaremos las notificaciones de novedades.');
             suscripcionForm.reset();
         });
     }
@@ -1689,6 +1689,8 @@ function toggleCarrito() {
     if (!estaAbierto) {
         cambiarPasoCarrito(1);
     }
+
+    document.body.classList.toggle("carrito-abierto", estaAbierto);
 }
 
 // ==========================================
@@ -1727,7 +1729,7 @@ function cambiarPasoCarrito(paso) {
         titulo.textContent = "Tu Carrito";
         btnAccion.textContent = "Continuar Pedido";
         if (footerSubtotal) footerSubtotal.style.display = "flex";
-        if (footerAyuda) footerAyuda.innerHTML = "💬 ¿Necesitas ayuda con tu pedido?<br>Estamos para ayudarte por WhatsApp.";
+        if (footerAyuda) footerAyuda.innerHTML = "💬 ¿Necesitas ayuda? Escríbenos por WhatsApp.<br>";
         if (progresoStep1) progresoStep1.classList.add("active");
         if (progresoStep2) progresoStep2.classList.remove("active");
         if (progresoLinea) progresoLinea.classList.add("active");

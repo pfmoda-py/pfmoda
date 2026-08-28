@@ -7,15 +7,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxJdd8w31jtDiwp3dV3WVFw
 const TOKEN_KEY = "pf_moda_admin_token";
 
 function getAdminToken() {
-    return localStorage.getItem(TOKEN_KEY) || "";
+    return sessionStorage.getItem(TOKEN_KEY) || "";
 }
 
 function setAdminToken(token) {
-    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 function limpiarAdminToken() {
-    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
 }
 
 /* =========================================================
@@ -80,14 +80,41 @@ const api = {
     apiRequest("configuracion"),
 
     /* ---------- PEDIDOS ---------- */
-    getPedidos: () =>
-    apiRequest(`pedidos&token=${encodeURIComponent(getAdminToken())}`),
+    getPedidos: async function() {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "pedidos",
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error al obtener pedidos:", error);
+            return { error: "No se pudieron cargar los pedidos." };
+        }
+    },
     
     /* ---------- DETALLES PEDIDO ---------- */
-    getDetallePedido: (numeroPedido) =>
-    apiRequest(
-    `detallePedido&numeroPedido=${encodeURIComponent(numeroPedido)}&token=${encodeURIComponent(getAdminToken())}`
-    ),
+    getDetallePedido: async function(numeroPedido) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "detallePedido",
+                    numeroPedido: numeroPedido,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error al obtener detalle del pedido:", error);
+            return { error: "No se pudo cargar el detalle del pedido." };
+        }
+    },
 
     /* =====================================================
        MÓDULO PRODUCTOS ADMIN (AGREGADO)
