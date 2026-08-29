@@ -1368,7 +1368,7 @@ function filtrarYRenderizar() {
             <div class="producto-imagen-container">
                 ${etiquetaHTML}
                 <img 
-                    src="${imagen}" 
+                    src="${escapeHTML(imagen)}" 
                     alt="${escapeHTML(prod.nombre || "Producto")}" 
                     class="producto-imagen"
                     loading="lazy" 
@@ -1507,7 +1507,7 @@ function actualizarCarritoUI() {
         // ==============================
         div.innerHTML = `
             <img
-                src="${escapeHTML(item.imagen || "https://via.placeholder.com/150?text=PF+Moda")}"
+                src="${escapeHTML(item.imagen || "https://placehold.co/150x150?text=PF+Moda")}"
                 class="carrito-item-img"
                 alt="${escapeHTML(item.nombre || "Producto")}"
             onerror="this.onerror=null; this.classList.add('imagen-error');">
@@ -2585,41 +2585,6 @@ function eliminarDelCarrito(codigo, color, talle) {
     guardarYActualizarCarrito();
 }
 
-function generarNumeroPedido() {
-
-    const ahora = new Date();
-
-    const año = ahora.getFullYear();
-
-    const mes = String(
-        ahora.getMonth() + 1
-    ).padStart(2, "0");
-
-    const dia = String(
-        ahora.getDate()
-    ).padStart(2, "0");
-
-    const fecha = `${año}${mes}${dia}`;
-
-    const clave =
-        `pf_moda_numero_pedido_${fecha}`;
-
-    let numero =
-        Number(localStorage.getItem(clave) || 0);
-
-    numero++;
-
-    localStorage.setItem(
-        clave,
-        numero
-    );
-
-    const correlativo =
-        String(numero).padStart(4, "0");
-
-    return `PF-${fecha}-${correlativo}`;
-}
-
 // =========================================
 // ACTUALIZACIÓN AUTOMÁTICA DEL INVENTARIO
 // =========================================
@@ -2791,7 +2756,7 @@ function renderizarProductosRelacionados(productoActual) {
         </div>
         <div class="productos-relacionados-grid">
             ${relacionados.map(prod => {
-                const imagen = prod.imagenPrincipal || "https://via.placeholder.com/300?text=PF+Moda";
+                const imagen = prod.imagenPrincipal || "https://placehold.co/300x300?text=PF+Moda";
                 const precioNormal = Number(prod.precio || 0);
                 const precioOferta = Number(prod.precioOferta || 0);
                 const tieneOferta = precioOferta > 0 && precioOferta < precioNormal;
