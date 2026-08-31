@@ -935,6 +935,26 @@ h1.section-title {
     border-color: var(--color-dorado);
 }
 
+.error-campo {
+    display: block;
+    color: #e53935;
+    font-size: 0.72rem;
+    margin-top: 4px;
+    line-height: 1.3;
+}
+
+.campo-cliente input.campo-invalido {
+    border-color: #e53935;
+}
+
+.iti {
+    width: 100%;
+}
+
+.campo-cliente .iti input {
+    width: 100%;
+}
+
 /* CARRITO - ESTRUCTURA CON SCROLL */
 /* Drawer del Carrito */
 .carrito-drawer {

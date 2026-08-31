@@ -48,6 +48,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Estilos CSS -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css">
 </head>
 <body>
 
@@ -243,8 +245,9 @@
                             <input
                                 type="tel"
                                 id="cliente-whatsapp"
-                                placeholder="Ej: 0983 XXXXXX"
-                                autocomplete="tel">                        
+                                placeholder="Ingresá tu número"
+                                autocomplete="tel">
+                            <span id="error-cliente-whatsapp" class="error-campo" style="display:none;"></span>
                         </div>                    
                     
                         <!-- =============================
@@ -391,7 +394,7 @@
 
             <button
                 type="button" class="btn-checkout" id="btn-procesar-pedido">
-                Realizar Pedido por WhatsApp
+                Continuar Pedido
             </button>
         </div>
         <!-- FIN FOOTER -->
@@ -725,6 +728,7 @@
         </div>
     </footer>    
 
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
     <!-- Scripts JavaScript -->
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>

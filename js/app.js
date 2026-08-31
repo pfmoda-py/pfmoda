@@ -31,7 +31,7 @@ let todasLasSubcategorias = [];
 let ordenActual = "recientes";
 let precioMaximoFiltro = Infinity;
 let carritoPasoActual = 1; // Paso actual del carrito: 1 = Resumen, 2 = Datos del cliente
-
+let itiWhatsapp = null; // instancia del selector de país/WhatsApp
 const WHATSAPP_NUMERO = "595983208288"; // Reemplaza con tu número real si difiere
 
 // Objeto de estado encapsulado para variantes en lugar de variables sueltas
@@ -64,6 +64,7 @@ function escapeHTML(str) {
 document.addEventListener("DOMContentLoaded", async () => {
     await inicializarTienda();
     configurarEventos();
+    configurarValidacionWhatsapp();
     actualizarCarritoUI();
     configurarWhatsAppFlotante();
     configurarFooterUI();
@@ -72,6 +73,58 @@ document.addEventListener("DOMContentLoaded", async () => {
     
 });
 
+/* =========================================
+   VALIDACIÓN INTERNACIONAL DEL WHATSAPP (con selector de país)
+========================================= */
+
+function configurarValidacionWhatsapp() {
+    const input = document.getElementById("cliente-whatsapp");
+    const error = document.getElementById("error-cliente-whatsapp");
+
+    if (!input || !error || typeof window.intlTelInput === "undefined") return;
+
+    itiWhatsapp = window.intlTelInput(input, {
+        initialCountry: "py",
+        preferredCountries: ["py", "ar", "br", "uy", "bo", "us","pe","co","ec","cl","es"],
+        separateDialCode: true,
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
+    });
+
+    function limpiarError() {
+        input.classList.remove("campo-invalido");
+        error.style.display = "none";
+    }
+
+    function mostrarError(mensaje) {
+        input.classList.add("campo-invalido");
+        error.textContent = mensaje;
+        error.style.display = "block";
+    }
+
+    input.addEventListener("input", limpiarError);
+
+    input.addEventListener("blur", () => {
+        if (!input.value.trim()) {
+            limpiarError();
+            return;
+        }
+
+        if (!itiWhatsapp.isValidNumber()) {
+            mostrarError("Revisá tu número de WhatsApp: parece incompleto o no es válido.");
+        } else {
+            limpiarError();
+        }
+    });
+}
+
+// Devuelve el número completo en formato internacional (+51920254509),
+// o "" si no hay librería cargada / el campo está vacío.
+function obtenerWhatsappCompleto() {
+    if (itiWhatsapp) {
+        return itiWhatsapp.getNumber() || "";
+    }
+    return document.getElementById("cliente-whatsapp")?.value.trim() || "";
+}
 /* =========================================
    COMPARTIR PRODUCTO (ETAPA 6.3)
 ========================================= */
@@ -1804,8 +1857,7 @@ async function enviarPedidoWhatsApp() {
     const nombreCliente =
         document.getElementById("cliente-nombre")?.value.trim() || "";
     
-    const whatsapp =
-        document.getElementById("cliente-whatsapp")?.value.trim() || "";
+    const whatsapp = obtenerWhatsappCompleto();
     
     const ciudad =
         document.getElementById("cliente-ciudad")?.value.trim() || "";
@@ -1842,6 +1894,17 @@ async function enviarPedidoWhatsApp() {
 
     if (!whatsapp) {
         alert("Por favor ingresa tu número de WhatsApp.");
+        return;
+    }
+
+    if (!whatsapp || !itiWhatsapp || !itiWhatsapp.isValidNumber()) {
+        const errorWhatsapp = document.getElementById("error-cliente-whatsapp");
+        if (errorWhatsapp) {
+            errorWhatsapp.textContent = "Revisá tu número de WhatsApp: parece incompleto o no es válido.";
+            errorWhatsapp.style.display = "block";
+        }
+        document.getElementById("cliente-whatsapp")?.classList.add("campo-invalido");
+        document.getElementById("cliente-whatsapp")?.focus();
         return;
     }
 
