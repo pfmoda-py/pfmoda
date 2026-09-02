@@ -1779,8 +1779,25 @@ textarea {
         padding: 15px;
     }
 
-    .admin-dashboard {
-        grid-template-columns: 1fr;
+        .admin-dashboard {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .admin-card {
+        padding: 12px 8px;
+        text-align: center;
+    }
+
+    .admin-card-titulo {
+        margin-bottom: 4px;
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .admin-card strong {
+        font-size: 20px;
     }
 
     .detalle-grid {
@@ -1843,6 +1860,14 @@ textarea {
 /* Login en móviles */
 
 @media (max-width: 480px) {
+
+    .admin-card-titulo {
+        font-size: 10px;
+    }
+
+    .admin-card strong {
+        font-size: 18px;
+    }
 
     .login-overlay {
         padding: 18px;
