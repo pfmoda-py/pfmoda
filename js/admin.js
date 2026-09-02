@@ -39,10 +39,12 @@ function mostrarLogin(mensajeError) {
     const overlay = document.getElementById("login-overlay");
     const header = document.querySelector(".admin-header");
     const main = document.querySelector("main.admin-main");
+    const sidebar = document.getElementById("admin-sidebar");
 
     if (overlay) overlay.style.display = "flex";
     if (header) header.style.display = "none";
     if (main) main.style.display = "none";
+    if (sidebar) sidebar.style.display = "none";
 
     const errorEl = document.getElementById("login-error");
     if (errorEl) errorEl.textContent = mensajeError || "";
@@ -52,10 +54,12 @@ function ocultarLogin() {
     const overlay = document.getElementById("login-overlay");
     const header = document.querySelector(".admin-header");
     const main = document.querySelector("main.admin-main");
+    const sidebar = document.getElementById("admin-sidebar");
 
     if (overlay) overlay.style.display = "none";
     if (header) header.style.display = "";
     if (main) main.style.display = "";
+    if (sidebar) sidebar.style.display = "";
 }
 
 async function iniciarControlDeAcceso() {
@@ -213,6 +217,7 @@ async function verificarSiHayTokenDeReset() {
 
 function cargarPanelCompleto() {
     inicializarPanel();
+    configurarMenuAdmin();
     configurarProductosAdmin();
     cargarCategoriasAdmin();
     configurarEventosCategorias();
@@ -220,10 +225,56 @@ function cargarPanelCompleto() {
     cargarBannersAdmin();
     configurarEventosBanners();
     configurarLogout(); 
-    configurarSeccionUsuariosAdmin();  
-    
+    configurarSeccionUsuariosAdmin();    
 }
 
+// ==========================================
+// MENÚ LATERAL (SIDEBAR) Y HAMBURGUESA MÓVIL
+// ==========================================
+function configurarMenuAdmin() {
+    const btnMenu = document.getElementById("btn-menu-admin");
+    const sidebar = document.getElementById("admin-sidebar");
+    const overlay = document.getElementById("admin-overlay");
+
+    if (!btnMenu || !sidebar || !overlay || btnMenu.dataset.listo) return;
+    btnMenu.dataset.listo = "true";
+
+    function abrirMenu() {
+        sidebar.classList.add("activo");
+        overlay.classList.add("activo");
+    }
+
+    function cerrarMenu() {
+        sidebar.classList.remove("activo");
+        overlay.classList.remove("activo");
+    }
+
+    btnMenu.addEventListener("click", abrirMenu);
+    overlay.addEventListener("click", cerrarMenu);
+
+    // Botones del sidebar: cambian de sección
+    document.querySelectorAll(".admin-nav-btn[data-view]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            setViewAdmin(btn.dataset.view);
+            cerrarMenu();
+        });
+    });
+}
+
+// ==========================================
+// CAMBIAR DE SECCIÓN (Pedidos / Productos / Categorías / Subcategorías / Banners / Usuarios)
+// ==========================================
+function setViewAdmin(view) {
+    document.querySelectorAll(".admin-nav-btn[data-view]").forEach(btn => {
+        btn.classList.toggle("activo", btn.dataset.view === view);
+    });
+
+    document.querySelectorAll(".admin-view[data-view-panel]").forEach(seccion => {
+        seccion.classList.toggle("activo", seccion.dataset.viewPanel === view);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 /* =========================================================
    GESTIÓN DE USUARIOS ADMIN
@@ -234,8 +285,10 @@ async function configurarSeccionUsuariosAdmin() {
     // El rol lo vamos a guardar en el login (ver ajuste abajo)
 
     const seccion = document.getElementById("seccion-usuarios-admin");
+    const navBtnUsuarios = document.getElementById("nav-btn-usuarios");
     if (sesionGuardada !== "superadmin") {
         if (seccion) seccion.style.display = "none";
+        if (navBtnUsuarios) navBtnUsuarios.style.display = "none";
         return;
     }
 
@@ -858,18 +911,18 @@ function renderizarProductosAdmin() {
         fila.innerHTML = `
             <td>
                 <img
-                    src="${imagen}"
+                    src="${escaparHTML(imagen)}"
                     class="producto-admin-miniatura"
                     onerror="
                         this.src='https://via.placeholder.com/70?text=PF'
                     ">
             </td>
             <td>
-                ${producto.codigo || "-"}
+                ${escaparHTML(producto.codigo || "-")}
             </td>
             <td>
                 <strong>
-                    ${producto.nombre || "-"}
+                    ${escaparHTML(producto.nombre || "-")}
                 </strong>
             </td>
             <td>
@@ -1408,12 +1461,12 @@ async function cargarCategoriasAdmin() {
 
             return `
                 <tr>
-                    <td><strong>${idCat}</strong></td>
-                    <td>${cat.nombre || '-'}</td>
-                    <td>${cat.orden || '1'}</td>
+                    <td><strong>${escaparHTML(idCat)}</strong></td>
+                    <td>${escaparHTML(cat.nombre || '-')}</td>
+                    <td>${escaparHTML(cat.orden || '1')}</td>
                     <td>
                         <span class="estado-producto ${cat.estado === 'Activo' ? 'activo' : 'inactivo'}">
-                            ${cat.estado || 'Activo'}
+                            ${escaparHTML(cat.estado || 'Activo')}
                         </span>
                     </td>
                     <td>
@@ -1464,13 +1517,13 @@ async function cargarSubcategoriasAdmin() {
 
             return `
                 <tr>
-                    <td><strong>${idSub}</strong></td>
-                    <td>${sub.nombre || '-'}</td>
-                    <td>${nombreCatPadre}</td>
-                    <td>${sub.orden || '1'}</td>
+                    <td><strong>${escaparHTML(idSub)}</strong></td>
+                    <td>${escaparHTML(sub.nombre || '-')}</td>
+                    <td>${escaparHTML(nombreCatPadre)}</td>
+                    <td>${escaparHTML(sub.orden || '1')}</td>
                     <td>
                         <span class="estado-producto ${sub.estado === 'Activo' ? 'activo' : 'inactivo'}">
-                            ${sub.estado || 'Activo'}
+                            ${escaparHTML(sub.estado || 'Activo')}
                         </span>
                     </td>
                     <td>
@@ -1689,11 +1742,11 @@ async function cargarBannersAdmin() {
             const idBan = ban.id || ban.ID || ban.iD || "";
             return `
                 <tr>
-                    <td>${idBan}</td>
-                    <td>${ban.titulo || "-"}</td>
-                    <td>${ban.enlace || "-"}</td>
-                    <td>${ban.orden || "-"}</td>
-                    <td>${ban.estado || "-"}</td>
+                    <td>${escaparHTML(idBan)}</td>
+                    <td>${escaparHTML(ban.titulo || "-")}</td>
+                    <td>${escaparHTML(ban.enlace || "-")}</td>
+                    <td>${escaparHTML(ban.orden || "-")}</td>
+                    <td>${escaparHTML(ban.estado || "-")}</td>
                     <td>
                         <div class="acciones-tabla">
                         <button type="button"

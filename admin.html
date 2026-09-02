@@ -76,449 +76,364 @@
             <div class="admin-titulo">
                 Panel Administrativo
             </div>
-            <a href="index.html" class="btn-volver-tienda">← Volver a la tienda</a>
-            <button id="btn-logout-admin" class="btn-logout-admin" type="button">Cerrar sesión</button>
-
+            <button
+                id="btn-menu-admin"
+                class="btn-menu-admin"
+                type="button"
+                aria-label="Abrir menú">
+                ☰
+            </button>
+        
         </header>
+        
+        <div id="admin-overlay" class="admin-overlay"></div>
+        
+        <aside id="admin-sidebar" class="admin-sidebar">
+        
+            <nav class="admin-nav">
+                <button type="button" class="admin-nav-btn activo" data-view="pedidos">
+                    <span class="admin-nav-icon">▣</span>
+                    <span>Pedidos</span>
+                </button>
+                <button type="button" class="admin-nav-btn" data-view="productos">
+                    <span class="admin-nav-icon">□</span>
+                    <span>Productos</span>
+                </button>
+                <button type="button" class="admin-nav-btn" data-view="categorias">
+                    <span class="admin-nav-icon">≡</span>
+                    <span>Categorías</span>
+                </button>
+                <button type="button" class="admin-nav-btn" data-view="subcategorias">
+                    <span class="admin-nav-icon">⊞</span>
+                    <span>Subcategorías</span>
+                </button>
+                <button type="button" class="admin-nav-btn" data-view="banners">
+                    <span class="admin-nav-icon">▤</span>
+                    <span>Banners</span>
+                </button>
+                <button type="button" class="admin-nav-btn" data-view="usuarios" id="nav-btn-usuarios">
+                    <span class="admin-nav-icon">⚙</span>
+                    <span>Usuarios</span>
+                </button>
+            </nav>
+        
+            <div class="admin-sidebar-bottom">
+                <a href="index.html" class="btn-volver-tienda">← Volver a la tienda</a>
+                <button id="btn-logout-admin" class="btn-logout-admin" type="button">Cerrar sesión</button>
+            </div>
+        
+        </aside>
     
     
         <!-- =========================================
              CONTENIDO PRINCIPAL
         ========================================== -->
     
-        <main class="admin-main">
-        
+        <main class="admin-main">        
         
             <!-- =====================================
                  DASHBOARD
-            ====================================== -->
-        
+            ====================================== -->        
             <section class="admin-dashboard">
-
-            <div class="admin-card">
-
-                <span class="admin-card-titulo">
-                    Pedidos
-                </span>
-
-                <strong
-                    id="total-pedidos">
-
-                    0
-
-                </strong>
-
-            </div>
-
-
-            <div class="admin-card">
-
-                <span class="admin-card-titulo">
-                    Productos
-                </span>
-
-                <strong
-                    id="total-productos">
-
-                    0
-
-                </strong>
-
-            </div>
-
-
-            <div class="admin-card">
-
-                <span class="admin-card-titulo">
-                    Categorías
-                </span>
-
-                <strong
-                    id="total-categorias">
-
-                    0
-
-                </strong>
-
-            </div>
-
-            </section>
-        
-        
-            <!-- =====================================
-                 SECCIÓN PEDIDOS
-            ====================================== -->
-        
-            <section class="admin-seccion">
-
-            <div class="admin-seccion-header">
-
-                <div>
-
-                    <h1>
+                <div class="admin-card">
+                    <span class="admin-card-titulo">
                         Pedidos
-                    </h1>
-
-                    <p>
-                        Consulta y administra los pedidos
-                        realizados por los clientes.
-                    </p>
-
+                    </span>
+                    <strong
+                        id="total-pedidos">
+                        0
+                    </strong>
                 </div>
 
+                <div class="admin-card">
+                    <span class="admin-card-titulo">
+                        Productos
+                    </span>
+                    <strong
+                        id="total-productos">
+                        0
+                    </strong>
+                </div>
 
-                <button
-                    id="btn-recargar-pedidos"
-                    class="btn-admin">
-
-                    ↻ Actualizar
-
-                </button>
-
-            </div>
-
-
-            <!-- =================================
-                 TABLA DE PEDIDOS
-            ================================== -->
-
-            <div class="tabla-contenedor">
-
-                <table class="tabla-admin">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                N.º Pedido
-                            </th>
-
-                            <th>
-                                Fecha
-                            </th>
-
-                            <th>
-                                Cliente
-                            </th>
-
-                            <th>
-                                WhatsApp
-                            </th>
-
-                            <th>
-                                Ciudad
-                            </th>
-
-                            <th>
-                                Total
-                            </th>
-
-                            <th>
-                                Estado
-                            </th>
-
-                            <th>
-                                Acción
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="tabla-pedidos">
-
-                        <tr>
-
-                            <td
-                                colspan="8"
-                                class="tabla-cargando">
-
-                                Cargando pedidos...
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-            </section>
-        
+                <div class="admin-card">
+                    <span class="admin-card-titulo">
+                        Categorías
+                    </span>
+                    <strong
+                        id="total-categorias">
+                        0
+                    </strong>
+                </div>
+            </section>       
         
             <!-- =====================================
-                 DETALLE DEL PEDIDO
-            ====================================== -->
-        
-            <section
-            id="detalle-pedido"
-            class="admin-seccion detalle-pedido"
-            style="display:none;">
+            SECCIÓN PEDIDOS
+            ====================================== -->            
+            <section class="admin-seccion admin-view activo" data-view-panel="pedidos"> 
 
-            <div class="admin-seccion-header">
+                <div class="admin-seccion-header">
+                    <div>
+                        <h1>
+                            Pedidos
+                        </h1>
+                        <p>
+                            Consulta y administra los pedidos
+                            realizados por los clientes.
+                        </p>
+                    </div>
 
-                <div>
-
-                    <h2>
-                        Detalle del pedido
-                    </h2>
-
-                    <p id="detalle-numero-pedido"></p>
-
+                    <button
+                        id="btn-recargar-pedidos"
+                        class="btn-admin">
+                        ↻ Actualizar
+                    </button>
                 </div>
 
 
-                <button
-                    id="btn-cerrar-detalle"
-                    class="btn-admin btn-secundario">
-
-                    Cerrar
-
-                </button>
-
-            </div>
-
-
-            <!-- DATOS DEL CLIENTE -->
-
-            <div class="detalle-bloque">
-
-                <h3>
-                    Datos del cliente
-                </h3>
-
-                <div
-                    id="datos-pedido-cliente"
-                    class="detalle-grid">
-
-                </div>
-
-            </div>
-
-
-            <!-- PRODUCTOS DEL PEDIDO -->
-
-            <div class="detalle-bloque">
-
-                <h3>
-                    Productos
-                </h3>
+                <!-- =================================
+                     TABLA DE PEDIDOS
+                ================================== -->
 
                 <div class="tabla-contenedor">
-
                     <table class="tabla-admin">
-
                         <thead>
-
                             <tr>
-
                                 <th>
-                                    Código
+                                    N.º Pedido
                                 </th>
-
                                 <th>
-                                    Producto
+                                    Fecha
                                 </th>
-
                                 <th>
-                                    Color
+                                    Cliente
                                 </th>
-
                                 <th>
-                                    Talle
+                                    WhatsApp
                                 </th>
-
                                 <th>
-                                    Cantidad
+                                    Ciudad
                                 </th>
-
-                                <th>
-                                    Precio
-                                </th>
-
                                 <th>
                                     Total
                                 </th>
-
+                                <th>
+                                    Estado
+                                </th>
+                                <th>
+                                    Acción
+                                </th>
                             </tr>
-
                         </thead>
 
-
-                        <tbody
-                            id="tabla-detalle-productos">
-
+                        <tbody id="tabla-pedidos">
+                            <tr>
+                                <td
+                                    colspan="8"
+                                    class="tabla-cargando">
+                                    Cargando pedidos...
+                                </td>
+                            </tr>
                         </tbody>
-
                     </table>
+                </div>
+            </section>       
+        
+            <!-- =====================================
+                 DETALLE DEL PEDIDO
+            ====================================== -->        
+            <section
+                id="detalle-pedido"
+                class="admin-seccion detalle-pedido"
+                style="display:none;">
 
+                <div class="admin-seccion-header">
+                    <div>
+                        <h2>
+                            Detalle del pedido
+                        </h2>
+                        <p id="detalle-numero-pedido"></p>
+                    </div>
+
+                    <button
+                        id="btn-cerrar-detalle"
+                        class="btn-admin btn-secundario">
+                        Cerrar
+                    </button>
                 </div>
 
-            </div>
+                <!-- DATOS DEL CLIENTE -->
+                <div class="detalle-bloque">
+                    <h3>
+                        Datos del cliente
+                    </h3>
+                    <div
+                        id="datos-pedido-cliente"
+                        class="detalle-grid">
+                    </div>
+                </div>
 
+                <!-- PRODUCTOS DEL PEDIDO -->
+                <div class="detalle-bloque">
+                    <h3>
+                        Productos
+                    </h3>
+                    <div class="tabla-contenedor">
+                        <table class="tabla-admin">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Código
+                                    </th>
+                                    <th>
+                                        Producto
+                                    </th>
+                                    <th>
+                                        Color
+                                    </th>
+                                    <th>
+                                        Talle
+                                    </th>
+                                    <th>
+                                        Cantidad
+                                    </th>
+                                    <th>
+                                        Precio
+                                    </th>
+                                    <th>
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody
+                                id="tabla-detalle-productos">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
         
             <!-- =====================================================
                  GESTIÓN DE PRODUCTOS
-            ===================================================== -->
-                
-            <section class="admin-seccion productos-admin">
-        
-            <div class="seccion-header">
+            ===================================================== -->                
+            <section class="admin-seccion productos-admin admin-view" data-view-panel="productos">        
+                <div class="seccion-header">                
+                    <div>                    
+                        <h2>Productos</h2>                    
+                        <p>
+                            Administra los productos de tu catálogo.
+                        </p>                    
+                    </div>                
+                    <button
+                        id="btn-nuevo-producto"
+                        class="btn-admin-principal">                
+                        + Nuevo Producto                
+                    </button>                
+                </div>           
             
-                <div>
-                
-                    <h2>Productos</h2>
-                
-                    <p>
-                        Administra los productos de tu catálogo.
-                    </p>
-                
-                </div>
-            
-                <button
-                    id="btn-nuevo-producto"
-                    class="btn-admin-principal">
-            
-                    + Nuevo Producto
-            
-                </button>
-            
-            </div>
-        
-        
-            <!-- TABLA -->
-        
-            <div class="tabla-responsive">
-            
-                <table class="tabla-admin">
-                
-                    <thead>
-                    
-                        <tr>
-                        
-                            <th>Imagen</th>
-                        
-                            <th>Código</th>
-                        
-                            <th>Producto</th>
-                        
-                            <th>Categoría</th>
-                        
-                            <th>Precio</th>
-                        
-                            <th>Oferta</th>
-                        
-                            <th>Stock</th>
-                        
-                            <th>Estado</th>
-                        
-                            <th>Acciones</th>
-                        
-                        </tr>
-                    
-                    </thead>
-                
-                    <tbody
-                        id="productos-admin-body">
-                
-                        <tr>
-                        
-                            <td
-                                colspan="9"
-                                class="tabla-vacia">
-                        
-                                Cargando productos...
-                        
-                            </td>
-                        
-                        </tr>
-                    
-                    </tbody>
-                
-                </table>
-            
-            </div>
-        
+                <!-- TABLA -->            
+                <div class="tabla-responsive">                
+                    <table class="tabla-admin">                    
+                        <thead>                        
+                            <tr>                            
+                                <th>Imagen</th>                            
+                                <th>Código</th>                            
+                                <th>Producto</th>                            
+                                <th>Categoría</th>                            
+                                <th>Precio</th>                            
+                                <th>Oferta</th>                            
+                                <th>Stock</th>                            
+                                <th>Estado</th>                            
+                                <th>Acciones</th>                            
+                            </tr>                        
+                        </thead>                    
+                        <tbody
+                            id="productos-admin-body">                    
+                            <tr>                            
+                                <td
+                                    colspan="9"
+                                    class="tabla-vacia">                            
+                                    Cargando productos...                            
+                                </td>                            
+                            </tr>                        
+                        </tbody>                    
+                    </table>                
+                </div>        
             </section>
             
             <!-- =====================================================
                  GESTIÓN DE CATEGORÍAS
             ===================================================== -->
-            <section class="admin-seccion categorias-admin">
-            <div class="seccion-header">
-                <div>
-                    <h2>Categorías</h2>
-                    <p>Administra las categorías del catálogo.</p>
+            <section class="admin-seccion categorias-admin admin-view" data-view-panel="categorias">                
+                <div class="seccion-header">
+                    <div>
+                        <h2>Categorías</h2>
+                        <p>Administra las categorías del catálogo.</p>
+                    </div>
+                    <button type="button" class="btn-admin-principal" id="btn-nueva-categoria">
+                        + Nueva Categoría
+                    </button>
                 </div>
-                <button type="button" class="btn-admin-principal" id="btn-nueva-categoria">
-                    + Nueva Categoría
-                </button>
-            </div>
 
-            <div class="tabla-responsive">
-                <table class="tabla-admin">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Orden</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="categorias-admin-body">
-                        <tr>
-                            <td colspan="5" class="tabla-vacia">Cargando categorías...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="tabla-responsive">
+                    <table class="tabla-admin">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Orden</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categorias-admin-body">
+                            <tr>
+                                <td colspan="5" class="tabla-vacia">Cargando categorías...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         
             <!-- =====================================================
                  GESTIÓN DE SUBCATEGORÍAS
             ===================================================== -->
-            <section class="admin-seccion subcategorias-admin">
-            <div class="seccion-header">
-                <div>
-                    <h2>Subcategorías</h2>
-                    <p>Administra las subcategorías vinculadas a cada categoría.</p>
+            <section class="admin-seccion subcategorias-admin admin-view" data-view-panel="subcategorias">
+                <div class="seccion-header">
+                    <div>
+                        <h2>Subcategorías</h2>
+                        <p>Administra las subcategorías vinculadas a cada categoría.</p>
+                    </div>
+                    <button type="button" class="btn-admin-principal" id="btn-nueva-subcategoria">
+                        + Nueva Subcategoría
+                    </button>
                 </div>
-                <button type="button" class="btn-admin-principal" id="btn-nueva-subcategoria">
-                    + Nueva Subcategoría
-                </button>
-            </div>
 
-            <div class="tabla-responsive">
-                <table class="tabla-admin">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Subcategoría</th>
-                            <th>Categoría</th>
-                            <th>Orden</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="subcategorias-admin-body">
-                        <tr>
-                            <td colspan="6" class="tabla-vacia">Cargando subcategorías...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="tabla-responsive">
+                    <table class="tabla-admin">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Subcategoría</th>
+                                <th>Categoría</th>
+                                <th>Orden</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subcategorias-admin-body">
+                            <tr>
+                                <td colspan="6" class="tabla-vacia">Cargando subcategorías...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <!-- =====================================================
                 GESTIÓN DE BANNERS
             ===================================================== -->
-            <section class="admin-seccion banners-admin">
+            <section class="admin-seccion banners-admin admin-view" data-view-panel="banners">
                 <div class="seccion-header">
                     <div>
                         <h2>Banners</h2>
@@ -553,7 +468,7 @@
             <!-- =====================================================
                  GESTIÓN DE USUARIOS ADMIN (solo superadmin)
             ===================================================== -->
-            <section class="admin-seccion usuarios-admin" id="seccion-usuarios-admin" style="display:none;">
+            <section class="admin-seccion usuarios-admin admin-view" data-view-panel="usuarios" id="seccion-usuarios-admin" style="display:none;">
             	<div class="seccion-header">
             		<div>
             			<h2>Usuarios administradores</h2>
@@ -817,13 +732,9 @@
                                 class="btn-admin-principal">
                                 Guardar Producto
                             </button>
-                        </div>
-                    
-                    </form>
-
-                
-                </div>
-        
+                        </div>                    
+                    </form>                
+                </div>        
             </div>
         
             <!-- =====================================================
@@ -1037,8 +948,7 @@
          MODAL DETALLE DEL PEDIDO
         ========================================== -->
         
-        <div id="modal-pedido-overlay" class="admin-modal-overlay">
-    
+        <div id="modal-pedido-overlay" class="admin-modal-overlay">    
             <div class="admin-modal">        
                 <div class="admin-modal-header">            
                     <h2>Detalle del Pedido</h2>            
