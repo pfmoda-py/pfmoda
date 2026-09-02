@@ -70,6 +70,9 @@ async function iniciarControlDeAcceso() {
     const token = getAdminToken();
 
     if (token) {
+        const overlay = document.getElementById("login-overlay");
+        if (overlay) overlay.style.display = "none";
+
         const sesion = await api.verificarSesionAdmin(token);
         if (sesion && sesion.ok) {
             ocultarLogin();
@@ -219,13 +222,11 @@ function cargarPanelCompleto() {
     inicializarPanel();
     configurarMenuAdmin();
     configurarProductosAdmin();
-    cargarCategoriasAdmin();
     configurarEventosCategorias();
-    cargarSubcategoriasAdmin();
-    cargarBannersAdmin();
     configurarEventosBanners();
     configurarLogout(); 
-    configurarSeccionUsuariosAdmin();    
+    configurarSeccionUsuariosAdmin();  
+    
 }
 
 // ==========================================
@@ -264,6 +265,10 @@ function configurarMenuAdmin() {
 // ==========================================
 // CAMBIAR DE SECCIÓN (Pedidos / Productos / Categorías / Subcategorías / Banners / Usuarios)
 // ==========================================
+// Controla qué secciones ya pidieron sus datos al servidor,
+// para no volver a cargarlas cada vez que el usuario hace clic
+const seccionesYaCargadas = {};
+
 function setViewAdmin(view) {
     document.querySelectorAll(".admin-nav-btn[data-view]").forEach(btn => {
         btn.classList.toggle("activo", btn.dataset.view === view);
@@ -272,6 +277,17 @@ function setViewAdmin(view) {
     document.querySelectorAll(".admin-view[data-view-panel]").forEach(seccion => {
         seccion.classList.toggle("activo", seccion.dataset.viewPanel === view);
     });
+
+    // Carga diferida: recién se pide al servidor la primera vez que se entra a la sección
+    if (!seccionesYaCargadas[view]) {
+        seccionesYaCargadas[view] = true;
+
+        if (view === "banners") {
+            cargarBannersAdmin();
+        } else if (view === "usuarios") {
+            cargarUsuariosAdmin();
+        }
+    }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -285,15 +301,18 @@ async function configurarSeccionUsuariosAdmin() {
     // El rol lo vamos a guardar en el login (ver ajuste abajo)
 
     const seccion = document.getElementById("seccion-usuarios-admin");
-    const navBtnUsuarios = document.getElementById("nav-btn-usuarios");
+    const navUsuarios = document.getElementById("admin-nav-usuarios");
+
     if (sesionGuardada !== "superadmin") {
         if (seccion) seccion.style.display = "none";
-        if (navBtnUsuarios) navBtnUsuarios.style.display = "none";
+        if (navUsuarios) navUsuarios.style.display = "none";
         return;
     }
 
     if (seccion) seccion.style.display = "";
-    await cargarUsuariosAdmin();
+    if (navUsuarios) navUsuarios.style.display = "flex";
+    // La carga de la lista de usuarios se difiere: recién se pide al servidor
+    // la primera vez que el usuario entra a la sección (ver setViewAdmin).
 
     const btnNuevo = document.getElementById("btn-nuevo-usuario-admin");
     const modal = document.getElementById("modal-usuario-admin");
@@ -457,6 +476,10 @@ async function inicializarPanel() {
         pedidosCargadosGlobal = Array.isArray(resultadoPedidos?.items) ? resultadoPedidos.items : [];
         renderizarTablaPedidos(pedidosCargadosGlobal);
 
+                /* 3. PINTAR PRODUCTOS, CATEGORÍAS Y SUBCATEGORÍAS CON LOS DATOS YA TRAÍDOS (sin repetir el pedido) */
+        cargarProductosAdmin(resultadoProductos && Array.isArray(resultadoProductos.items) ? resultadoProductos.items : []);
+        cargarCategoriasAdmin(listaCategoriasAdmin);
+        cargarSubcategoriasAdmin(listaSubcategoriasAdmin);
     } catch (error) {
         console.error("Error al cargar el panel:", error);
         if (tbody) {
@@ -805,49 +828,41 @@ function formatearFecha(fecha) {
 /**
  * Cargar productos
  */
-async function cargarProductosAdmin() {
-
+async function cargarProductosAdmin(datosPrecargados) {
     const tbody =
         document.getElementById(
             "productos-admin-body"
         );
-
     if (!tbody) return;
+    let items;
 
-
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="9" class="tabla-vacia">
-                Cargando productos...
-            </td>
-        </tr>
-    `;
-
-
-    const respuesta =
-        await api.getProductosAdmin();
-
-
-    if (respuesta.error) {
-
+    if (datosPrecargados) {
+        items = datosPrecargados;
+    } else {
         tbody.innerHTML = `
             <tr>
                 <td colspan="9" class="tabla-vacia">
-                    ${respuesta.error}
+                    Cargando productos...
                 </td>
             </tr>
         `;
-
-        return;
+        const respuesta =
+            await api.getProductosAdmin();
+        if (respuesta.error) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="tabla-vacia">
+                        ${respuesta.error}
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        items = respuesta.items || [];
     }
 
-
-    productosAdmin =
-        respuesta.items || [];
-
-
+    productosAdmin = items;
     renderizarProductosAdmin();
-
 }
 
 /**
@@ -1352,7 +1367,7 @@ function configurarProductosAdmin() {
         });
     }
 
-    ['admin-imagen-principal', 'admin-imagen-2', 'admin-imagen-3', 'admin-imagen-4'].forEach(id => {
+        ['admin-imagen-principal', 'admin-imagen-2', 'admin-imagen-3', 'admin-imagen-4'].forEach(id => {
         const inputElement = document.getElementById(id);
         if (inputElement) {
             inputElement.addEventListener('input', () => {
@@ -1360,9 +1375,6 @@ function configurarProductosAdmin() {
             });
         }
     });
-
-    cargarProductosAdmin();
-
 }
 
 /* ============================================================
@@ -1437,15 +1449,19 @@ function refrescarTodosLosPreviews() {
 /**
  * Cargar y renderizar Categorías
  */
-async function cargarCategoriasAdmin() {
+async function cargarCategoriasAdmin(datosPrecargados) {
     const contenedor = document.getElementById("categorias-admin-body");
     const totalElemento = document.getElementById("total-categorias");
 
     if (!contenedor) return;
 
     try {
-        const respuesta = await api.getCategorias();
-        listaCategoriasAdmin = respuesta.items || [];
+        if (datosPrecargados) {
+            listaCategoriasAdmin = datosPrecargados;
+        } else {
+            const respuesta = await api.getCategorias();
+            listaCategoriasAdmin = respuesta.items || [];
+        }
 
         if (totalElemento) {
             totalElemento.textContent = listaCategoriasAdmin.length;
@@ -1490,14 +1506,20 @@ async function cargarCategoriasAdmin() {
 /**
  * Cargar y renderizar Subcategorías
  */
-async function cargarSubcategoriasAdmin() {
+async function cargarSubcategoriasAdmin(datosPrecargados) {
     const contenedor = document.getElementById("subcategorias-admin-body");
 
     if (!contenedor) return;
 
     try {
-        const respuesta = await api.getSubcategorias();
-        listaSubcategoriasAdmin = respuesta.items || [];
+        let listaFinal;
+        if (datosPrecargados) {
+            listaFinal = datosPrecargados;
+        } else {
+            const respuesta = await api.getSubcategorias();
+            listaFinal = respuesta.items || [];
+        }
+        listaSubcategoriasAdmin = listaFinal;
 
         if (listaSubcategoriasAdmin.length === 0) {
             contenedor.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay subcategorías registradas.</td></tr>`;
