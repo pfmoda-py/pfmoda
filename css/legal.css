@@ -1,0 +1,59 @@
+/* Estilos para Páginas Legales PF Moda */
+.pagina-legal {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.btn-volver {
+    display: inline-block;
+    text-decoration: none;
+    color: #111;
+    font-weight: 600;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.btn-volver:hover { color: #C9A227; }
+
+.pagina-legal h1 {
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    border-bottom: 3px solid #C9A227;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.pagina-legal h2 {
+    font-size: 1.1rem;
+    margin-top: 30px;
+    color: #000;
+    text-transform: uppercase;
+    background: #f9f9f9;
+    padding: 8px 12px;
+    border-left: 4px solid #C9A227;
+}
+
+.pagina-legal p, .pagina-legal li {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.pagina-legal ul {
+    padding-left: 20px;
+}
+
+.last-update {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .pagina-legal h1 { font-size: 1.4rem; }
+    .pagina-legal h2 { font-size: 1rem; }
+}

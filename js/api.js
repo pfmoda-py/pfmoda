@@ -79,6 +79,44 @@ const api = {
     getConfiguracion: () =>
     apiRequest("configuracion"),
 
+    guardarConfiguracion: async function(configuracion) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "actualizarConfiguracion",
+                    configuracion: configuracion,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error al guardar configuración:", error);
+            return { error: "No se pudo guardar la configuración." };
+        }
+    },
+
+    subirImagenConfiguracion: async function(base64Data, nombreArchivo, mimeType) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "subirImagenConfiguracion",
+                    base64Data: base64Data,
+                    nombreArchivo: nombreArchivo,
+                    mimeType: mimeType,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error al subir imagen:", error);
+            return { error: "No se pudo subir la imagen." };
+        }
+    },
+
     /* ---------- PEDIDOS ---------- */
     getPedidos: async function() {
         try {
@@ -517,6 +555,44 @@ const api = {
             });
             return await respuesta.json();
         } catch (error) {
+            return { error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    cambiarEstadoUsuarioAdmin: async function(usuarioObjetivo, nuevoEstado) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    accion: "cambiarEstadoUsuarioAdmin",
+                    usuarioObjetivo: usuarioObjetivo,
+                    nuevoEstado: nuevoEstado,
+                    token: getAdminToken()
+                })
+            });
+            return await respuesta.json();
+        } catch (error) {
+            return { error: "No se pudo conectar con el servidor." };
+        }
+    },
+
+    /**
+     * Método genérico: manda cualquier payload directo al backend.
+     * Útil para probar acciones nuevas desde la consola sin tener que
+     * escribir una función dedicada para cada una todavía.
+     * El payload ya debe incluir "accion" y, si hace falta, "token".
+     */
+    request: async function(payload) {
+        try {
+            const respuesta = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            });
+            return await respuesta.json();
+        } catch (error) {
+            console.error("Error en api.request:", error);
             return { error: "No se pudo conectar con el servidor." };
         }
     }

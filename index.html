@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>PF Moda — Tienda de Moda</title>
+    <link rel="icon" id="favicon-link" href="">
 
     <meta name="description" content="PF Moda — Tienda online de moda. Descubre nuestras prendas, novedades y ofertas.">
     <meta name="robots" content="index, follow">
@@ -52,6 +53,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css">
 </head>
 <body>
+    <div id="banner-promo" style="display:none;"></div>
 
     <!-- Header / Barra de Navegación -->
     <header>
@@ -622,7 +624,7 @@
             <div class="footer-grid">
 
                 <div class="footer-brand">
-                    <a href="#" class="logo-footer">PF <span>Moda</span></a>
+                    <a href="#" class="logo-footer" id="logo-footer">PF <span>Moda</span></a>
                     <p>Boutique paraguaya de moda contemporánea. Prendas seleccionadas con criterio, pensadas para durar en tu placard.</p>
 
                     <div class="footer-suscribe">
@@ -634,8 +636,8 @@
                     </div>
 
                     <div class="redes-sociales">
-                        <a href="https://www.instagram.com/pfmodapy" target="_blank" rel="noopener noreferrer">Instagram</a>
-                        <a href="https://www.facebook.com/pfmodapy" target="_blank" rel="noopener noreferrer">Facebook</a>
+                        <a href="https://www.instagram.com/pfmodapy" target="_blank" rel="noopener noreferrer" id="footer-instagram-link">Instagram</a>
+                        <a href="https://www.facebook.com/pfmodapy" target="_blank" rel="noopener noreferrer" id="footer-facebook-link">Facebook</a>
                         <a href="https://www.tiktok.com/@pfmoda" target="_blank" rel="noopener noreferrer">TikTok</a>
                     </div>
                 </div>
@@ -671,16 +673,17 @@
                         <li>
                             <a href="https://wa.me/595983208288"
                                target="_blank"
-                               rel="noopener noreferrer">
+                               rel="noopener noreferrer"
+                               id="contacto-whatsapp-link">
                                 <span class="contacto-icon" aria-hidden="true">☎</span>
-                                <span>+595 983 208 288</span>
+                                <span id="contacto-whatsapp-texto">+595 983 208 288</span>
                             </a>
                         </li>
                         <!-- Correo -->
                         <li>
-                            <a href="mailto:pf.moda.py@gmail.com">
+                            <a href="mailto:pf.moda.py@gmail.com" id="contacto-email-link">
                                 <span class="contacto-icon" aria-hidden="true">✉</span>
-                                <span>pf.moda.py@gmail.com</span>
+                                <span id="contacto-email-texto">pf.moda.py@gmail.com</span>
                             </a>
                         </li>
                         <!-- Ubicación -->
@@ -688,19 +691,19 @@
                             <a href="https://www.google.com/maps/search/?api=1&query=PF%20MODA%2C%20Avda.%20Ana%20D%C3%ADaz%201677%2C%20Asunci%C3%B3n%2C%20Paraguay"
                                target="_blank"
                                rel="noopener noreferrer"
-                               class="link-ubicacion">
+                               class="link-ubicacion"
+                               id="contacto-direccion-link">
                                 <span class="contacto-icon" aria-hidden="true">⌖</span>
                                 <span>
                                     <strong>Visítanos</strong><br>
-                                    Avda. Ana Díaz N° 1677<br>
-                                    Asunción, Paraguay
+                                    <span id="contacto-direccion-texto">Avda. Ana Díaz N° 1677<br>Asunción, Paraguay</span>
                                 </span>
                             </a>
                         </li>
                         <!-- Horario -->
                         <li class="contacto-horario">
                             <span class="contacto-icon" aria-hidden="true">◷</span>
-                            <span>Lun – Sáb, 8:00 a 17:00</span>
+                            <span id="contacto-horario-texto">Lun – Sáb, 8:00 a 17:00</span>
                         </li>
                     </ul>
                 </div>
@@ -720,9 +723,9 @@
 
             <div class="footer-bottom">
                 <p>© PF Moda. Todos los derechos reservados.</p>
-                <div class="footer-bottom-links">
-                    <a href="#">Términos y condiciones</a>
-                    <a href="#">Política de privacidad</a>
+                                <div class="footer-bottom-links">
+                    <a href="#info-terminos" class="link-info-modal" data-modal="terminos">Términos y condiciones</a>
+                    <a href="#info-privacidad" class="link-info-modal" data-modal="privacidad">Política de privacidad</a>
                 </div>
             </div>
         </div>

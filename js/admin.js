@@ -27,6 +27,23 @@ function escaparHTML(texto) {
         .replace(/'/g, "&#039;");
 }
 
+/**
+ * Convierte un archivo (File) elegido en un <input type="file"> a base64
+ * puro, sin el prefijo "data:image/png;base64,". Devuelve una Promise.
+ */
+function archivoABase64(archivo) {
+    return new Promise((resolve, reject) => {
+        const lector = new FileReader();
+        lector.onload = () => {
+            const resultado = lector.result;
+            const base64Puro = resultado.split(",")[1] || "";
+            resolve(base64Puro);
+        };
+        lector.onerror = reject;
+        lector.readAsDataURL(archivo);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await iniciarControlDeAcceso();
 });
@@ -225,7 +242,9 @@ function cargarPanelCompleto() {
     configurarEventosCategorias();
     configurarEventosBanners();
     configurarLogout(); 
-    configurarSeccionUsuariosAdmin();  
+    configurarSeccionUsuariosAdmin();
+    configurarFormularioConfiguracion();
+    cargarConfiguracionAdmin(); 
     
 }
 
@@ -1852,4 +1871,135 @@ async function guardarBannerAdmin(e) {
 
     cerrarModalBanner();
     await cargarBannersAdmin();
+}
+
+/* =========================================
+   CONFIGURACIÓN DEL SITIO
+========================================= */
+
+async function cargarConfiguracionAdmin() {
+    const respuesta = await api.getConfiguracion();
+
+    if (!respuesta || respuesta.error) {
+        console.error("No se pudo cargar la configuración:", respuesta?.error);
+        return;
+    }
+
+    document.getElementById("config-nombre-negocio").value = respuesta.NombreNegocio || "";
+    document.getElementById("config-whatsapp").value = respuesta.WhatsAppNumero || "";
+    document.getElementById("config-email").value = respuesta.EmailContacto || "";
+    document.getElementById("config-direccion").value = respuesta.Direccion || "";
+    document.getElementById("config-instagram").value = respuesta.InstagramURL || "";
+    document.getElementById("config-facebook").value = respuesta.FacebookURL || "";
+    document.getElementById("config-color-principal").value = respuesta.ColorPrincipal || "#000000";
+    document.getElementById("config-color-secundario").value = respuesta.ColorSecundario || "#D4AF37";
+    document.getElementById("config-mensaje-envio").value = respuesta.MensajeEnvioGratis || "";
+
+    document.getElementById("config-logo-url").value = respuesta.LogoURL || "";
+    document.getElementById("config-favicon-url").value = respuesta.FaviconURL || "";
+
+    const previewLogo = document.getElementById("config-logo-preview");
+    if (respuesta.LogoURL) {
+        previewLogo.src = respuesta.LogoURL;
+        previewLogo.style.display = "block";
+    }
+
+    const previewFavicon = document.getElementById("config-favicon-preview");
+    if (respuesta.FaviconURL) {
+        previewFavicon.src = respuesta.FaviconURL;
+        previewFavicon.style.display = "block";
+    }
+}
+
+function configurarFormularioConfiguracion() {
+    const form = document.getElementById("form-configuracion-admin");
+    if (!form) return;
+
+    // Vista previa instantánea al elegir un archivo (antes de subirlo)
+    document.getElementById("config-logo-archivo")?.addEventListener("change", (e) => {
+        const archivo = e.target.files[0];
+        if (!archivo) return;
+        const preview = document.getElementById("config-logo-preview");
+        preview.src = URL.createObjectURL(archivo);
+        preview.style.display = "block";
+    });
+
+    document.getElementById("config-favicon-archivo")?.addEventListener("change", (e) => {
+        const archivo = e.target.files[0];
+        if (!archivo) return;
+        const preview = document.getElementById("config-favicon-preview");
+        preview.src = URL.createObjectURL(archivo);
+        preview.style.display = "block";
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const btnGuardar = document.getElementById("btn-guardar-configuracion");
+        const msgGuardado = document.getElementById("config-guardado-msg");
+
+        btnGuardar.disabled = true;
+        btnGuardar.textContent = "Guardando...";
+        msgGuardado.style.display = "none";
+
+        try {
+            let logoURL = document.getElementById("config-logo-url").value;
+            let faviconURL = document.getElementById("config-favicon-url").value;
+
+            // Si eligió un logo nuevo, subirlo primero
+            const archivoLogo = document.getElementById("config-logo-archivo").files[0];
+            if (archivoLogo) {
+                const base64 = await archivoABase64(archivoLogo);
+                const resultado = await api.subirImagenConfiguracion(base64, archivoLogo.name, archivoLogo.type);
+                if (resultado.error) {
+                    alert("No se pudo subir el logo: " + resultado.error);
+                    return;
+                }
+                logoURL = resultado.url;
+            }
+
+            // Si eligió un favicon nuevo, subirlo también
+            const archivoFavicon = document.getElementById("config-favicon-archivo").files[0];
+            if (archivoFavicon) {
+                const base64 = await archivoABase64(archivoFavicon);
+                const resultado = await api.subirImagenConfiguracion(base64, archivoFavicon.name, archivoFavicon.type);
+                if (resultado.error) {
+                    alert("No se pudo subir el favicon: " + resultado.error);
+                    return;
+                }
+                faviconURL = resultado.url;
+            }
+
+            const configuracion = {
+                NombreNegocio: document.getElementById("config-nombre-negocio").value.trim(),
+                WhatsAppNumero: document.getElementById("config-whatsapp").value.trim(),
+                EmailContacto: document.getElementById("config-email").value.trim(),
+                Direccion: document.getElementById("config-direccion").value.trim(),
+                InstagramURL: document.getElementById("config-instagram").value.trim(),
+                FacebookURL: document.getElementById("config-facebook").value.trim(),
+                ColorPrincipal: document.getElementById("config-color-principal").value,
+                ColorSecundario: document.getElementById("config-color-secundario").value,
+                MensajeEnvioGratis: document.getElementById("config-mensaje-envio").value.trim(),
+                LogoURL: logoURL,
+                FaviconURL: faviconURL
+            };
+
+            const resultado = await api.guardarConfiguracion(configuracion);
+
+            if (resultado.error) {
+                alert("No se pudo guardar: " + resultado.error);
+                return;
+            }
+
+            document.getElementById("config-logo-url").value = logoURL;
+            document.getElementById("config-favicon-url").value = faviconURL;
+
+            msgGuardado.style.display = "inline";
+            setTimeout(() => { msgGuardado.style.display = "none"; }, 3000);
+
+        } finally {
+            btnGuardar.disabled = false;
+            btnGuardar.textContent = "Guardar cambios";
+        }
+    });
 }

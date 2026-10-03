@@ -2490,8 +2490,12 @@ footer.site-footer a:hover {
   border-radius: 8px;
   max-width: 500px;
   width: 90%;
+  max-height: 85vh;
   position: relative;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-info-cerrar {
@@ -2510,6 +2514,14 @@ footer.site-footer a:hover {
   font-size: 1.4rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+#modal-info-body {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 8px;
+  margin-right: -8px;
 }
 
 #modal-info-body p {
@@ -2641,6 +2653,22 @@ footer.site-footer a:hover {
 
 .hidden {
     display: none !important;
+}
+
+#banner-promo {
+    background: var(--color-negro);
+    color: var(--color-dorado);
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 8px 15px;
+}
+
+.logo-img {
+    max-height: 38px;
+    width: auto;
+    display: block;
 }
 
 

@@ -32,7 +32,7 @@ let ordenActual = "recientes";
 let precioMaximoFiltro = Infinity;
 let carritoPasoActual = 1; // Paso actual del carrito: 1 = Resumen, 2 = Datos del cliente
 let itiWhatsapp = null; // instancia del selector de país/WhatsApp
-const WHATSAPP_NUMERO = "595983208288"; // Reemplaza con tu número real si difiere
+let WHATSAPP_NUMERO = "595983208288"; // Se sobrescribe con el valor real de Configuracion al cargar
 
 // Objeto de estado encapsulado para variantes en lugar de variables sueltas
 const varianteSeleccionada = {
@@ -62,6 +62,7 @@ function escapeHTML(str) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    await aplicarConfiguracionSitio();
     await inicializarTienda();
     configurarEventos();
     configurarValidacionWhatsapp();
@@ -1046,6 +1047,101 @@ function configurarFooterUI() {
 }
 
 /* =========================================
+   APLICAR CONFIGURACIÓN DEL NEGOCIO (desde el panel admin)
+========================================= */
+
+async function aplicarConfiguracionSitio() {
+    try {
+
+        const config = await api.getConfiguracion();
+
+        if (!config || config.error) {
+            console.error("No se pudo cargar la configuración del sitio:", config?.error);
+            return;
+        }
+
+        // --- LOGO ---
+        if (config.LogoURL) {
+            const logoHome = document.getElementById("logo-home");
+            const logoFooter = document.getElementById("logo-footer");
+            const alt = escapeHTML(config.NombreNegocio || "Logo");
+
+            if (logoHome) logoHome.innerHTML = `<img src="${escapeHTML(config.LogoURL)}" alt="${alt}" class="logo-img">`;
+            if (logoFooter) logoFooter.innerHTML = `<img src="${escapeHTML(config.LogoURL)}" alt="${alt}" class="logo-img">`;
+        }
+
+        // --- FAVICON ---
+        if (config.FaviconURL) {
+            const favicon = document.getElementById("favicon-link");
+            if (favicon) favicon.href = config.FaviconURL;
+        }
+
+        // --- COLORES DE MARCA ---
+        if (config.ColorPrincipal) {
+            document.documentElement.style.setProperty("--color-negro", config.ColorPrincipal);
+        }
+        if (config.ColorSecundario) {
+            document.documentElement.style.setProperty("--color-dorado", config.ColorSecundario);
+        }
+
+        // --- WHATSAPP (número usado para pedidos y el botón flotante) ---
+        if (config.WhatsAppNumero) {
+            WHATSAPP_NUMERO = String(config.WhatsAppNumero).replace(/\D/g, "");
+
+            const linkWhatsapp = document.getElementById("contacto-whatsapp-link");
+            const textoWhatsapp = document.getElementById("contacto-whatsapp-texto");
+            if (linkWhatsapp) linkWhatsapp.href = `https://wa.me/${WHATSAPP_NUMERO}`;
+            if (textoWhatsapp) textoWhatsapp.textContent = "+" + WHATSAPP_NUMERO;
+        }
+
+        // --- EMAIL DE CONTACTO ---
+        if (config.EmailContacto) {
+            const linkEmail = document.getElementById("contacto-email-link");
+            const textoEmail = document.getElementById("contacto-email-texto");
+            if (linkEmail) linkEmail.href = "mailto:" + config.EmailContacto;
+            if (textoEmail) textoEmail.textContent = config.EmailContacto;
+        }
+
+        // --- DIRECCIÓN ---
+        if (config.Direccion) {
+            const linkDireccion = document.getElementById("contacto-direccion-link");
+            const textoDireccion = document.getElementById("contacto-direccion-texto");
+            if (linkDireccion) {
+                linkDireccion.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(config.Direccion)}`;
+            }
+            if (textoDireccion) textoDireccion.textContent = config.Direccion;
+        }
+
+        // --- REDES SOCIALES ---
+        if (config.InstagramURL) {
+            const linkInsta = document.getElementById("footer-instagram-link");
+            if (linkInsta) linkInsta.href = config.InstagramURL;
+        }
+        if (config.FacebookURL) {
+            const linkFacebook = document.getElementById("footer-facebook-link");
+            if (linkFacebook) linkFacebook.href = config.FacebookURL;
+        }
+
+        // --- BANNER DE ENVÍO GRATIS ---
+        const banner = document.getElementById("banner-promo");
+        if (banner && config.MensajeEnvioGratis) {
+            banner.textContent = config.MensajeEnvioGratis;
+            banner.style.display = "block";
+        }
+
+        // --- NOMBRE DEL NEGOCIO (título de la pestaña) ---
+        if (config.NombreNegocio) {
+            document.title = document.title.replace(/^PF Moda/, config.NombreNegocio);
+        }
+    } catch (error) {
+        console.error("Error al aplicar la configuración del sitio:", error);
+      // No relanzamos el error: aunque algo de la configuración falle,
+      // el resto del sitio (inicializarTienda, banners, catálogo) tiene
+      // que seguir cargando igual.
+    }
+}
+
+/* =========================================
    VINCULACIÓN DE ENLACES DEL FOOTER
 ========================================= */
 
@@ -1145,6 +1241,65 @@ function configurarEnlacesFooter() {
 
                     <p style="margin-top: 1rem; background: #f9f9f9; padding: 10px; border-left: 3px solid #111; font-size: 0.9rem;">
                         💡 <strong>¿Dudas con la horma de una prenda?</strong> Al ser prendas importadas, el calce puede variar según la tela. Escribinos por WhatsApp y te enviamos la medida exacta de la prenda en centímetros.
+                    </p>
+                `;
+                modalOverlay.classList.add("active");
+            }
+            else if (link.dataset.modal === "terminos") {
+                modalTitulo.textContent = "Términos y Condiciones";
+                modalBody.innerHTML = `
+                    <p style="margin-bottom:1rem; font-size:0.85rem; color:#777;">Última actualización: ${new Date().toLocaleDateString("es-PY", { year: "numeric", month: "long" })}</p>
+
+                    <p>Bienvenido/a a PF Moda. Al realizar un pedido a través de nuestro sitio, aceptás los siguientes términos:</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">1. Pedidos y confirmación</p>
+                    <p>Los pedidos realizados desde la tienda se confirman por WhatsApp. El precio final es el que figura en nuestro sistema al momento de procesar el pedido, independientemente de lo mostrado en pantalla en caso de error técnico.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">2. Disponibilidad de stock</p>
+                    <p>Los productos están sujetos a disponibilidad. Si un artículo se agota antes de confirmar tu pedido, te avisaremos por WhatsApp para ofrecerte una alternativa o el reembolso correspondiente.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">3. Medios de pago</p>
+                    <p>Aceptamos efectivo, transferencia bancaria y pago contra entrega, según se coordine por WhatsApp.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">4. Envíos y retiro en tienda</p>
+                    <p>Podés elegir envío a domicilio o retiro en nuestro local (Avda. Ana Díaz N° 1677, Asunción). Los tiempos y costos de envío se coordinan por WhatsApp al confirmar el pedido.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">5. Cambios y devoluciones</p>
+                    <p>Consultá nuestra política de cambios y devoluciones en la sección correspondiente del sitio. Los productos deben estar sin uso, con etiquetas originales, dentro del plazo informado.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">6. Modificaciones</p>
+                    <p>PF Moda puede actualizar estos términos en cualquier momento. Te recomendamos revisarlos periódicamente.</p>
+
+                    <p style="margin-top:1.2rem; background:#f9f9f9; padding:10px; border-left:3px solid #111; font-size:0.9rem;">
+                        📩 ¿Tenés dudas? Escribinos a <strong>pf.moda.py@gmail.com</strong> o por WhatsApp al <strong>+595 983 208 288</strong>.
+                    </p>
+                `;
+                modalOverlay.classList.add("active");
+
+            } else if (link.dataset.modal === "privacidad") {
+                modalTitulo.textContent = "Política de Privacidad";
+                modalBody.innerHTML = `
+                    <p style="margin-bottom:1rem; font-size:0.85rem; color:#777;">Última actualización: ${new Date().toLocaleDateString("es-PY", { year: "numeric", month: "long" })}</p>
+
+                    <p>En PF Moda respetamos tu privacidad. Esta política explica qué datos recopilamos y cómo los usamos.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">1. Datos que recopilamos</p>
+                    <p>Al realizar un pedido, solicitamos: nombre, número de WhatsApp, ciudad, barrio, dirección de entrega (si aplica), y datos de facturación (razón social y RUC) si los necesitás.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">2. Para qué usamos tus datos</p>
+                    <p>Usamos esta información únicamente para procesar y entregar tu pedido, y para comunicarnos con vos por WhatsApp sobre el estado del mismo. No vendemos ni compartimos tus datos con terceros para fines publicitarios.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">3. Dónde se almacenan tus datos</p>
+                    <p>Tus datos se guardan en nuestro sistema interno de gestión de pedidos, con medidas de seguridad para proteger tu información.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">4. Cookies y almacenamiento local</p>
+                    <p>Usamos el almacenamiento local de tu navegador para recordar el contenido de tu carrito de compras entre visitas. No usamos cookies de rastreo publicitario.</p>
+
+                    <p style="margin-top:1rem; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:4px; color:#111;">5. Tus derechos</p>
+                    <p>Podés solicitarnos en cualquier momento que corrijamos o eliminemos tus datos personales, escribiéndonos por los medios de contacto de abajo.</p>
+
+                    <p style="margin-top:1.2rem; background:#f9f9f9; padding:10px; border-left:3px solid #111; font-size:0.9rem;">
+                        📩 Para consultas sobre tus datos, escribinos a <strong>pf.moda.py@gmail.com</strong> o por WhatsApp al <strong>+595 983 208 288</strong>.
                     </p>
                 `;
                 modalOverlay.classList.add("active");

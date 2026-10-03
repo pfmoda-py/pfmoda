@@ -115,6 +115,11 @@
                     <span class="admin-nav-icon">◉</span>
                     <span>Usuarios</span>
                 </button>
+
+                <button type="button" class="admin-nav-btn" data-view="configuracion">
+                    <span class="admin-nav-icon">⚙</span>
+                    <span>Configuración</span>
+                </button>
             </nav>
         
             <div class="admin-sidebar-bottom">
@@ -498,6 +503,89 @@
             			</tbody>
             		</table>
             	</div>
+            </section>
+
+            <!-- =====================================================
+            CONFIGURACIÓN DEL SITIO
+            ===================================================== -->
+            <section class="admin-seccion configuracion-admin admin-view" data-view-panel="configuracion">
+                <div class="seccion-header">
+                    <div>
+                        <h2>Configuración</h2>
+                        <p>Datos de contacto, marca y colores que se muestran en el sitio público.</p>
+                    </div>
+                </div>
+
+                <form id="form-configuracion-admin">
+
+                    <div class="campo-admin">
+                        <label for="config-logo-archivo">Logo del negocio</label>
+                        <img id="config-logo-preview" src="" alt="Logo actual" style="max-height:60px; display:none; margin-bottom:8px;">
+                        <input type="file" id="config-logo-archivo" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+                        <input type="hidden" id="config-logo-url">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-favicon-archivo">Favicon (ícono de la pestaña del navegador)</label>
+                        <img id="config-favicon-preview" src="" alt="Favicon actual" style="max-height:32px; display:none; margin-bottom:8px;">
+                        <input type="file" id="config-favicon-archivo" accept="image/png,image/x-icon,image/svg+xml">
+                        <input type="hidden" id="config-favicon-url">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-nombre-negocio">Nombre del negocio</label>
+                        <input type="text" id="config-nombre-negocio">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-whatsapp">WhatsApp para pedidos (con código de país)</label>
+                        <input type="text" id="config-whatsapp" placeholder="595983208288">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-email">Email de contacto</label>
+                        <input type="email" id="config-email">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-direccion">Dirección</label>
+                        <input type="text" id="config-direccion">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-instagram">Instagram (URL completa)</label>
+                        <input type="url" id="config-instagram" placeholder="https://instagram.com/tunegocio">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-facebook">Facebook (URL completa)</label>
+                        <input type="url" id="config-facebook" placeholder="https://facebook.com/tunegocio">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-color-principal">Color principal de marca</label>
+                        <input type="color" id="config-color-principal">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-color-secundario">Color secundario de marca</label>
+                        <input type="color" id="config-color-secundario">
+                    </div>
+
+                    <div class="campo-admin">
+                        <label for="config-mensaje-envio">Mensaje promocional (banner superior del home)</label>
+                        <input type="text" id="config-mensaje-envio" placeholder="Envío gratis en compras mayores a 500.000 Gs">
+                    </div>
+
+                    <button type="submit" class="btn-admin-principal" id="btn-guardar-configuracion">
+                        Guardar cambios
+                    </button>
+
+                    <span id="config-guardado-msg" style="display:none; margin-left:12px; color:#2e7d32; font-size:0.85rem;">
+                        ✔ Guardado correctamente
+                    </span>
+
+                </form>
             </section>
             
             <!-- =====================================================
