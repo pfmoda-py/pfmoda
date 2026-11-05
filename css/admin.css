@@ -1504,6 +1504,26 @@ textarea {
    15. VISTA PREVIA DE IMÁGENES
 ============================================================ */
 
+/* Logo del negocio en Configuración */
+#config-logo-preview {
+    width: auto !important;
+    height: auto !important;
+    max-width: 280px;
+    max-height: 60px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+/* Favicon en Configuración */
+#config-favicon-preview {
+    width: auto !important;
+    height: auto !important;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: contain;
+    object-position: center;
+}
+
 .imagen-preview-container {
     width: 140px;
     height: 140px;

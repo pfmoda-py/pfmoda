@@ -1033,17 +1033,7 @@ function configurarFooterUI() {
                 }
             });
         }
-    });
-
-    // Formulario de suscripción
-    const suscripcionForm = document.getElementById('form-suscribir');
-    if (suscripcionForm) {
-        suscripcionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('¡Gracias por tu interés en PF Moda! 🖤 Te informamos que por el momento este espacio de registro se encuentra en desarrollo, por lo que tu correo no ha sido guardado. Muy pronto habilitaremos las notificaciones de novedades.');
-            suscripcionForm.reset();
-        });
-    }
+    });    
 }
 
 /* =========================================
@@ -1117,9 +1107,21 @@ async function aplicarConfiguracionSitio() {
             const linkInsta = document.getElementById("footer-instagram-link");
             if (linkInsta) linkInsta.href = config.InstagramURL;
         }
+        
         if (config.FacebookURL) {
             const linkFacebook = document.getElementById("footer-facebook-link");
             if (linkFacebook) linkFacebook.href = config.FacebookURL;
+        }
+
+        if (config.TikTokURL) {
+            const linkTikTok = document.getElementById("footer-tiktok-link");
+            if (linkTikTok) linkTikTok.href = config.TikTokURL;
+        }
+
+        // --- HORARIO DE ATENCIÓN ---
+        if (config.HorarioAtencion) {
+            const textoHorario = document.getElementById("contacto-horario-texto");
+            if (textoHorario) textoHorario.textContent = config.HorarioAtencion;
         }
 
         // --- BANNER DE ENVÍO GRATIS ---
@@ -1135,9 +1137,7 @@ async function aplicarConfiguracionSitio() {
         }
     } catch (error) {
         console.error("Error al aplicar la configuración del sitio:", error);
-      // No relanzamos el error: aunque algo de la configuración falle,
-      // el resto del sitio (inicializarTienda, banners, catálogo) tiene
-      // que seguir cargando igual.
+      
     }
 }
 

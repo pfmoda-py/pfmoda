@@ -960,7 +960,7 @@ function renderizarProductosAdmin() {
                 </strong>
             </td>
             <td>
-                ${producto.categoria || "-"}
+                ${escaparHTML(producto.categoria || "-")}
             </td>
             <td>
                 ₲ ${precio.toLocaleString("es-PY")}
@@ -983,13 +983,13 @@ function renderizarProductosAdmin() {
                         ? "activo"
                         : "inactivo"
                     }">
-                    ${producto.estado || "-"}
+                    ${escaparHTML(producto.estado || "-")}
                 </span>
             </td>
             <td>
                 <button
                     class="btn-editar-producto"
-                    data-codigo="${producto.codigo}">
+                    data-codigo="${escaparHTML(producto.codigo)}"
                     Editar
                 </button>
             </td>
@@ -1031,7 +1031,7 @@ function cargarSelectCategoriasModal(categoriaSeleccionada = '') {
         
         if (cat.estado === 'Activo' || String(idCat) === String(categoriaSeleccionada) || String(nombreCat) === String(categoriaSeleccionada)) {
             const selected = (String(idCat) === String(categoriaSeleccionada) || String(nombreCat) === String(categoriaSeleccionada)) ? 'selected' : '';
-            selectCat.innerHTML += `<option value="${nombreCat}" data-id="${idCat}" ${selected}>${nombreCat}</option>`;
+            selectCat.innerHTML += `<option value="${escaparHTML(nombreCat)}" data-id="${escaparHTML(idCat)}" ${selected}>${escaparHTML(nombreCat)}</option>`;
         }
     });
 }
@@ -1074,7 +1074,7 @@ function cargarSelectSubcategoriasModal(categoriaPadre = '', subcategoriaSelecci
 
             if (sub.estado === 'Activo' || String(idSub) === String(subcategoriaSeleccionada) || String(nombreSub) === String(subcategoriaSeleccionada)) {
                 const selected = (String(idSub) === String(subcategoriaSeleccionada) || String(nombreSub) === String(subcategoriaSeleccionada)) ? 'selected' : '';
-                selectSub.innerHTML += `<option value="${nombreSub}" ${selected}>${nombreSub}</option>`;
+                selectSub.innerHTML += `<option value="${escaparHTML(nombreSub)}" ${selected}>${escaparHTML(nombreSub)}</option>`;
             }
         });
         
@@ -1759,7 +1759,7 @@ function actualizarSelectCategoriasEnSubcategoria() {
     select.innerHTML = `<option value="">Selecciona una categoría...</option>` +
         listaCategoriasAdmin.map(c => {
             const idC = c.id || c.ID || c.iD;
-            return `<option value="${idC}">${c.nombre}</option>`;
+            return `<option value="${escaparHTML(idC)}">${escaparHTML(c.nombre)}</option>`;
         }).join('');
 }
 
@@ -1891,6 +1891,8 @@ async function cargarConfiguracionAdmin() {
     document.getElementById("config-direccion").value = respuesta.Direccion || "";
     document.getElementById("config-instagram").value = respuesta.InstagramURL || "";
     document.getElementById("config-facebook").value = respuesta.FacebookURL || "";
+    document.getElementById("config-tiktok").value = respuesta.TikTokURL || "";
+    document.getElementById("config-horario").value = respuesta.HorarioAtencion || "";
     document.getElementById("config-color-principal").value = respuesta.ColorPrincipal || "#000000";
     document.getElementById("config-color-secundario").value = respuesta.ColorSecundario || "#D4AF37";
     document.getElementById("config-mensaje-envio").value = respuesta.MensajeEnvioGratis || "";
@@ -1977,6 +1979,8 @@ function configurarFormularioConfiguracion() {
                 Direccion: document.getElementById("config-direccion").value.trim(),
                 InstagramURL: document.getElementById("config-instagram").value.trim(),
                 FacebookURL: document.getElementById("config-facebook").value.trim(),
+                TikTokURL: document.getElementById("config-tiktok").value.trim(),
+                HorarioAtencion: document.getElementById("config-horario").value.trim(),
                 ColorPrincipal: document.getElementById("config-color-principal").value,
                 ColorSecundario: document.getElementById("config-color-secundario").value,
                 MensajeEnvioGratis: document.getElementById("config-mensaje-envio").value.trim(),
