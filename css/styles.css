@@ -2040,11 +2040,17 @@ body.carrito-abierto .btn-whatsapp-flotante { /* Reemplaza por la clase real de 
 }
 
 .pasos-grid {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr) auto
+        minmax(0, 1fr) auto
+        minmax(0, 1fr) auto
+        minmax(0, 1fr);
+
+    justify-content: center;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    width: 100%;
 }
 
 .paso {
@@ -2052,6 +2058,17 @@ body.carrito-abierto .btn-whatsapp-flotante { /* Reemplaza por la clase real de 
     flex-direction: column;
     align-items: center;
     gap: 8px;
+}
+
+.pasos-grid .paso {
+    min-width: 0;
+    text-align: center;
+    justify-content: center;
+}
+
+.pasos-grid .paso span {
+    line-height: 1.4;
+    text-align: center;
 }
 
 .num-paso {
@@ -2862,8 +2879,24 @@ footer.site-footer a:hover {
         display: none;
     }
 
+    /* Dos pasos por fila */
     .pasos-grid {
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: center;
+        align-items: center;
+        gap: 24px 12px;
+    }
+
+    .pasos-grid .paso {
+        min-width: 0;
+        text-align: center;
+    }
+
+    .pasos-grid .paso span {
+        max-width: 130px;
+        line-height: 1.4;
+        text-align: center;
     }
 
     /* =========================================================
